@@ -23,7 +23,7 @@ Raw survey data containing 100+ columns is often too dense for business stakehol
 * Produced a final "Persona Table" ready for consumption by BI tools (Tableau/PowerBI).
 
 ## How to Run
-## 🚀 How to Run
+
 
 ### Option 1: Snowflake Python Worksheet (Recommended)
 This pipeline is designed to run natively within Snowflake's secure environment.
