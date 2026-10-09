@@ -1,0 +1,126 @@
+"""Answers to "how" and "why" questions come from the project's own documentation.
+
+README.md is split into its sections, plus a glossary generated from the metric catalogue, and
+the sections that best match the question (keyword overlap with a few domain synonyms) are
+handed to the methodology agent as its only source.
+"""
+from __future__ import annotations
+
+import math
+import re
+from dataclasses import dataclass
+from pathlib import Path
+
+from .semantics import SCHEME_METRICS, SCHEME_NAMES, SEGMENT_METRICS, metrics_named_in
+
+README = Path(__file__).resolve().parent.parent / "README.md"
+
+STOP = set("""a an the and or of to in on for is are was were be been how why what which who does do did
+it its this that these those with by from as at we our you your about into can could would should
+there their them they than then so if not no yes all any each more most less least i me my get got
+made make makes used use using work works""".split())
+
+# Question words that should also match the vocabulary the README uses.
+SYNONYMS = {
+    "forecast": ["outcome", "expected", "revenue", "poisson", "gradient", "boosting", "predict"],
+    "forecasts": ["outcome", "expected", "revenue", "poisson", "gradient", "boosting", "predict"],
+    "predict": ["outcome", "gradient", "boosting", "calibrated", "probability"],
+    "prediction": ["outcome", "gradient", "boosting", "calibrated"],
+    "k": ["axis", "stability", "silhouette", "chosen", "tolerance"],
+    "clusters": ["segments", "bisectingkmeans", "hdbscan", "natural"],
+    "cluster": ["segments", "bisectingkmeans", "hdbscan"],
+    "segments": ["segment", "axis", "tiers"],
+    "ari": ["stability", "bootstrap", "rand"],
+    "stable": ["stability", "ari", "persistence"],
+    "churn": ["active", "buys", "again", "probability"],
+    "accurate": ["auc", "backtest", "capture", "evaluation"],
+    "accuracy": ["auc", "backtest", "capture", "evaluation"],
+    "tested": ["backtest", "evaluation", "folds", "tests"],
+    "validated": ["backtest", "evaluation", "folds"],
+    "rescore": ["task", "monthly", "rescore_customers"],
+    "cleaned": ["cleaning", "duplicates", "overlap", "staging"],
+    "data": ["online", "retail", "uci", "transactions"],
+    "calculated": ["poisson", "regressor", "model", "trained"],
+    "computed": ["poisson", "regressor", "model", "trained"],
+    "probability": ["calibrated", "temperature", "active"],
+}
+DEFINITION = re.compile(r"\b(mean|means|meaning|definition|define|stand for|what is|what's)\b", re.IGNORECASE)
+
+
+@dataclass
+class Section:
+    title: str
+    text: str
+
+
+def _glossary() -> list[Section]:
+    out = []
+    for m in SEGMENT_METRICS.values():
+        agg = {"sum": "It adds up across segments.",
+               "weighted": "Across several segments it is a customer-weighted average.",
+               "median": "It is a median per segment and can't be combined across segments."}[m.agg]
+        out.append(Section(f"Glossary: {m.label}",
+                           f"{m.label} (column {m.column}; also called {', '.join(m.synonyms)}). "
+                           f"A high value means {m.high}; a low value means {m.low}. {agg}"))
+    for m in SCHEME_METRICS.values():
+        out.append(Section(f"Glossary: {m.label}",
+                           f"{m.label} (column {m.column}), a backtest measure. A high value means {m.high}."))
+    out.append(Section("Glossary: schemes", "The compared schemes are: " +
+                       "; ".join(f"{k} = {v}" for k, v in SCHEME_NAMES.items()) + "."))
+    return out
+
+
+def sections(readme: Path = README) -> list[Section]:
+    text = readme.read_text(encoding="utf-8")
+    text = re.sub(r"```mermaid.*?```", "", text, flags=re.DOTALL)
+    text = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", text)  # images
+    parts, title, buf = [], "Overview", []
+    for line in text.splitlines():
+        m = re.match(r"^#{1,4}\s+(.*)", line)
+        if m:
+            if "".join(buf).strip():
+                parts.append(Section(title, "\n".join(buf).strip()))
+            title, buf = m.group(1).strip(), []
+        else:
+            buf.append(line)
+    if "".join(buf).strip():
+        parts.append(Section(title, "\n".join(buf).strip()))
+    return parts + _glossary()
+
+
+def _terms(text: str) -> list[str]:
+    words = [w for w in re.findall(r"[a-z0-9_²]+", text.lower()) if w not in STOP and len(w) > 1 or w == "k"]
+    expanded = list(words)
+    for w in words:
+        expanded += SYNONYMS.get(w, [])
+    return expanded
+
+
+def retrieve(question: str, k: int = 2, corpus: list[Section] | None = None) -> list[Section]:
+    corpus = corpus or sections()
+    terms = _terms(question)
+    docs = [set(re.findall(r"[a-z0-9_²]+", (s.title + " " + s.text).lower())) for s in corpus]
+    n = len(corpus)
+    scores = []
+    for s, words in zip(corpus, docs):
+        title = s.title.lower()
+        score = 0.0
+        for t in set(terms):
+            df = sum(t in d for d in docs)
+            if t in words:
+                score += math.log(1 + n / (1 + df))
+            if t in title:
+                score += 1.5 * math.log(1 + n / (1 + df))
+        if s.title.startswith("Glossary") and DEFINITION.search(question):
+            score *= 1.5  # "what does X mean" is usually a definition
+        scores.append(score)
+    ranked = sorted(range(n), key=lambda i: -scores[i])
+    found = [corpus[i] for i in ranked[:k] if scores[i] > 0]
+    if DEFINITION.search(question):
+        # A definition of a known metric comes straight from its glossary entry.
+        named = metrics_named_in(question)
+        if named:
+            entry = next((s for s in corpus if s.title == f"Glossary: {SEGMENT_METRICS[named[0]].label}"), None)
+            if entry:
+                found = [entry] + [s for s in found if s is not entry][: k - 1]
+    return found

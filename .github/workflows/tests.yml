@@ -13,5 +13,5 @@ jobs:
         with:
           python-version: "3.11"   # matches the stored procedures' RUNTIME_VERSION
           cache: pip
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements.txt -r requirements-copilot.txt
       - run: pytest tests -q

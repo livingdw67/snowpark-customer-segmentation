@@ -1,0 +1,53 @@
+[client]
+toolbarMode = "viewer"   # hide Deploy and developer menu items
+
+# Theme matched to the LinkedIn banner: navy ground, teal for the main line of sight,
+# amber for the one thing to look at, slate for supporting text.
+
+[theme]
+base = "dark"
+primaryColor = "#5fc4c0"             # teal: links, focus, active tab, send button
+backgroundColor = "#0e1a2b"          # navy page
+secondaryBackgroundColor = "#16283f" # raised navy: inputs, chat bubbles, code
+textColor = "#f2f5f9"
+linkColor = "#5fc4c0"
+linkUnderline = false
+borderColor = "#2b3f58"
+showWidgetBorder = true
+showSidebarBorder = true
+baseRadius = "6px"
+buttonRadius = "6px"
+
+font = "'Segoe UI', 'Open Sans':https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap"
+headingFont = "'Segoe UI', 'Open Sans':https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&display=swap"
+codeFont = "'Cascadia Code', 'JetBrains Mono':https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
+codeFontSize = "0.85rem"
+codeBackgroundColor = "#0a1422"
+codeTextColor = "#cfe0f2"
+baseFontSize = 15
+headingFontWeights = [600, 600, 600, 600, 500, 500]
+headingFontSizes = ["32px", "24px", "19px", "16px", "14px", "12px"]
+
+# Named colors used in markdown (:orange[...], badges) and status states.
+orangeColor = "#f0a742"
+greenColor = "#5fc4c0"
+blueColor = "#7fa6d1"
+grayColor = "#6f86a3"
+redColor = "#e5736b"
+yellowColor = "#f0c96a"
+violetColor = "#a99bd6"
+
+chartCategoricalColors = ["#5fc4c0", "#f0a742", "#7fa6d1", "#9fb1c7", "#3c5a7d", "#e5736b", "#a99bd6"]
+chartSequentialColors = ["#16283f", "#1b3550", "#1f4361", "#235271", "#286180", "#2f718d", "#388298", "#4594a3", "#52a9b1", "#5fc4c0"]
+
+dataframeBorderColor = "#2b3f58"
+dataframeHeaderBackgroundColor = "#16283f"
+dataframeHeaderTextColor = "#9fb1c7"
+
+[theme.sidebar]
+backgroundColor = "#0a1422"
+secondaryBackgroundColor = "#16283f"
+codeBackgroundColor = "#0e1a2b"
+borderColor = "#2b3f58"
+textColor = "#f2f5f9"
+primaryColor = "#5fc4c0"

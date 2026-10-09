@@ -4,9 +4,11 @@ Option B is fit on 2011-09-10 and applied (frozen) to every snapshot, so segment
 quarter over quarter reflects customers changing, not the model changing. Option C is fit on
 2011-09-10 (its outcomes run to the end of the data) and scores 2011-12-10.
 """
+import argparse
 import json
 
 from common import DATABASE, get_session, run_sql
+from segmentation.naming import BEHAVIOR_NAMES, TIER_NAMES, case_sql
 
 ML = f"{DATABASE}.ML"
 RUN_ID = "production"
@@ -45,13 +47,6 @@ GROUP BY ALL
 """
 
 
-# Persona names for the published view. Codes are ordered by meaning (C1 = highest predicted
-# value, B1 = largest baskets), and check_behavior_names() confirms each behavior group still
-# matches its name before the view is built.
-TIER_NAMES = {"C1": "Top spenders", "C2": "Core", "C3": "Occasional", "C4": "Low value"}
-BEHAVIOR_NAMES = {"B1": "Bulk buyers", "B2": "Holiday buyers", "B3": "Small-basket buyers"}
-
-
 def check_behavior_names(session):
     p = session.sql(f"""
         SELECT segment, median_avg_units_per_order AS units, median_q4_revenue_share AS q4,
@@ -66,24 +61,34 @@ def check_behavior_names(session):
 
 
 def current_view_sql() -> str:
-    tier = " ".join(f"WHEN '{k}' THEN '{v}'" for k, v in TIER_NAMES.items())
-    behavior = " ".join(f"WHEN '{k}' THEN '{v}'" for k, v in BEHAVIOR_NAMES.items())
+    """Latest snapshot per customer. Rows from the monthly RESCORE_CUSTOMERS Task (run_id
+    'rescore') take precedence over this production run when both cover the same snapshot."""
+    tier = case_sql("h.value_segment", TIER_NAMES)
+    behavior = case_sql("h.behavior_segment", BEHAVIOR_NAMES)
     return f"""
 CREATE OR REPLACE VIEW {ML}.CUSTOMER_SEGMENTS_CURRENT
 COMMENT = 'One row per active customer at the latest snapshot: hybrid segment, names, scores'
 AS
+WITH scored AS (
+    SELECT * FROM {ML}.SEGMENT_ASSIGNMENTS
+    WHERE method = 'hybrid'
+      AND (run_id = 'rescore' OR (run_id = '{RUN_ID}' AND snapshot_date = '{TODAY}'))
+)
 SELECT h.snapshot_date, h.customer_id,
        h.segment                                   AS segment_code,
-       CASE h.value_segment {tier} END || ' / ' ||
-       CASE h.behavior_segment {behavior} END      AS segment_name,
+       {tier} || ' / ' ||
+       {behavior}                                  AS segment_name,
        h.value_segment                             AS value_tier,
-       CASE h.value_segment {tier} END             AS value_tier_name,
+       {tier}                                      AS value_tier_name,
        h.behavior_segment,
-       CASE h.behavior_segment {behavior} END      AS behavior_name,
+       {behavior}                                  AS behavior_name,
        ROUND(h.p_active, 3)                        AS p_buys_next_quarter,
-       ROUND(h.expected_revenue, 2)                AS expected_revenue_next_quarter
-FROM {ML}.SEGMENT_ASSIGNMENTS h
-WHERE h.run_id = '{RUN_ID}' AND h.method = 'hybrid' AND h.snapshot_date = '{TODAY}'
+       ROUND(h.expected_revenue, 2)                AS expected_revenue_next_quarter,
+       h.run_id                                    AS scored_by
+FROM scored h
+WHERE h.snapshot_date = (SELECT MAX(snapshot_date) FROM scored)
+QUALIFY ROW_NUMBER() OVER (PARTITION BY h.customer_id
+                           ORDER BY IFF(h.run_id = 'rescore', 0, 1)) = 1
 """
 
 
@@ -109,5 +114,20 @@ def production():
     session.close()
 
 
+def rebuild_view():
+    """Recreate CUSTOMER_SEGMENTS_CURRENT without retraining (e.g. after a view change)."""
+    session = get_session()
+    check_behavior_names(session)
+    run_sql(session, current_view_sql())
+    print("Built CUSTOMER_SEGMENTS_CURRENT")
+    session.close()
+
+
 if __name__ == "__main__":
-    production()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--view-only", action="store_true",
+                        help="only rebuild CUSTOMER_SEGMENTS_CURRENT from existing assignments")
+    if parser.parse_args().view_only:
+        rebuild_view()
+    else:
+        production()
