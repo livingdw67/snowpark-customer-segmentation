@@ -49,6 +49,29 @@ All numbers are the mean of two folds: fit in March and scored in June, and fit 
 
 ![Segment map](docs/img/segment_map.png)
 
+## Segment Copilot
+
+A chat app over the results, for the people who'd use the segments. A LangGraph router sends each request to one of two agents:
+
+- **Analytical agent:** writes SQL against the segment tables, runs it, repairs it once if it fails, and answers from the rows. *"Which segment holds the most expected revenue next quarter?"*
+- **Generative agent:** retrieves the statistics of the segments you name and writes persona cards or campaigns grounded in them. *"Draft a win-back email for Low value / Bulk buyers."*
+
+Each answer shows how it was produced: the routing decision, every SQL attempt (including failed ones and the error), the rows returned, and the segment statistics the generative agent was given. Follow-ups like "now draft an email for that segment" work because conversation state is kept per session.
+
+| | Offline (default) | Live |
+|---|---|---|
+| Data | DuckDB over `results/*.csv` (aggregated, committed) | Snowflake temporary views over the `ML` schema, plus customer-level `CUSTOMERS` and `MIGRATION` |
+| LLM | Ollama, `qwen2.5:7b` | Snowflake Cortex, `llama3.1-70b` |
+| Needs | [Ollama](https://ollama.com) | `.env` with Snowflake credentials |
+
+```bash
+pip install -r requirements-copilot.txt   # no scikit-learn needed
+ollama pull qwen2.5:7b
+streamlit run app.py
+```
+
+`COPILOT_MODE` (`auto`/`local`/`live`), `COPILOT_LLM` (`auto`/`ollama`/`cortex`), `OLLAMA_MODEL` and `CORTEX_MODEL` override the defaults. Generated SQL is limited to one read-only `SELECT`, and offline DuckDB has file and network access switched off. In live mode, also run the app under a read-only role.
+
 ## How it works
 
 ```mermaid
@@ -60,9 +83,12 @@ flowchart LR
     F --> SP[Stored procedures<br/>scikit-learn 1.9.1]
     SP --> ML[ML.* tables + models on stage]
     ML --> V[ML.CUSTOMER_SEGMENTS_CURRENT<br/>view for BI]
+    T[Monthly Task] -->|CALL| R[RESCORE_CUSTOMERS]
+    R -->|new snapshot + frozen models| V
+    V --> C[Segment Copilot<br/>LangGraph + Streamlit]
 ```
 
-**Customer data never leaves Snowflake.** Steps 01–04 are SQL. All fitting, scoring and evaluation runs in permanent Python stored procedures, created by [05_deploy_procedures.py](05_deploy_procedures.py) from the [segmentation/](segmentation/) package zipped on a stage. The local machine only issues `CALL` statements. The single exception is [08_make_charts.py](08_make_charts.py), which reads *aggregated* result tables to draw the charts above.
+**Customer data never leaves Snowflake.** Steps 01–04 are SQL. All fitting, scoring and evaluation runs in permanent Python stored procedures, created by [05_deploy_procedures.py](05_deploy_procedures.py) from the [segmentation/](segmentation/) package zipped on a stage. The local machine only issues `CALL` statements. The exceptions are [08_make_charts.py](08_make_charts.py), which reads *aggregated* result tables to draw the charts above, and the copilot in live mode, which returns query results (at most 200 rows) to the app.
 
 ### Data and cleaning ([03_build_staging.py](03_build_staging.py))
 
@@ -109,6 +135,17 @@ Every scheme is fit on one snapshot. Its segments' outcome rates are learned fro
 - segment persistence quarter to quarter
 - a forecast-bias check that rank metrics miss
 
+### Monthly re-scoring ([sql/rescore_task.sql](sql/rescore_task.sql))
+
+The `RESCORE_SEGMENTS_MONTHLY` Task calls `ML.RESCORE_CUSTOMERS` on the 1st of each month. It:
+1. rebuilds `MARTS.CUSTOMER_FEATURES` for the snapshot after the latest transaction (the same SQL as step 04, from [segmentation/feature_sql.py](segmentation/feature_sql.py))
+2. scores it with the frozen production models from `@ML.MODELS`
+3. writes hybrid rows under `run_id = 'rescore'`, which `CUSTOMER_SEGMENTS_CURRENT` prefers over the production run for the same snapshot
+
+The dataset is static, so every run re-derives 2011-12-10. The procedure reports how many customers got the same segment as the production run; all of them should.
+
+**Why not the Snowflake Model Registry?** A custom registry model needs `snowflake-ml-python` in its runtime, and every build of it in Snowflake's Anaconda channel (up to 1.51.0) requires `scikit-learn<1.9`. The models need 1.9.1. Until the channel catches up, the models stay as versioned joblib files on a stage, one folder per run.
+
 ## scikit-learn: what's used and why
 
 The code is pinned to **1.9.1, the latest stable release**, which is also in Snowflake's Anaconda channel, so local and in-warehouse code run identical versions.
@@ -124,6 +161,8 @@ The code is pinned to **1.9.1, the latest stable release**, which is also in Sno
 
 The experimental callbacks API (new in 1.9) isn't used: none of the clustering or gradient-boosting estimators support it yet.
 
+**On Windows, Smart App Control may block scikit-learn 1.9.1.** On some machines it refuses to load one of the wheel's DLLs (`_libsvm_sparse`). The pipeline itself isn't affected because it runs in Snowflake. To run the tests there, use GitHub Actions or `python tests/run_in_snowflake.py`. The copilot doesn't use scikit-learn.
+
 ## Reproduce
 
 Requires a Snowflake account with key-pair auth and Python 3.11.
@@ -137,21 +176,25 @@ python 01_fetch_data.py               # download + convert (about 1 min)
 python 02_load_raw.py                 # creates CUSTOMER_SEGMENTATION db, stage, RAW table
 python 03_build_staging.py
 python 04_build_customer_features.py
-python 05_deploy_procedures.py        # zip package to stage, CREATE PROCEDURE x5
+python 05_deploy_procedures.py        # zip package to stage, CREATE PROCEDURE x6
 python 06_run_backtest.py             # two out-of-time folds -> ML.METHOD_COMPARISON
 python 07_run_production.py           # fit Sep 2011, score Dec 2011 -> ML.CUSTOMER_SEGMENTS_CURRENT
 python 08_make_charts.py
 ```
 
+Then create the monthly re-scoring Task by running [sql/rescore_task.sql](sql/rescore_task.sql) in a worksheet (set its warehouse first). If you deployed before re-scoring existed, run `python 05_deploy_procedures.py` and `python 07_run_production.py --view-only`; the second recreates the view without retraining.
+
 Everything runs on an X-Small warehouse. Developing the whole project, including every rerun, used under 2.5 credits.
 
-**Tests:** 24 tests on synthetic customers with planted structure. They check that the methods recover it, that segment codes are ordered by meaning, that every generated rule is true for the customers it describes, and the metric edge cases. They run on GitHub Actions (`pytest tests`), or inside Snowflake's own runtime with `python tests/run_in_snowflake.py`.
+**Tests:** 27 pipeline tests on synthetic customers with planted structure. They check that the methods recover it, that segment codes are ordered by meaning, that every generated rule is true for the customers it describes, that re-scoring builds the same cells as the hybrid, and the metric edge cases. 18 copilot tests use a scripted chat model to cover routing, SQL repair, segment retrieval, follow-ups, the SQL guard rails and a headless run of the app. They run on GitHub Actions (`pytest tests`), or inside Snowflake's own runtime with `python tests/run_in_snowflake.py`.
 
 ## Layout
 
 ```
 01–08_*.py            pipeline steps, in run order
 segmentation/         code that runs inside the stored procedures
+sql/                  monthly re-scoring Task
+app.py, copilot/      Segment Copilot (Streamlit + LangGraph)
 tests/                pytest suite + Snowflake runner
 exploration/          the initial 109-configuration method bake-off
 results/              exported comparison, cleaning audit, k selection, hybrid profiles

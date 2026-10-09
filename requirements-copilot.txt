@@ -1,0 +1,12 @@
+# Copilot (app.py + copilot/). Separate from requirements.txt so the app installs without
+# scikit-learn: it only reads result tables and calls an LLM.
+streamlit==1.65.0
+langgraph==1.2.14
+langchain-core==1.6.7
+langchain-ollama==1.1.0
+langchain-snowflake==0.2.3
+duckdb==1.5.6
+pandas==2.3.3
+snowflake-snowpark-python[pandas]==1.55.0
+python-dotenv
+pytest==9.1.1

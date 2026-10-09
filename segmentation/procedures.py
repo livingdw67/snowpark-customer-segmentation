@@ -203,3 +203,61 @@ def build_segment_map(session, run_id: str, snapshot_date: str, n_sample: int) -
                         "value_segment": seg.value_segment, "behavior_segment": seg.behavior_segment})
     _replace(session, out, "SEGMENT_MAP", run_id)
     return f"{len(out)} customers mapped"
+
+
+def hybrid_assignments(two_axis, outcome, df: pd.DataFrame) -> pd.DataFrame:
+    """Score one snapshot with fitted models: C's value tier x B's behavior segment.
+
+    Gives the same cells as build_hybrid, which joins the two methods' stored assignments.
+    """
+    b, c = two_axis.predict(df), outcome.predict(df)
+    return pd.DataFrame({"segment": (c.segment + "-" + b.behavior_segment).to_numpy(),
+                         "value_segment": c.segment.to_numpy(),
+                         "behavior_segment": b.behavior_segment.to_numpy(),
+                         "p_active": c.p_active.astype(float).to_numpy(),
+                         "expected_revenue": c.expected_revenue.astype(float).to_numpy()},
+                        index=df.index)
+
+
+def rescore_customers(session, model_run_id: str = "production") -> str:
+    """Monthly re-score (called by the RESCORE_SEGMENTS_MONTHLY Task).
+
+    Rebuilds the features for the snapshot after the latest transaction, scores it with the
+    frozen models from `model_run_id`, and writes hybrid rows under run_id 'rescore', which
+    CUSTOMER_SEGMENTS_CURRENT prefers. Where `model_run_id` already scored the same snapshot,
+    the result reports how many customers got the same segment (on this static dataset that
+    is the 2011-12-10 production run, so it should be all of them).
+    """
+    from datetime import timedelta
+
+    from .feature_sql import STAGING, replace_snapshot_sql
+
+    last = session.sql(f"SELECT MAX(invoice_date)::DATE AS d FROM {STAGING}").collect()[0]["D"]
+    snapshot = str(last + timedelta(days=1))
+    for sql in replace_snapshot_sql(snapshot, str(last)):
+        session.sql(sql).collect()
+
+    df = load_snapshots(session, [snapshot]).reset_index(drop=True)
+    two_axis, outcome = _load_model(session, model_run_id, "two_axis"), _load_model(session, model_run_id, "outcome_guided")
+    fit_date = session.sql(f"""
+        SELECT MAX(fit_snapshot) AS f FROM {ML}.SEGMENT_ASSIGNMENTS
+        WHERE run_id = '{model_run_id}' AND method = 'outcome_guided'
+    """).collect()[0]["F"]
+    scored = _assignments(df, hybrid_assignments(two_axis, outcome, df), "rescore", "hybrid", fit_date)
+
+    # Keep earlier months' rescores; replace only this snapshot's rows.
+    session.sql(f"DELETE FROM {ML}.SEGMENT_ASSIGNMENTS "
+                f"WHERE run_id = 'rescore' AND snapshot_date = '{snapshot}'").collect()
+    session.write_pandas(scored, "SEGMENT_ASSIGNMENTS", database=DATABASE, schema="ML",
+                         use_logical_type=True)
+
+    reference = session.sql(f"""
+        SELECT customer_id, segment FROM {ML}.SEGMENT_ASSIGNMENTS
+        WHERE run_id = '{model_run_id}' AND method = 'hybrid' AND snapshot_date = '{snapshot}'
+    """).to_pandas()
+    result = {"snapshot": snapshot, "model_run_id": model_run_id, "customers": len(scored),
+              "segments": scored.SEGMENT.value_counts().sort_index().to_dict()}
+    if len(reference):
+        both = scored.merge(reference, on="CUSTOMER_ID", suffixes=("", "_REF"))
+        result["matches_reference"] = f"{int((both.SEGMENT == both.SEGMENT_REF).sum())}/{len(both)}"
+    return json.dumps(result)

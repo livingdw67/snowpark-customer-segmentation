@@ -1,5 +1,7 @@
 """Zip the segmentation package to a stage and create the permanent stored procedures.
 
+The monthly re-scoring Task is created separately from sql/rescore_task.sql.
+
 All training, scoring and evaluation runs inside Snowflake through these procedures; the
 local machine only issues CALL statements.
 """
@@ -23,6 +25,9 @@ PROCEDURES = {
                         "segmentation.procedures.compare_methods"),
     "BUILD_SEGMENT_MAP": ("run_id STRING, snapshot_date STRING, n_sample INT",
                           "segmentation.procedures.build_segment_map"),
+    # Called monthly by the Task in sql/rescore_task.sql.
+    "RESCORE_CUSTOMERS": ("model_run_id STRING DEFAULT 'production'",
+                          "segmentation.procedures.rescore_customers"),
 }
 
 
