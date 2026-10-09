@@ -1,3 +1,14 @@
-snowflake-snowpark-python==1.15.0
-pandas==1.5.3
-scikit-learn==1.2.2
+# Pinned to versions that also exist in Snowflake's Anaconda channel (Python 3.11 runtime),
+# so local runs and in-warehouse stored procedures execute the same code on the same libraries.
+# Snowpark 1.55 supports pandas < 3, so pandas stays on the 2.3 line.
+snowflake-snowpark-python[pandas]==1.55.0
+scikit-learn==1.9.1
+pandas==2.3.3
+numpy==2.4.6
+scipy==1.17.1
+joblib==1.5.3
+pyarrow==24.0.0
+matplotlib==3.11.1
+openpyxl
+python-dotenv
+pytest==9.1.1
