@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="34" height="32" viewBox="0 0 34 32" role="img" aria-label="Segment Copilot">
+  <path d="M4 7 C 8 22, 13 24, 17 24 S 26 18, 30 9" fill="none" stroke="#5fc4c0" stroke-width="2.6" stroke-linecap="round"/>
+  <circle cx="17" cy="24" r="5.5" fill="#f0a742" opacity="0.22"/>
+  <circle cx="17" cy="24" r="3" fill="#f0a742"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="236" height="32" viewBox="0 0 236 32" role="img" aria-label="Segment Copilot">
+  <!-- The banner's motif in miniature: a teal cost curve with the amber optimum. -->
+  <path d="M4 7 C 8 22, 13 24, 17 24 S 26 18, 30 9" fill="none" stroke="#5fc4c0" stroke-width="2.6" stroke-linecap="round"/>
+  <circle cx="17" cy="24" r="5.5" fill="#f0a742" opacity="0.22"/>
+  <circle cx="17" cy="24" r="3" fill="#f0a742"/>
+  <text x="42" y="22" fill="#f2f5f9" font-family="Segoe UI, Open Sans, system-ui, sans-serif" font-size="17" font-weight="600">Segment Copilot</text>
+</svg>

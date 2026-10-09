@@ -51,18 +51,56 @@ All numbers are the mean of two folds: fit in March and scored in June, and fit 
 
 ## Segment Copilot
 
-A chat app over the results, for the people who'd use the segments. A LangGraph router sends each request to one of two agents:
+A chat app over the results, for the people who'd use the segments. A LangGraph router sends each request to one of four agents:
 
-- **Analytical agent:** writes SQL against the segment tables, runs it, repairs it once if it fails, and answers from the rows. *"Which segment holds the most expected revenue next quarter?"*
-- **Generative agent:** retrieves the statistics of the segments you name and writes persona cards or campaigns grounded in them. *"Draft a win-back email for Low value / Bulk buyers."*
+| Agent | Handles | How it answers |
+|---|---|---|
+| **Calculation** | *"Which segment has the most recent customers?"* · *"Crosstab of expected revenue by tier and buying style"* | The model picks one calculation and its inputs as JSON. Code computes the numbers and writes the answer. |
+| **Documentation** | *"How are the forecasts made?"* · *"What does P(buys again) mean?"* | Answers from the matching README sections and cites them. |
+| **Writing** | *"Write a persona card for Core / Holiday buyers"* | Writes from the segment's profile, with the checks below. |
+| **Out of scope** | Coding, general knowledge, role-play | A fixed, polite refusal. |
 
-Each answer shows how it was produced: the routing decision, every SQL attempt (including failed ones and the error), the rows returned, and the segment statistics the generative agent was given. Follow-ups like "now draft an email for that segment" work because conversation state is kept per session.
+### Why the model doesn't write SQL
+
+The first version let the model write SQL. An adversarial test of 137 questions found only 47% answered correctly, and most errors carried real numbers attached to wrong conclusions:
+- "most recent" sorted the wrong way;
+- shares came out as 100% because the total was filtered with the part;
+- one segment's figure was reported as a whole tier's;
+- a number the user typed was trusted as fact.
+
+Checking that each figure came from the query caught almost none of these, because the error was in the meaning, not the digits.
+
+The rebuild moves every definition into code ([copilot/semantics.py](copilot/semantics.py)):
+- **A metric catalogue** says what each measure means, which direction is "better", and how it combines: customers and predicted revenue add up, probabilities are customer-weighted, medians are never combined.
+- **About a dozen tested calculations:** value, profile, share, rank, compare, crosstab, threshold count, traits, scheme comparison, k choice and cleaning.
+- **The model only chooses** a calculation and its inputs. Code resolves names ("core holiday buyers" → C2-B2), corrects the sort direction from the question's wording, swaps in the metric the question names, reports ties, and declines anything that needs customer-level rows.
+
+**Writing-agent guards:**
+- Figures must come from the segment profile; figures the model proposes itself must be labelled "(proposed)".
+- A number the user supplies that contradicts the data is dropped, with a note.
+- A year-round segment described as seasonal gets flagged.
+- Unknown segment names get a question back instead of a guess.
+- Country targeting is declined, and injected instructions ("ignore all previous rules…") are stripped.
+
+Every answer shows how it was produced: the routing decision, the plan and any adjustment code made to it, the rows computed, and a figure check ([copilot/verify.py](copilot/verify.py)). Follow-ups like "what about holiday buyers?" edit the previous plan.
+
+**Accuracy** is measured by [copilot/evaluate.py](copilot/evaluate.py) against answers computed directly from the CSVs with pandas, scoring words ("No", "lower") as well as figures. There are three sets: questions used while tuning, held-out questions never tuned against, and the failures from the adversarial test. On the last full run with `qwen2.5:7b`:
+
+| Set | Correct |
+|---|---|
+| Tuning (21) | 21 (100%) |
+| Held out (11) | 10 (91%) |
+| Red-team failures (20) | 19 (95%) |
+
+Every figure in every answer traced back to the data. Results are in `results/copilot_eval.csv`; rerun with `python -m copilot.evaluate`. The held-out set is small, and some of its questions resemble the prompt's examples, so treat these as a floor check, not a guarantee.
 
 | | Offline (default) | Live |
 |---|---|---|
-| Data | DuckDB over `results/*.csv` (aggregated, committed) | Snowflake temporary views over the `ML` schema, plus customer-level `CUSTOMERS` and `MIGRATION` |
+| Data | DuckDB over `results/*.csv` (aggregated, committed) | The same tables from the `ML` schema in Snowflake |
 | LLM | Ollama, `qwen2.5:7b` | Snowflake Cortex, `llama3.1-70b` |
 | Needs | [Ollama](https://ollama.com) | `.env` with Snowflake credentials |
+
+Live mode is untested. The calculations work on segment-level tables, so customer-level questions are declined in both modes.
 
 ```bash
 pip install -r requirements-copilot.txt   # no scikit-learn needed
@@ -70,7 +108,7 @@ ollama pull qwen2.5:7b
 streamlit run app.py
 ```
 
-`COPILOT_MODE` (`auto`/`local`/`live`), `COPILOT_LLM` (`auto`/`ollama`/`cortex`), `OLLAMA_MODEL` and `CORTEX_MODEL` override the defaults. Generated SQL is limited to one read-only `SELECT`, and offline DuckDB has file and network access switched off. In live mode, also run the app under a read-only role.
+`COPILOT_MODE` (`auto`/`local`/`live`), `COPILOT_LLM` (`auto`/`ollama`/`cortex`), `OLLAMA_MODEL`, `CORTEX_MODEL` and `LLM_TIMEOUT` override the defaults. The app only runs fixed, read-only queries, and offline DuckDB has file and network access switched off. In live mode, also run the app under a read-only role.
 
 ## How it works
 
@@ -186,7 +224,13 @@ Then create the monthly re-scoring Task by running [sql/rescore_task.sql](sql/re
 
 Everything runs on an X-Small warehouse. Developing the whole project, including every rerun, used under 2.5 credits.
 
-**Tests:** 27 pipeline tests on synthetic customers with planted structure. They check that the methods recover it, that segment codes are ordered by meaning, that every generated rule is true for the customers it describes, that re-scoring builds the same cells as the hybrid, and the metric edge cases. 18 copilot tests use a scripted chat model to cover routing, SQL repair, segment retrieval, follow-ups, the SQL guard rails and a headless run of the app. They run on GitHub Actions (`pytest tests`), or inside Snowflake's own runtime with `python tests/run_in_snowflake.py`.
+**Tests:** 27 pipeline tests on synthetic customers with planted structure. They check that the methods recover it, that segment codes are ordered by meaning, that every generated rule is true for the customers it describes, that re-scoring builds the same cells as the hybrid, and the metric edge cases. 65 copilot tests:
+- every calculation, checked against pandas on the cases the SQL version got wrong;
+- the figure checker;
+- the agents with a scripted chat model: plan repair, direction and metric corrections, declines, follow-ups, documentation answers, the writing guards;
+- a headless run of the app.
+
+None need Ollama or Snowflake. They run on GitHub Actions (`pytest tests`), or inside Snowflake's own runtime with `python tests/run_in_snowflake.py`.
 
 ## Layout
 
@@ -194,7 +238,9 @@ Everything runs on an X-Small warehouse. Developing the whole project, including
 01–08_*.py            pipeline steps, in run order
 segmentation/         code that runs inside the stored procedures
 sql/                  monthly re-scoring Task
-app.py, copilot/      Segment Copilot (Streamlit + LangGraph)
+app.py                Segment Copilot UI (Streamlit)
+copilot/              graph.py (LangGraph agents), semantics.py (metrics + calculations),
+                      docs.py (README retrieval), verify.py (figure check), evaluate.py
 tests/                pytest suite + Snowflake runner
 exploration/          the initial 109-configuration method bake-off
 results/              exported comparison, cleaning audit, k selection, hybrid profiles

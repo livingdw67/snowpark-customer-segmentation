@@ -21,6 +21,8 @@ from segmentation.naming import BEHAVIOR_NAMES, TIER_NAMES, case_sql, segment_na
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
 MAX_ROWS = 200
+MAX_HINT_VALUES = 15
+NO_HINT_COLUMNS = {"TRAITS", "RULE"}  # free text: listing values wouldn't help and bloats the prompt
 
 SEGMENT_COLUMNS = [
     "SEGMENT", "SEGMENT_NAME", "VALUE_TIER", "VALUE_TIER_NAME", "BEHAVIOR_SEGMENT", "BEHAVIOR_NAME",
@@ -53,7 +55,10 @@ TABLE_NOTES = {
         "production. STABILITY_ARI = bootstrap stability (>= 0.85 required), MIN_SHARE = "
         "smallest segment's share (>= 0.05 required), CRITERION = what was maximized, "
         "CHOSEN = the selected K."),
-    "CLEANING": "Row counts after each data-cleaning step, from raw transactions to product lines.",
+    "CLEANING": (
+        "Row counts after each data-cleaning step, from raw transactions to product lines, in "
+        "STEP order. ROWS_REMAINING = rows left after the step; CHANGE = rows added by the step "
+        "(negative: -11812 means 11,812 rows were removed; empty for the first step)."),
     "CUSTOMERS": (
         "Live only. One row per active customer at the latest snapshot: SEGMENT_CODE, "
         "SEGMENT_NAME, VALUE_TIER, BEHAVIOR_SEGMENT, P_BUYS_NEXT_QUARTER, "
@@ -127,6 +132,9 @@ class LocalData:
     def query(self, sql: str) -> pd.DataFrame:
         return self._con.cursor().execute(validate_sql(sql)).df().head(MAX_ROWS)
 
+    def values(self, table: str, column: str) -> list:
+        return sorted(self.frames[table][column].dropna().unique().tolist())[:MAX_HINT_VALUES + 1]
+
     def segments(self) -> pd.DataFrame:
         return self.frames["SEGMENTS"].copy()
 
@@ -174,17 +182,43 @@ class SnowflakeData:
     def query(self, sql: str) -> pd.DataFrame:
         return self.session.sql(validate_sql(sql)).limit(MAX_ROWS).to_pandas()
 
+    def values(self, table: str, column: str) -> list:
+        rows = self.session.sql(f'SELECT DISTINCT "{column}" AS V FROM {table} '
+                                f'WHERE "{column}" IS NOT NULL ORDER BY 1 LIMIT {MAX_HINT_VALUES + 1}').collect()
+        return [r["V"] for r in rows]
+
     def segments(self) -> pd.DataFrame:
         return self.query("SELECT * FROM SEGMENTS ORDER BY SEGMENT")
 
 
+def _is_text(dtype: str) -> bool:
+    return dtype in ("object", "str", "string") or dtype.startswith("StringType")
+
+
 def schema_text(data) -> str:
-    """Table and column reference for the SQL-writing prompt."""
+    """Table and column reference for the SQL-writing prompt.
+
+    Text columns with few distinct values list them, so the model filters on real values
+    (BEHAVIOR_NAME = 'Holiday buyers') instead of guessing. Built once per data source.
+    """
+    cached = getattr(data, "_schema_text", None)
+    if cached:
+        return cached
     parts = []
     for table in data.tables:
-        cols = ", ".join(f"{c} {t}" for c, t in data.columns(table))
-        parts.append(f"{table}: {TABLE_NOTES[table]}\n  Columns: {cols}")
-    return "\n\n".join(parts)
+        cols, hints = [], []
+        for c, t in data.columns(table):
+            cols.append(f"{c} {t}")
+            if _is_text(t) and c not in NO_HINT_COLUMNS:
+                values = data.values(table, c)
+                if len(values) <= MAX_HINT_VALUES:
+                    hints.append(f"{c} in (" + ", ".join(f"'{v}'" for v in values) + ")")
+        text = f"{table}: {TABLE_NOTES[table]}\n  Columns: {', '.join(cols)}"
+        if hints:
+            text += "\n  Values: " + "; ".join(hints)
+        parts.append(text)
+    data._schema_text = "\n\n".join(parts)
+    return data._schema_text
 
 
 def open_data(mode: str | None = None):

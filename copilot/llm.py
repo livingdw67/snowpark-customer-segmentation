@@ -4,6 +4,7 @@ COPILOT_LLM   auto (default) | cortex | ollama   auto = cortex with a live sessi
 CORTEX_MODEL  Cortex model name (default llama3.1-70b, available in most regions)
 OLLAMA_MODEL  Ollama model tag (default qwen2.5:7b: reliable text-to-SQL, fits in 8 GB of VRAM)
 OLLAMA_HOST   Ollama server URL (default http://localhost:11434)
+LLM_TIMEOUT   seconds to wait for one model reply before giving up (default 120)
 """
 from __future__ import annotations
 
@@ -25,9 +26,18 @@ def make_llm(session=None):
     if backend == "ollama":
         from langchain_ollama import ChatOllama
 
+        # keep_alive holds the model in GPU memory between questions (Ollama's default is 5 min,
+        # after which the next question waits for a reload); the timeout stops a stuck request.
         return ChatOllama(model=os.getenv("OLLAMA_MODEL", "qwen2.5:7b"), temperature=0,
-                          base_url=os.getenv("OLLAMA_HOST", "http://localhost:11434"))
+                          base_url=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
+                          keep_alive="30m", client_kwargs={"timeout": float(os.getenv("LLM_TIMEOUT", 120))})
     raise ValueError(f"COPILOT_LLM must be auto, cortex or ollama, not {backend!r}")
+
+
+def warm_up(llm) -> None:
+    """Load a local model before the first question, so the first answer isn't the slow one."""
+    if type(llm).__name__ == "ChatOllama":
+        llm.invoke("Reply with one word: ready")
 
 
 def describe(llm) -> str:
