@@ -1,0 +1,11 @@
+AXIS,K,STABILITY_ARI,MIN_SHARE,SILHOUETTE,NEXT_REVENUE_R2,ELIGIBLE,CHOSEN,CRITERION,RUN_ID,METHOD
+value,3,0.9608,0.3209,0.2884,0.2343,True,False,next_revenue_r2,production,two_axis
+value,4,0.9319,0.1029,0.2924,0.2686,True,True,next_revenue_r2,production,two_axis
+value,5,0.9323,0.1029,0.2449,0.2697,True,False,next_revenue_r2,production,two_axis
+value,6,0.9206,0.098,0.2612,0.2693,True,False,next_revenue_r2,production,two_axis
+value,7,0.8534,0.0829,0.2767,0.2753,True,False,next_revenue_r2,production,two_axis
+behavior,3,0.9727,0.2469,0.211,0.0466,True,True,silhouette,production,two_axis
+behavior,4,0.9615,0.1417,0.1527,0.0464,True,False,silhouette,production,two_axis
+behavior,5,0.9379,0.1333,0.179,0.0491,True,False,silhouette,production,two_axis
+behavior,6,0.9174,0.085,0.1536,0.0487,True,False,silhouette,production,two_axis
+behavior,7,0.8913,0.085,0.1212,0.0503,True,False,silhouette,production,two_axis
