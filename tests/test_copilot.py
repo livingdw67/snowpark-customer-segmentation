@@ -10,7 +10,7 @@ import streamlit as st
 from langchain_core.language_models.fake_chat_models import FakeListChatModel
 
 from copilot.data import LocalData, UnsafeQuery, validate_sql
-from copilot.graph import OUT_OF_SCOPE_REPLY, build_graph, turn_input
+from copilot.graph import OUT_OF_SCOPE_REPLY, SQL, build_graph, turn_input
 
 
 @pytest.fixture(scope="module")
@@ -223,6 +223,13 @@ def test_declines_before_planning(data, question, expected):
     out = ask(build_graph(FakeListChatModel(responses=["generative" if "2027" in question else "analytical"]), data),
               question)
     assert out["declined"] and expected in out["messages"][-1].content
+
+
+@pytest.mark.parametrize("question", ["With holiday buyers excluded, how much expected revenue comes from the rest?",
+                                      "Select the segment with the most revenue from bulk buyers",
+                                      "Update me: where do most customers sit?"])
+def test_english_is_not_mistaken_for_sql(question):
+    assert not SQL.search(question)
 
 
 def test_advice_and_copy_requests_are_rerouted(data):

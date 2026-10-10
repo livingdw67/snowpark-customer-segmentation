@@ -8,6 +8,8 @@ Three approaches were compared on two out-of-time backtests, scored against what
 - **Option C, outcome-guided segments:** gradient boosting turned into readable rules.
 - **A hybrid:** C's value tiers crossed with B's behavior axis.
 
+Option A, one clustering over all 11 features, was dropped earlier. A 109-configuration bake-off ([exploration/](exploration/)) found that adding the buying-behavior features made segments *worse* at predicting next quarter than clustering on recency, frequency and spend alone: buys-again AUC fell from 0.752 to 0.732 and next-revenue R² from 0.28 to 0.26, for the best configuration of each. That's why B keeps value and behavior on separate axes.
+
 The hybrid is the only approach that does both jobs:
 
 ![Method trade-off](docs/img/method_tradeoff.png)
@@ -91,48 +93,33 @@ The rebuild moves every definition into code ([copilot/semantics.py](copilot/sem
 
 Every answer shows how it was produced: the routing decision, the plan and any adjustment code made to it, the rows computed, and a figure check ([copilot/verify.py](copilot/verify.py)). Follow-ups like "what about holiday buyers?" edit the previous plan.
 
-**Accuracy** is measured by [copilot/evaluate.py](copilot/evaluate.py) against answers computed directly from the CSVs with pandas, scoring words ("No", "lower") as well as figures. There are three sets: questions used while tuning, held-out questions never tuned against, and the failures from the adversarial test. On the last full run with `qwen2.5:7b`:
+**Accuracy on fresh questions.** Each round, a tester agent writes new adversarial questions, checked against every earlier round's so none repeat, in formal, casual, terse and typo-laden wording. Every answer is graded against truths computed with pandas from the result CSVs:
 
-| Set | Correct |
-|---|---|
-| Tuning (21) | 21 (100%) |
-| Held out (11) | 11 (100%) |
-| Red-team failures (20) | 20 (100%) |
-| Round 5 failures (15) | 15 (100%) |
+| Round | Questions graded | Correct | On round 2's 5 categories |
+|---|---|---|---|
+| 1: model-written SQL | 137 | 47% | |
+| 2: first semantic layer | 200 (5 categories) | 63% | 63% |
+| 3: second rebuild | 200 (9 categories) | 69% | 73% |
+| 4 | 150 (9 categories) | 73% | 76% |
+| 5 | 300 (9 categories) | 71% | 74% |
 
-Every figure in every answer traced back to the data. Results are in `results/copilot_eval.csv`; rerun with `python -m copilot.evaluate`. These sets are small, and the rebuild was tuned against the red-team failures, so read them as a regression check, not a measure of accuracy on new questions.
+**Accuracy has plateaued at about 70% since round 3.** Each round's fixes repair most of that round's failures when the same questions are replayed (57 of 62 after round 3, 39 of 41 after round 4, 84 of 88 after round 5), but new questions keep finding new gaps. More wording rules are giving diminishing returns. The next thing to try is a larger model (`qwen2.5:14b` locally, or Cortex), which hasn't been tested yet.
 
-**The broader measure is adversarial testing with fresh questions:**
-
-| Round | Questions graded | Correct |
-|---|---|---|
-| Model-written SQL | 137 | 47% |
-| First rebuild (semantic layer) | 200 (5 categories) | 63% |
-| Second rebuild | 200 (all 9 categories) | 69% overall, 73% on round 2's categories |
-| Round 4 | 150 (all 9 categories) | 72.7% overall, 75.8% on round 2's categories |
-| Round 5 | 300 (all 9 categories) | 70.7% overall, 74.2% on round 2's categories |
-
-Round 3 by category:
+Round 5 by category:
 
 | Category | Correct |
 |---|---|
-| Lookups | 85% |
-| Comparisons | 83% |
-| Rankings | 74% |
-| Declines | 73% |
-| Follow-ups | 65% |
-| Crosstabs | 60% |
-| Methodology | 60% |
+| Comparisons | 93% |
+| Crosstabs | 87% |
+| Backtest, k and cleaning | 76% |
+| Declines and injection | 76% |
+| Methodology and advice | 72% |
+| Rankings | 69% |
+| Lookups and totals | 65% |
+| Follow-ups | 63% |
 | Writing | 50% |
-| Backtest and k questions | 27% |
 
-**Fixes since round 3:**
-- **Wording:** "Top spenders" is no longer read as "top"; group filters are kept inside rankings.
-- **Writing agent:** checks the user's description of a segment against the data, and figures marked "(proposed)" can no longer stand in for data.
-- **New calculations:** for the k table and per-fold backtests.
-- **Documentation:** glossary entries for the methodology questions it missed.
-
-Replayed, 57 of round 3's 62 failures now answer correctly. Still open: SMS requests that also produce a persona card, a short list request that returns fewer items, a three-way tie comparison, and one terse follow-up. A fresh round on new questions is needed before claiming a new overall number.
+No answer in round 5 was unsafe. The most common failure is an unhelpful answer (wrong format, partial, or a unit ignored) at 12% of questions, then a wrong claim or direction (8%) and a wrong number (6%).
 
 **Fixes after round 5:**
 - **The question's wording beats the plan:** several exclusions ("except C4-B3 and C1-B1"), "every segment" meaning all of them, a filter's measure kept apart from the measure being totalled ("expected revenue from segments whose P(buys again) is above 50%"), "share of X that are Y" divided by X, "how many" vs "what proportion" in every calculation, ordinals ("second smallest") and per-segment averages.
@@ -140,7 +127,18 @@ Replayed, 57 of round 3's 62 failures now answer correctly. Still open: SMS requ
 - **Writing agent:** wording the data contradicts (lapsed, seasonal, bulk, infrequent, a "December spike") is rewritten, and if it survives two rewrites it is removed rather than noted; £ and % offers are marked "(proposed)"; SMS, tweets and notes are stripped of headings, greetings, persona cards, codes and internal segment names.
 - **Units and declines:** pence, thousands, millions and a no-exchange-rate note; SQL, "which customer" and "which country" requests are declined.
 
-Replayed, 84 of round 5's 88 failures now answer correctly. Still open: a terse "why?" follow-up that misstates the k rule, a "2-sentence idea" that reads recency as frequency, and two campaigns that the clean-up leaves thin (no offer or an empty body).
+Still open from round 5: a terse "why?" follow-up that misstates the k rule, a "2-sentence idea" that reads recency as frequency, and two campaigns that the clean-up leaves thin (no offer or an empty body).
+
+**Regression check.** [copilot/evaluate.py](copilot/evaluate.py) re-asks 67 questions from development and earlier rounds, scoring words ("No", "lower") as well as figures against pandas. On the last full run with `qwen2.5:7b`:
+
+| Set | Correct |
+|---|---|
+| Tuning (21) | 21 (100%) |
+| Held out (11) | 11 (100%) |
+| Earlier red-team failures (20) | 20 (100%) |
+| Round 5 failures (15) | 15 (100%) |
+
+Every figure in every answer traced back to the data. Most of these questions were tuned against, so 100% means past fixes still hold, not that new questions will be answered correctly; the rounds above measure that. Results are in `results/copilot_eval.csv`; rerun with `python -m copilot.evaluate`.
 
 | | Offline (default) | Live |
 |---|---|---|
@@ -148,7 +146,7 @@ Replayed, 84 of round 5's 88 failures now answer correctly. Still open: a terse 
 | LLM | Ollama, `qwen2.5:7b` | Snowflake Cortex, `llama3.1-70b` |
 | Needs | [Ollama](https://ollama.com) | `.env` with Snowflake credentials |
 
-Live mode is untested. The calculations work on segment-level tables, so customer-level questions are declined in both modes.
+Offline mode exists so anyone can try the app without a Snowflake account. It reads the segment-level result tables exported to `results/` (no customer rows), and DuckDB runs the same fixed queries over them. Live mode is untested. The calculations work on segment-level tables, so customer-level questions are declined in both modes.
 
 ```bash
 pip install -r requirements-copilot.txt   # no scikit-learn needed
@@ -159,6 +157,8 @@ streamlit run app.py
 `COPILOT_MODE` (`auto`/`local`/`live`), `COPILOT_LLM` (`auto`/`ollama`/`cortex`), `OLLAMA_MODEL`, `CORTEX_MODEL` and `LLM_TIMEOUT` override the defaults. The app only runs fixed, read-only queries, and offline DuckDB has file and network access switched off. In live mode, also run the app under a read-only role.
 
 ## How it works
+
+The segmentation needs only Snowflake and scikit-learn. The Segment Copilot (LangGraph, Streamlit, DuckDB and an LLM) is an optional app that reads the results; nothing in the pipeline depends on it.
 
 ```mermaid
 flowchart LR
@@ -282,7 +282,7 @@ Then, optionally, create the monthly re-scoring Task. Run [sql/rescore_task.sql]
 
 Everything runs on an X-Small warehouse. Developing the whole project, including every rerun, used under 2.5 credits.
 
-**Tests:** 27 pipeline tests on synthetic customers with planted structure. They check that the methods recover it, that segment codes are ordered by meaning, that every generated rule is true for the customers it describes, that re-scoring builds the same cells as the hybrid, and the metric edge cases. 65 copilot tests:
+**Tests:** 27 pipeline tests on synthetic customers with planted structure. They check that the methods recover it, that segment codes are ordered by meaning, that every generated rule is true for the customers it describes, that re-scoring builds the same cells as the hybrid, and the metric edge cases. 118 copilot tests:
 - every calculation, checked against pandas on the cases the SQL version got wrong;
 - the figure checker;
 - the agents with a scripted chat model: plan repair, direction and metric corrections, declines, follow-ups, documentation answers, the writing guards;

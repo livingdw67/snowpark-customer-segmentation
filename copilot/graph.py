@@ -107,7 +107,10 @@ CROSSTAB = re.compile(r"cross-?tab|\btiers?\s*(?:x|×|by|and)\s*(?:buying\s+)?st
                       r"\bgrid\b", re.IGNORECASE)
 SCHEME_AVERAGE = re.compile(r"\b(average|mean)\b.*\b(across|over|of)\s+(?:all\s+|the\s+|every\s+)*schemes\b|"
                             r"\bacross (?:all |every )?(?:the )?schemes\b.*\b(average|mean)\b", re.IGNORECASE)
-SQL = re.compile(r"^\s*(select|with|insert|update|delete|drop)\b.*\b(from|into|table|where)\b", re.IGNORECASE | re.DOTALL)
+# SQL syntax, not English that happens to start with "with", "select" or "update".
+SQL = re.compile(r"^\s*(select\s+(\*|distinct\b|count\s*\(|[\w.]+\s*(,|\bfrom\b))|with\s+\w+\s+as\s*\(|"
+                 r"insert\s+into\b|update\s+\w+\s+set\b|delete\s+from\b|drop\s+(table|view|schema|database)\b)",
+                 re.IGNORECASE)
 PAST = re.compile(r"\blast (christmas|year|month|quarter|season)\b|\bhistorical (revenue|sales)\b", re.IGNORECASE)
 FUTURE = re.compile(r"\b20(2[6-9]|[3-9]\d)\b|\bnext year\b|\bin (two|three|four|2|3|4) quarters\b", re.IGNORECASE)
 DIRECTION_FOLLOW_UP = re.compile(
