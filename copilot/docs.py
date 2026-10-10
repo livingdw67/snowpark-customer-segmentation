@@ -43,6 +43,10 @@ SYNONYMS = {
     "calculated": ["poisson", "regressor", "model", "trained"],
     "computed": ["poisson", "regressor", "model", "trained"],
     "probability": ["calibrated", "temperature", "active"],
+    "estimated": ["calibrated", "classifier", "gradient", "boosting", "model"],
+    "active": ["buys", "again", "classifier", "calibrated", "probability"],
+    "algorithms": ["scikit", "learn", "bisectingkmeans", "histgradientboostingclassifier", "used"],
+    "models": ["scikit", "learn", "histgradientboostingregressor", "classifier", "used"],
 }
 DEFINITION = re.compile(r"\b(mean|means|meaning|definition|define|stand for|what is|what's)\b", re.IGNORECASE)
 
@@ -58,13 +62,27 @@ def _glossary() -> list[Section]:
     for m in SEGMENT_METRICS.values():
         agg = {"sum": "It adds up across segments.",
                "weighted": "Across several segments it is a customer-weighted average.",
-               "median": "It is a median per segment and can't be combined across segments."}[m.agg]
+               "median": "It is a median per segment and can't be combined across segments.",
+               "ratio": "For a group it is the group's total divided by its customers."}[m.agg]
+        how = {"p_buys_again": " It is estimated by a HistGradientBoostingClassifier, calibrated with "
+                                "temperature scaling on a held-out customer-grouped split (option C).",
+               "expected_revenue": " It is predicted by a HistGradientBoostingRegressor with Poisson loss, "
+                                    "trained on every past quarterly snapshot pooled (option C)."}.get(m.key, "")
         out.append(Section(f"Glossary: {m.label}",
                            f"{m.label} (column {m.column}; also called {', '.join(m.synonyms)}). "
-                           f"A high value means {m.high}; a low value means {m.low}. {agg}"))
+                           f"A high value means {m.high}; a low value means {m.low}. {agg}{how}"))
     for m in SCHEME_METRICS.values():
         out.append(Section(f"Glossary: {m.label}",
                            f"{m.label} (column {m.column}), a backtest measure. A high value means {m.high}."))
+    out.append(Section("Glossary: value tiers C1 C2 C3 C4",
+                       "Value tiers come from the outcome-guided model (option C) and are ordered by predicted "
+                       "next-quarter value: C1 = Top spenders (highest), C2 = Core, C3 = Occasional, "
+                       "C4 = Low value (lowest). A segment code like C2-B2 is <value tier>-<buying style>."))
+    out.append(Section("Glossary: buying styles B1 B2 B3",
+                       "Buying styles come from the behavior axis of the two-axis model (option B): "
+                       "B1 = Bulk buyers (the largest baskets, wholesale-like), B2 = Holiday buyers (most of "
+                       "their revenue falls in October-December), B3 = Small-basket buyers (smaller baskets "
+                       "at higher unit prices). A segment code like C2-B2 is <value tier>-<buying style>."))
     out.append(Section("Glossary: schemes", "The compared schemes are: " +
                        "; ".join(f"{k} = {v}" for k, v in SCHEME_NAMES.items()) + "."))
     return out
@@ -116,6 +134,12 @@ def retrieve(question: str, k: int = 2, corpus: list[Section] | None = None) -> 
         scores.append(score)
     ranked = sorted(range(n), key=lambda i: -scores[i])
     found = [corpus[i] for i in ranked[:k] if scores[i] > 0]
+    codes = re.findall(r"\b([cb])[1-4]\b", question.lower())
+    if codes:  # "what does B2 mean": the code glossary first
+        title = "Glossary: buying styles" if codes[0] == "b" else "Glossary: value tiers"
+        entry = next((s for s in corpus if s.title.startswith(title)), None)
+        if entry:
+            return [entry] + [s for s in found if s is not entry][: k - 1]
     if DEFINITION.search(question):
         # A definition of a known metric comes straight from its glossary entry.
         named = metrics_named_in(question)

@@ -232,9 +232,9 @@ def ask_page() -> None:
         st.caption("Where next quarter's predicted value sits, by value tier and buying style")
         st.altair_chart(value_grid(seg, height=300), width="stretch")
     else:
-        left, right = st.columns([5, 1.4], vertical_alignment="center")
-        left.markdown(f"**{HEADLINE}**")
-        right.button("New chat", icon=":material/add_comment:", on_click=new_conversation, width="stretch")
+        with st.container(horizontal=True, vertical_alignment="center", horizontal_alignment="distribute"):
+            st.markdown(f"**{HEADLINE}**", width="content")
+            st.button("New chat", icon=":material/add_comment:", on_click=new_conversation)
         question = None
         for msg in history:
             avatar = ":material/person:" if msg["role"] == "user" else ":material/insights:"
@@ -289,19 +289,18 @@ def segments_page() -> None:
 
 def sidebar(data, llm) -> None:
     with st.sidebar:
-        st.markdown(f"**{AUTHOR}**  \n:gray[{ROLE}]")
+        st.markdown(f"#### {AUTHOR}")
+        st.caption(ROLE)
         st.markdown(f":material/link: [github.com/livingdw67]({REPO_URL})")
-        st.space("small")
-        st.caption("Under the hood")
-        with st.container(border=True):
-            st.markdown(f":material/database: {data.mode.title()} data · {data.dialect}  \n"
-                        f":material/memory: {llm_factory.describe(llm)}  \n"
-                        f":material/table: {len(data.tables)} tables: " + ", ".join(data.tables).lower())
-            if data.mode == "local":
-                st.caption("Offline mode reads the aggregated results committed in `results/`. "
-                           "Customer-level questions need live mode.")
-            st.caption("A LangGraph router sends questions to a SQL agent and writing requests to a "
-                       "generative agent. Every answer shows its steps.")
+        st.space("medium")
+        st.markdown("**Under the hood**")
+        st.markdown(f":material/database: {data.mode.title()} data · {data.dialect}  \n"
+                    f":material/memory: {llm_factory.describe(llm)}  \n"
+                    f":material/table: {len(data.tables)} tables: " + ", ".join(data.tables).lower())
+        st.caption("A router sends each request to a calculation, documentation or writing agent. "
+                   "Numbers are computed in code, never by the model, and every answer shows its steps.")
+        if data.mode == "local":
+            st.caption("Offline mode reads the aggregated results in `results/`.")
 
 
 # --------------------------------------------------------------------------------------

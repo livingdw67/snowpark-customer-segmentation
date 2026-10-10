@@ -41,13 +41,14 @@ SEGMENT_METRICS = {m.key: m for m in [
            ("customers", "size", "biggest", "largest", "smallest", "how many")),
     Metric("expected_revenue", "EXPECTED_REVENUE", "predicted revenue next quarter", "money", "sum",
            "more predicted revenue", "less predicted revenue", ("valuable",), (),
-           ("expected revenue", "predicted revenue", "forecast revenue", "valuable", "worth", "value next quarter")),
+           ("expected revenue", "predicted revenue", "forecast revenue", "valuable", "worth", "value next quarter",
+            "next-quarter revenue", "next quarter revenue", "revenue next quarter", "predicted next-quarter revenue")),
     Metric("p_buys_again", "MEAN_P_ACTIVE", "chance of ordering next quarter", "percent", "weighted",
            "more likely to order again", "more at risk of churning",
-           ("likely to buy", "likely to order", "loyal", "retention", "retain", "active"),
+           ("likely to buy", "likely to order", "loyal", "retention", "retain", "active", "engaged"),
            ("churn", "at risk", "risk", "unlikely"),
-           ("buy again", "buys again", "order again", "p(buys again)", "p_active", "probability", "likely",
-            "churn", "retention", "at risk", "loyal")),
+           ("buy again", "buys again", "order again", "p(buys again)", "p(active)", "p_active", "probability",
+            "likely", "churn", "retention", "at risk", "loyal", "engaged", "engagement", "active")),
     Metric("recency_days", "MEDIAN_RECENCY_DAYS", "days since last order", "days", "median",
            "more lapsed", "more recent",
            ("lapsed", "dormant", "inactive", "longest since", "least recent"), ("recent", "recently", "fresh"),
@@ -62,10 +63,10 @@ SEGMENT_METRICS = {m.key: m for m in [
            "larger orders by value", "smaller orders by value", (), (),
            ("order value", "aov", "basket value", "spend per order")),
     Metric("units_per_order", "MEDIAN_AVG_UNITS_PER_ORDER", "units per order", "number", "median",
-           "bigger baskets", "smaller baskets", (), (), ("units", "basket size", "units per order", "bulk")),
+           "bigger baskets", "smaller baskets", (), (), ("units", "basket size", "units per order")),
     Metric("unit_price", "MEDIAN_AVG_UNIT_PRICE", "unit price", "money", "median",
            "pay more per unit", "pay less per unit", ("premium", "expensive"), ("cheap",),
-           ("unit price", "price", "premium", "expensive", "cheap")),
+           ("unit price", "price", "per unit", "premium", "expensive", "cheap", "cheapest")),
     Metric("lines_per_order", "MEDIAN_AVG_LINES_PER_ORDER", "product lines per order", "number", "median",
            "wider baskets", "narrower baskets", (), (), ("lines", "product lines", "variety")),
     Metric("return_rate", "MEDIAN_RETURN_RATE", "return rate", "percent", "median",
@@ -77,7 +78,11 @@ SEGMENT_METRICS = {m.key: m for m in [
     Metric("tenure_days", "MEDIAN_TENURE_DAYS", "days since first order (tenure)", "days", "median",
            "longer-standing customers", "newer customers", ("longest-standing",), (), ("tenure", "first order", "how long", "longest-standing", "newest", "age")),
     Metric("uk_share", "UK_SHARE", "share of customers in the UK", "percent", "weighted",
-           "more UK-based", "more international", (), (), ("uk", "united kingdom", "domestic")),
+           "more UK-based", "more international", (), (),
+           ("uk", "in the uk", "uk share", "uk-based", "united kingdom", "domestic")),
+    Metric("revenue_per_customer", "REV_PER_CUSTOMER", "predicted revenue per customer next quarter",
+           "money", "ratio", "more predicted revenue per customer", "less predicted revenue per customer",
+           (), (), ("per customer", "per head", "revenue per customer", "value per customer", "each customer worth")),
     Metric("non_uk_share", "NON_UK_SHARE", "share of customers outside the UK", "percent", "weighted",
            "more international", "more UK-based", (), (), ("outside the uk", "international", "abroad", "non-uk")),
 ]}
@@ -104,6 +109,15 @@ SCHEME_METRICS = {m.key: m for m in [
            "percent", "mean", "more faithful rules", "less faithful rules", (), (), ("rule", "fidelity")),
     Metric("n_segments", "N_SEGMENTS", "number of segments", "number", "mean", "more segments",
            "fewer segments", (), (), ("number of segments", "how many segments")),
+    Metric("min_segment_share", "MIN_SEGMENT_SHARE", "smallest segment's share of customers", "percent", "mean",
+           "larger smallest segment", "smaller smallest segment", (), (),
+           ("minimum segment share", "min segment share", "smallest segment share", "smallest segment")),
+    Metric("predicted_active_rate", "PREDICTED_ACTIVE_RATE", "predicted share of customers ordering next quarter",
+           "percent", "mean", "predicts more customers ordering", "predicts fewer customers ordering", (), (),
+           ("predicted active rate", "predicted active")),
+    Metric("actual_active_rate", "ACTUAL_ACTIVE_RATE", "actual share of customers ordering next quarter",
+           "percent", "mean", "more customers actually ordered", "fewer customers actually ordered", (), (),
+           ("actual active rate", "actual active")),
     Metric("revenue_forecast_bias", "REVENUE_FORECAST_BIAS",
            "revenue forecast bias (negative = under-forecast)", "percent", "mean",
            "over-forecasts more", "under-forecasts more", (), (), ("bias", "under-forecast", "over-forecast")),
@@ -136,13 +150,22 @@ def metric(key: str, level: str = "segment") -> Metric:
     raise ValueError(f"unknown {level} metric '{key}'. Known: {', '.join(table)}")
 
 
+GROUP_WORDS = {"bulk", "holiday", "small-basket", "small basket", "core", "occasional", "top spenders",
+               "low value"}
+
+
 def metrics_named_in(text: str, level: str = "segment") -> list[str]:
-    """Metrics whose synonyms appear in `text`, longest match first."""
-    lower = text.lower()
+    """Metrics whose synonyms appear in `text` as whole words, longest match first.
+
+    Whole words only ("engaged" doesn't contain "age"), and tier or buying-style words never
+    count as naming a metric ("bulk buyers" is a group, not units per order).
+    """
+    lower = text.lower().replace("’", "'")
     table = SCHEME_METRICS if level == "scheme" else SEGMENT_METRICS
     hits = []
     for m in table.values():
-        best = max((len(s) for s in m.synonyms if s in lower), default=0)
+        best = max((len(s) for s in m.synonyms
+                    if s not in GROUP_WORDS and re.search(rf"(?<![\w]){re.escape(s)}(?![\w])", lower)), default=0)
         if best:
             hits.append((best, m.key))
     return [k for _, k in sorted(hits, reverse=True)]
@@ -170,6 +193,27 @@ def fmt(m: Metric, v) -> str:
 
 def cap(text: str) -> str:
     return text[:1].upper() + text[1:]
+
+
+def difference(m: Metric, va: float, vb: float) -> str:
+    """'Difference: 848 customers (19.8 times as many).' Percent measures differ in points."""
+    d = abs(va - vb)
+    if m.unit == "percent":
+        return f"Difference: {d * 100:.1f} percentage points."
+    if m.unit == "score":
+        return f"Difference: {d:.3f}."
+    text = f"Difference: {fmt(m, d)}"
+    lo, hi = sorted([va, vb])
+    if lo > 0 and m.unit in ("count", "money", "number", "days"):
+        text += f" ({hi / lo:.1f} times as much)"
+    return text + "."
+
+
+def combine(groups: list[Group]) -> Group:
+    """Several groups as one ("C1-B2 and C1-B3 combined")."""
+    codes = list(dict.fromkeys(c for g in groups for c in g.codes))
+    label = " + ".join(g.label.split(" (")[0] + (f" ({g.codes[0]})" if g.single else "") for g in groups)
+    return Group("combined", codes, f"{label} combined")
 
 
 def pct(v: float) -> str:
@@ -235,6 +279,12 @@ def resolve(text: str, seg: pd.DataFrame) -> list[Group]:
         if kind == "tier" and nxt and nxt[1] == "style" and nxt[0] - pos < 25 and \
                 not re.search(r"\b(or|and|vs|versus|than|with|compared)\b", used[pos:nxt[0]]):
             seg_code = f"{code}-{nxt[2]}"
+            groups.append(Group("segment", [seg_code], f"{segment_name(seg_code)} ({seg_code})"))
+            i += 2
+            continue
+        if kind == "style" and nxt and nxt[1] == "tier" and nxt[0] - pos < 30 and \
+                re.search(r"\b(but|who are|that are|and are|in the|among)\b", used[pos:nxt[0]]):
+            seg_code = f"{nxt[2]}-{code}"
             groups.append(Group("segment", [seg_code], f"{segment_name(seg_code)} ({seg_code})"))
             i += 2
             continue
@@ -343,6 +393,7 @@ class Semantics:
                  cleaning: pd.DataFrame):
         self.seg = segments.copy().set_index("SEGMENT", drop=False)
         self.seg["NON_UK_SHARE"] = 1 - self.seg.UK_SHARE
+        self.seg["REV_PER_CUSTOMER"] = self.seg.EXPECTED_REVENUE / self.seg.CUSTOMERS
         self.bt = backtest
         self.k = k_choices
         self.clean = cleaning.sort_values("STEP")
@@ -356,6 +407,8 @@ class Semantics:
             return float(part[m.column].iloc[0]), None
         if m.agg == "sum":
             return float(part[m.column].sum()), None
+        if m.agg == "ratio":
+            return float(part.EXPECTED_REVENUE.sum() / part.CUSTOMERS.sum()), None
         if m.agg == "weighted":
             v = float((part[m.column] * part.CUSTOMERS).sum() / part.CUSTOMERS.sum())
             return v, f"{cap(m.label)} for a group is the customer-weighted average of its segments."
@@ -472,7 +525,20 @@ class Semantics:
             va, na = self.group_value(a, m)
             vb, nb = self.group_value(b, m)
             if va is None or vb is None:
-                notes.append(na or nb)
+                paired = self._paired(a, b, m)
+                if paired:
+                    fact, prow, a_wins, b_wins, n = paired
+                    if asked and m is (question_metric or metrics[0]):
+                        yes = a_wins == n if asked > 0 else b_wins == n
+                        no = b_wins == n if asked > 0 else a_wins == n
+                        fact = ("Yes. " if yes else "No. " if no else "Not consistently. ") + fact
+                    facts.append(fact)
+                    rows.extend(prow)
+                else:  # show every segment of both groups
+                    for g in (a, b):
+                        rows.extend({"Measure": m.label, "Segment": r["Segment"], "Value": list(r.values())[1]}
+                                    for r in self._segment_rows(g.codes, m).to_dict("records"))
+                    facts.append(f"{cap(m.label)} is a median per segment, so the segments of each group are listed.")
                 continue
             notes += [x for x in (na, nb) if x]
             verdict = ""
@@ -482,7 +548,9 @@ class Semantics:
                 tail = "They are equal."
             else:
                 top = a if va > vb else b
-                tail = f"{top.label.split(' (')[0]} is higher, meaning {m.high}."
+                name = top.label if top.kind == "combined" else top.label.split(" (")[0]
+                tail = f"{name} is higher, meaning {m.high}."
+                tail += " " + difference(m, va, vb)
             facts.append(f"{verdict}{cap(m.label)}: {a.label} {fmt(m, va)} vs {b.label} {fmt(m, vb)}. {tail}")
             rows.append({"Measure": m.label, a.label: fmt(m, va), b.label: fmt(m, vb)})
         if not facts:
@@ -524,16 +592,58 @@ class Semantics:
                 f"{TIER_NAMES[top_t]} / {BEHAVIOR_NAMES[top_s]} ({top_t}-{top_s}) at {fmt(m, grid[top_t][top_s])}.")
         return Result([fact], pd.DataFrame(rows), notes)
 
-    def count_where(self, m: Metric, op: str, threshold: float) -> Result:
+    def _paired(self, a: Group, b: Group, m: Metric):
+        """Two buying styles (or two tiers) on a median: compare them tier by tier (or style by style)."""
+        if a.kind != b.kind or a.kind not in ("style", "tier"):
+            return None
+        rows, a_wins, b_wins = [], 0, 0
+        for ca in a.codes:
+            other = next(c for c in b.codes if (c[:2] == ca[:2] if a.kind == "style" else c[3:] == ca[3:]))
+            va, vb = float(self.seg.loc[ca, m.column]), float(self.seg.loc[other, m.column])
+            a_wins += va > vb
+            b_wins += vb > va
+            rows.append({"Measure": m.label, a.label.split(" (")[0]: f"{ca} {fmt(m, va)}",
+                         b.label.split(" (")[0]: f"{other} {fmt(m, vb)}"})
+        n = len(rows)
+        across = "value tiers" if a.kind == "style" else "buying styles"
+        an, bn = a.label.split(" (")[0], b.label.split(" (")[0]
+        ties = n - a_wins - b_wins
+        fact = (f"{cap(m.label)} is a median per segment, so the groups are compared segment by segment: "
+                f"{an} is higher in {a_wins} of {n} {across} and {bn} in {b_wins}"
+                + (f" ({ties} tied)." if ties else "."))
+        return fact, rows, a_wins, b_wins, n
+
+    def compare_many(self, groups: list[Group], metrics: list[Metric]) -> Result:
+        """Three or more groups side by side, highest first, naming the top and bottom."""
+        m = metrics[0]
+        vals, notes = [], []
+        for g in groups:
+            v, note = self.group_value(g, m)
+            if v is None:  # a median across several segments: list every segment instead
+                codes = list(dict.fromkeys(c for grp in groups for c in grp.codes))
+                return Result([f"{cap(m.label)} is a median per segment, so each segment is listed."],
+                              self._segment_rows(codes, m), [note])
+            vals.append((g.label, v))
+            if note:
+                notes.append(note)
+        vals.sort(key=lambda t: -t[1])
+        fact = (f"Highest {m.label}: {vals[0][0]} {fmt(m, vals[0][1])}; lowest: {vals[-1][0]} {fmt(m, vals[-1][1])}.")
+        table = pd.DataFrame({"Group": [v[0] for v in vals], cap(m.label): [fmt(m, v[1]) for v in vals]})
+        return Result([fact], table, list(dict.fromkeys(notes)))
+
+    def count_where(self, m: Metric, op: str, threshold: float, within: list[Group] | None = None) -> Result:
         ops = {">": lambda s: s > threshold, ">=": lambda s: s >= threshold,
-               "<": lambda s: s < threshold, "<=": lambda s: s <= threshold}
+               "<": lambda s: s < threshold, "<=": lambda s: s <= threshold,
+               "=": lambda s: (s - threshold).abs() < 1e-9, "==": lambda s: (s - threshold).abs() < 1e-9}
         if op not in ops:
             raise ValueError(f"op must be one of {', '.join(ops)}")
-        mask = ops[op](self.seg[m.column])
-        part = self.seg[mask]
+        pool = self.seg if not within else self.seg.loc[[c for g in within for c in g.codes]]
+        mask = ops[op](pool[m.column])
+        part = pool[mask]
         total = self.seg.CUSTOMERS.sum()
         shown = threshold if m.unit != "percent" else threshold
-        facts = [f"{len(part)} of 12 segments have {m.label} {op} {fmt(m, shown)}. They hold "
+        word = {"=": "equal to", "==": "equal to"}.get(op, op)
+        facts = [f"{len(part)} of {len(pool)} segments have {m.label} {word} {fmt(m, shown)}. They hold "
                  f"{part.CUSTOMERS.sum():,} customers, {pct(part.CUSTOMERS.sum() / total)} of all {total:,}."]
         table = self._segment_rows(list(part.SEGMENT), m).assign(Customers=[f"{c:,}" for c in part.CUSTOMERS])
         return Result(facts, table)
@@ -546,9 +656,23 @@ class Semantics:
                               "What stands out": hit.TRAITS, "Customers": [f"{c:,}" for c in hit.CUSTOMERS]})
         return Result([f"{len(hit)} segment(s) are described as '{word}': " + ", ".join(table.Segment) + "."], table)
 
-    def schemes(self, metrics: list[Metric], schemes: list[str] | None = None, direction: int = 0) -> Result:
+    def _bt(self, fold: str | None):
+        if fold in ("q2", "q3"):
+            return self.bt[self.bt.RUN_ID == f"backtest_{fold}"], f"the {fold} backtest"
+        return self.bt, "mean of two backtests"
+
+    def schemes(self, metrics: list[Metric], schemes: list[str] | None = None, direction: int = 0,
+                fold: str | None = None) -> Result:
         keys = schemes or list(SCHEME_NAMES)
-        g = self.bt[self.bt.SCHEME.isin(keys)].groupby("SCHEME")
+        bt, basis = self._bt(fold)
+        if any(m.key == "n_segments" for m in metrics):
+            part = bt[bt.SCHEME.isin(keys)].dropna(subset=["N_SEGMENTS"])
+            counts = part.groupby("SCHEME").N_SEGMENTS.apply(lambda s: " and ".join(str(int(v)) for v in s))
+            facts = [f"{SCHEME_NAMES[k]}: {v} segments ({basis})." for k, v in counts.items()]
+            return Result(facts, pd.DataFrame({"Scheme": [SCHEME_NAMES[k] for k in counts.index],
+                                               "Segments": list(counts)}),
+                          ["Segment counts differ by backtest because k is chosen afresh each time."])
+        g = bt[bt.SCHEME.isin(keys)].groupby("SCHEME")
         rows, facts = [], []
         m0 = metrics[0]
         means = g[m0.column].mean().dropna()
@@ -567,15 +691,15 @@ class Semantics:
             tied = order[order == best]
             names = ", ".join(SCHEME_NAMES[k] for k in tied.index)
             facts.append(f"{names} {'has' if len(tied) == 1 else 'have'} the {'highest' if direction > 0 else 'lowest'} "
-                         f"{m0.label} ({fmt(m0, best)}, mean of two backtests).")
+                         f"{m0.label} ({fmt(m0, best)}, {basis}).")
             ranked = ", ".join(f"{SCHEME_NAMES[k]} {fmt(m0, v)}" for k, v in order.items())
             facts.append(f"Order: {ranked}.")
         elif len(means) == 1:
             k = means.index[0]
-            facts.append(f"{SCHEME_NAMES[k]}: {m0.label} {fmt(m0, means.iloc[0])} (mean of two backtests).")
+            facts.append(f"{SCHEME_NAMES[k]}: {m0.label} {fmt(m0, means.iloc[0])} ({basis}).")
         else:
             facts.append("; ".join(f"{SCHEME_NAMES[k]} {fmt(m0, v)}" for k, v in means.sort_values(ascending=False).items())
-                         + f" ({m0.label}, mean of two backtests).")
+                         + f" ({m0.label}, {basis}).")
         notes = []
         if "outcome_model_continuous" in means.index:
             notes.append("The unsegmented outcome model isn't a segmentation; it's the ceiling the segmented schemes are compared against.")
@@ -585,19 +709,20 @@ class Semantics:
             table = table.pivot_table(index="Scheme", columns="Measure", values="Mean of 2 backtests", aggfunc="first").reset_index()
         return Result(facts, table, notes)
 
-    def compare_schemes(self, a: str, b: str, metrics: list[Metric], asked: int = 0) -> Result:
+    def compare_schemes(self, a: str, b: str, metrics: list[Metric], asked: int = 0, fold: str | None = None) -> Result:
         facts, rows = [], []
+        bt, basis = self._bt(fold)
         for i, m in enumerate(metrics):
-            va = self.bt[self.bt.SCHEME == a][m.column].mean()
-            vb = self.bt[self.bt.SCHEME == b][m.column].mean()
+            va = bt[bt.SCHEME == a][m.column].mean()
+            vb = bt[bt.SCHEME == b][m.column].mean()
             if pd.isna(va) or pd.isna(vb):
                 continue
             verdict = ("Yes. " if (va > vb) == (asked > 0) else "No. ") if asked and i == 0 and va != vb else ""
             facts.append(f"{verdict}{SCHEME_NAMES[a]}: {fmt(m, va)} vs {SCHEME_NAMES[b]}: {fmt(m, vb)} on {m.label}, "
-                         f"so {SCHEME_NAMES[a]} {m.high if va > vb else m.low}.")
+                         f"so {SCHEME_NAMES[a]} {m.high if va > vb else m.low}. {difference(m, va, vb)}")
             rows.append({"Measure": m.label, SCHEME_NAMES[a]: fmt(m, va), SCHEME_NAMES[b]: fmt(m, vb)})
         return Result(facts or ["Those schemes don't both have that measure."], pd.DataFrame(rows),
-                      ["Each value is the mean of two out-of-time backtests."])
+                      [f"Each value is from the {basis}." if fold else "Each value is the mean of two out-of-time backtests."])
 
     def k_choice(self, axis: str | None = None) -> Result:
         k = self.k if not axis else self.k[self.k.AXIS == axis]
@@ -619,6 +744,9 @@ class Semantics:
                              "Smallest segment": pct(r.MIN_SHARE), "Silhouette": f"{r.SILHOUETTE:.3f}",
                              "Next-revenue R²": f"{r.NEXT_REVENUE_R2:.3f}", "Eligible": "yes" if r.ELIGIBLE else "no",
                              "Chosen": "yes" if r.CHOSEN else ""})
+        if not axis:
+            facts.append(f"The production hybrid crosses {self.seg.SEGMENT.str[:2].nunique()} value tiers with "
+                         f"{self.seg.SEGMENT.str[3:].nunique()} buying styles: {len(self.seg)} segments.")
         return Result(facts, pd.DataFrame(rows),
                       ["Eligible means bootstrap stability ARI ≥ 0.85 and every segment holding ≥ 5% of customers."])
 

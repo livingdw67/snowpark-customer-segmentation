@@ -72,7 +72,11 @@ Checking that each figure came from the query caught almost none of these, becau
 
 The rebuild moves every definition into code ([copilot/semantics.py](copilot/semantics.py)):
 - **A metric catalogue** says what each measure means, which direction is "better", and how it combines: customers and predicted revenue add up, probabilities are customer-weighted, medians are never combined.
-- **About a dozen tested calculations:** value, profile, share, rank, compare, crosstab, threshold count, traits, scheme comparison, k choice and cleaning.
+- **About a dozen tested calculations:**
+  - value (including revenue per customer and combined groups), profile and share;
+  - rank (within a tier or style when asked) and compare (with differences, ratios and tier-by-tier medians);
+  - crosstab, threshold count and traits;
+  - backtest schemes (per fold or averaged), k choice and cleaning.
 - **The model only chooses** a calculation and its inputs. Code resolves names ("core holiday buyers" → C2-B2), corrects the sort direction from the question's wording, swaps in the metric the question names, reports ties, and declines anything that needs customer-level rows.
 
 **Writing-agent guards:**
@@ -89,10 +93,19 @@ Every answer shows how it was produced: the routing decision, the plan and any a
 | Set | Correct |
 |---|---|
 | Tuning (21) | 21 (100%) |
-| Held out (11) | 10 (91%) |
-| Red-team failures (20) | 19 (95%) |
+| Held out (11) | 11 (100%) |
+| Red-team failures (20) | 20 (100%) |
 
-Every figure in every answer traced back to the data. Results are in `results/copilot_eval.csv`; rerun with `python -m copilot.evaluate`. The held-out set is small, and some of its questions resemble the prompt's examples, so treat these as a floor check, not a guarantee.
+Every figure in every answer traced back to the data. Results are in `results/copilot_eval.csv`; rerun with `python -m copilot.evaluate`. These sets are small, and the rebuild was tuned against the red-team failures, so read them as a regression check, not a measure of accuracy on new questions.
+
+**The broader measure is adversarial testing with fresh questions:**
+
+| Round | Questions graded | Correct |
+|---|---|---|
+| Model-written SQL | 137 | 47% |
+| First rebuild (semantic layer) | 200 | 63% |
+
+The second round's failures were mostly the model picking the wrong calculation, or one that didn't exist yet: revenue per customer, combined groups, differences and ratios, per-fold backtests. Those have since been added or guarded in code. A fresh round on new questions is needed before claiming more.
 
 | | Offline (default) | Live |
 |---|---|---|

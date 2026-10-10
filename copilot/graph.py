@@ -24,10 +24,10 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 
-from segmentation.naming import BEHAVIOR_NAMES, TIER_NAMES
+from segmentation.naming import BEHAVIOR_NAMES, TIER_NAMES, segment_name
 
 from . import docs, verify
-from .semantics import (SCHEME_METRICS, SCHEME_NAMES, SEGMENT_METRICS, Group, Result, Semantics,
+from .semantics import (SCHEME_METRICS, SCHEME_NAMES, SEGMENT_METRICS, Group, Result, Semantics, combine,
                         asked_direction, metric, metrics_named_in, resolve, resolve_one, resolve_scheme)
 
 HISTORY = 6  # earlier messages passed to each agent
@@ -50,7 +50,7 @@ GEOGRAPHY = re.compile(
     r"australia|scotland|wales|london|region|regions|country|countries|city|cities)\b", re.IGNORECASE)
 CUSTOMER_LEVEL = re.compile(
     r"\b(histograms?|distributions?|spread of|customer ids?|list (the |all |of )?(individual )?customers|"
-    r"individual customers|each customer|per customer|which customers|who are the customers|"
+    r"individual customers|which customers|who are the customers|"
     r"names of (the )?customers)\b", re.IGNORECASE)
 # Words a question needs before a specialised calculation makes sense.
 TOOL_WORDS = {
@@ -125,6 +125,10 @@ Examples:
 "Is C2-B2 more recent than C3-B2?" -> analytical
 "Which k was chosen for the value axis and why?" -> analytical
 "Crosstab of customers by tier and buying style" -> analytical
+"Compare the hybrid and RFM on persistence" -> analytical
+"Which algorithms does the project use?" -> methodology
+"What does persistence mean?" -> methodology
+"What does C3 stand for?" -> methodology
 "How are the forecasts made?" -> methodology
 "What does P(buys again) mean?" -> methodology
 "Why is the hybrid better than RFM?" -> methodology
@@ -160,12 +164,12 @@ Calculations (pick exactly one):
 {{"tool": "profile", "group": group}}  everything about one segment, tier or style
 {{"tool": "share", "groups": [group, ...], "metric": "customers" or "expected_revenue"}}  share of the total
 {{"tool": "rank", "metric": metric, "level": "segment"|"tier"|"style", "direction": "highest"|"lowest", "n": 1, "within": [group, ...]}}
-{{"tool": "compare", "a": group, "b": group, "metrics": [metric, ...]}}
+{{"tool": "compare", "a": group, "b": group, "metrics": [metric, ...]}}  a or b may be a list of groups to combine
 {{"tool": "crosstab", "metric": metric}}  a table of value tier (rows) by buying style (columns), all 12 segments
-{{"tool": "count_where", "metric": metric, "op": ">"|"<"|">="|"<=", "value": number}}  segments meeting a condition (fractions 0-1)
+{{"tool": "count_where", "metric": metric, "op": ">"|"<"|">="|"<="|"=", "value": number}}  segments meeting a condition (fractions 0-1)
 {{"tool": "traits", "word": "lapsed"}}  segments whose distinguishing traits include a word
-{{"tool": "schemes", "metrics": [backtest metric, ...], "schemes": [scheme, ...] or [], "direction": "highest"|"lowest"|"none"}}
-{{"tool": "compare_schemes", "a": scheme, "b": scheme, "metrics": [backtest metric, ...]}}
+{{"tool": "schemes", "metrics": [backtest metric, ...], "schemes": [scheme, ...] or [], "direction": "highest"|"lowest"|"none", "fold": "q2"|"q3"|""}}
+{{"tool": "compare_schemes", "a": scheme, "b": scheme, "metrics": [backtest metric, ...], "fold": "q2"|"q3"|""}}
 {{"tool": "k_choice", "axis": "value"|"behavior"|"both"}}  how many segments each axis has and why
 {{"tool": "cleaning", "step": "" or a word from the step}}  data-cleaning row counts
 {{"tool": "decline", "reason": "...", "closest": "..."}}  only if no calculation fits: the data has no \
@@ -185,6 +189,8 @@ Q: Do core customers order more often than occasional ones?
 {{"tool": "compare", "a": "core", "b": "occasional", "metrics": ["orders"]}}
 Q: How many customers are in segments with a return rate above 1%?
 {{"tool": "count_where", "metric": "return_rate", "op": ">", "value": 0.01}}
+Q: Is Occasional / Bulk buyers bigger than C4-B1 and C4-B3 together?
+{{"tool": "compare", "a": "C3-B1", "b": ["C4-B1", "C4-B3"], "metrics": ["customers"]}}
 Q: Which scheme has the most stable segments?
 {{"tool": "schemes", "metrics": ["persistence"], "schemes": [], "direction": "highest"}}
 
@@ -360,24 +366,88 @@ def _scheme(v) -> str:
 YES_NO = re.compile(r"^\s*(is|are|does|do|did|has|have|can|will)\b", re.IGNORECASE)
 
 
+COMBINE = re.compile(r"\b(combined|together|altogether|sum of|added up|put together)\b", re.IGNORECASE)
+WHICH = re.compile(r"^\s*(which|who|what)\b", re.IGNORECASE)
+HAS_THRESHOLD = re.compile(r"\d|\bzero\b|\bnone\b|\babove\b|\bbelow\b|\bover\b|\bunder\b|\bat least\b", re.IGNORECASE)
+FOLD = re.compile(r"\b(?:backtest_)?(q[23])\b", re.IGNORECASE)
+METRIC_WORDS = {"dormant": ("recency_days", 1), "lapsed": ("recency_days", 1), "inactive": ("recency_days", 1),
+                "premium": ("unit_price", 1), "vip": ("expected_revenue", 1), "valuable": ("expected_revenue", 1),
+                "loyal": ("p_buys_again", 1), "engaged": ("p_buys_again", 1), "seasonal": ("q4_share", 1)}
+
+
+def narrow(groups: list[Group]) -> list[Group]:
+    """Two or more buying styles plus exactly one tier (or the reverse) mean those styles inside that
+    tier: "holiday vs bulk buyers in the Core tier" is C2-B2 vs C2-B1."""
+    tiers = [g for g in groups if g.kind == "tier"]
+    styles = [g for g in groups if g.kind == "style"]
+    segs = [g for g in groups if g.kind == "segment"]
+    seg_tiers = {g.codes[0][:2] for g in segs} | {g.codes[0][:2] for g in tiers}
+    if styles and segs and len(seg_tiers) == 1 and len(styles) + len(segs) + len(tiers) == len(groups):
+        # "holiday buyers ... than bulk buyers in the Core tier": every style sits in that one tier.
+        tier = seg_tiers.pop()
+        out = []
+        for g in groups:
+            if g.kind == "style":
+                code = f"{tier}-{g.codes[0][3:]}"
+                out.append(Group("segment", [code], f"{segment_name(code)} ({code})"))
+            elif g.kind == "segment":
+                out.append(g)
+        return out
+    if len(tiers) == 1 and len(styles) >= 2 and len(tiers) + len(styles) == len(groups):
+        inner, outer = styles, tiers[0]
+    elif len(styles) == 1 and len(tiers) >= 2 and len(tiers) + len(styles) == len(groups):
+        inner, outer = tiers, styles[0]
+    else:
+        return groups
+    out = []
+    for g in inner:
+        code = next(c for c in g.codes if c in outer.codes)
+        out.append(Group("segment", [code], f"{segment_name(code)} ({code})"))
+    return out
+
+
+def _group_or_combined(v, seg) -> Group:
+    """A plan value naming one group, or a list of groups to combine."""
+    if isinstance(v, list):
+        groups = _groups(v, seg)
+        return groups[0] if len(groups) == 1 else combine(groups)
+    return _groups([v], seg)[0]
+
+
+def _level(question: str, default: str = "segment") -> str:
+    if re.search(r"\bsegments?\b", question, re.IGNORECASE):
+        return "segment"
+    if re.search(r"\b(value )?tiers?\b", question, re.IGNORECASE):
+        return "tier"
+    if re.search(r"\b(buying )?styles?\b", question, re.IGNORECASE):
+        return "style"
+    return default if default in ("segment", "tier", "style") else "segment"
+
+
 def execute(plan: dict, question: str, sem: Semantics) -> tuple[Result, list[str]]:
     """Run a plan after cross-checking it against the question. Returns the result and notes
     about anything the cross-checks changed."""
     seg = sem.seg.reset_index(drop=True)
     tool = plan.get("tool")
     adjust = []
-    named_groups = resolve(question, seg)
+    named_groups = narrow(resolve(question, seg))
     if tool in TOOL_WORDS and not TOOL_WORDS[tool].search(question):
         raise PlanError(f"the '{tool}' calculation doesn't fit this question; pick another calculation, "
                         "or decline if none fits")
 
-    def check_metric(ms, level="segment"):
+    def plan_metrics(level="segment", default=None):
+        raw = plan.get("metrics") or plan.get("metric") or default
+        ms = _metrics(raw, level) if raw else []
         named = metrics_named_in(question, level)
-        if len(ms) == 1 and named and ms[0].key not in named and len(named) == 1:
-            adjust.append(f"Used {metric(named[0], level).label} because the question names it "
-                          f"(the plan said {ms[0].label}).")
+        if not ms:
+            if not named:
+                raise PlanError("the plan names no metric")
             return [metric(named[0], level)]
-        return ms
+        if not named or any(m.key in named for m in ms):
+            return ms  # the question names the plan's metric, or names none: trust the plan
+        adjust.append(f"Used {metric(named[0], level).label} because the question names it "
+                      f"(the plan said {ms[0].label}).")
+        return [metric(named[0], level)] + ms[1:]
 
     def check_direction(m, planned: int) -> int:
         asked = asked_direction(question, m)
@@ -387,100 +457,147 @@ def execute(plan: dict, question: str, sem: Semantics) -> tuple[Result, list[str
             return asked
         return asked or planned or 1
 
-    if tool == "value":
-        groups = named_groups or _groups(plan.get("groups") or [], seg)
-        ms = check_metric(_metrics(plan.get("metrics") or plan.get("metric")))
-        return sem.value(groups, ms), adjust
-    if tool == "profile":
-        groups = named_groups or _groups(plan.get("group") or plan.get("groups"), seg)
-        return sem.profile(groups[0]), adjust
-    if tool == "share":
-        named = metrics_named_in(question)
-        if named and SEGMENT_METRICS[named[0]].agg != "sum":
-            adjust.append(f"Reported {SEGMENT_METRICS[named[0]].label} for the group: it's a measure of the "
-                          "group itself, not a share of all customers.")
-            groups = named_groups or _groups(plan.get("groups") or plan.get("group") or "all", seg)
-            return sem.value(groups, [SEGMENT_METRICS[named[0]]]), adjust
-        m = _metrics(plan.get("metric") or "customers")[0]
-        if m.agg != "sum":
-            m = SEGMENT_METRICS["expected_revenue" if "revenue" in question.lower() else "customers"]
-        if re.search(r"^\s*which\b", question, re.I) and re.search(UP_OR_DOWN, question, re.I):
-            adjust.append("Ranked the segments, since the question asks which one has the largest or smallest share.")
-            level = "tier" if re.search(r"\btiers?\b", question, re.I) else \
-                "style" if re.search(r"\bstyles?\b", question, re.I) else "segment"
-            ranked = sem.rank(m, level, asked_direction(question, m) or 1)
-            top = re.findall(r"\((C\d(?:-B\d)?|B\d)[,)]", ranked.facts[0])
-            if top:  # the question asked for a share: state it
-                g = resolve_one(top[0], seg)
-                part = sem.seg.loc[g.codes, m.column].sum() / sem.seg[m.column].sum()
-                ranked.facts.append(f"That is {part:.1%} of all {m.label}.")
-            return ranked, adjust
-        groups = named_groups or _groups(plan.get("groups") or plan.get("group"), seg)
-        if all(g.kind == "all" for g in groups):
-            raise PlanError("a share needs a part of the total (a segment, tier or buying style), not 'all'")
-        if m.agg != "sum":
-            m = SEGMENT_METRICS["expected_revenue" if "revenue" in question.lower() else "customers"]
-        return sem.share(groups, m), adjust
-    if tool == "rank":
-        ms = check_metric(_metrics(plan.get("metric")))
-        planned = {"highest": 1, "lowest": -1}.get(str(plan.get("direction", "")).lower(), 0)
-        direction = check_direction(ms[0], planned)
-        level = plan.get("level") or "segment"
-        if level not in ("segment", "tier", "style"):
-            level = "segment"
-        if re.search(r"\b(tiers?)\b", question, re.IGNORECASE) and level == "segment":
-            level = "tier"
-        if re.search(r"\b(buying styles?|styles?)\b", question, re.IGNORECASE) and level == "segment":
-            level = "style"
-        within = _groups(plan["within"], seg) if plan.get("within") else None
-        if within is None and named_groups and level == "segment":
-            within = named_groups
-        n = int(plan.get("n") or 1)
+    def rank_from_question(ms, planned=0, within=None, level=None):
+        m = ms[0]
+        direction = check_direction(m, planned)
+        level = level or _level(question, plan.get("level") or "segment")
+        if within is None:
+            within = [g for g in named_groups if g.kind in ("tier", "style", "segment")] or None
+        if within and level != "segment" and all(g.kind == level for g in within):
+            level = "segment"  # "which Top spender segment": rank the segments inside that tier
+        n = int(plan.get("n") or 1) if str(plan.get("n") or "1").isdigit() else 1
         if re.search(r"\b(rank|order|list|all)\b", question, re.IGNORECASE):
             n = max(n, 12 if level == "segment" else 4)
-        return sem.rank(ms[0], level, direction, n, within), adjust
+        return sem.rank(m, level, direction, n, within)
+
+    superlative = (WHICH.search(question) and re.search(UP_OR_DOWN, question, re.IGNORECASE)
+                   and not YES_NO.search(question))
+    two_way = len(named_groups) == 2 and re.search(r"\b(or|vs\.?|versus|than)\b", question, re.IGNORECASE)
+    if superlative and tool in ("value", "profile", "traits", "count_where", "compare") and not two_way:
+        adjust.append("Ranked, since the question asks which one is highest or lowest.")
+        if tool == "traits" and not (plan.get("metric") or plan.get("metrics")):
+            word = str(plan.get("word", "")).lower()
+            if word in METRIC_WORDS:
+                plan = {**plan, "metric": METRIC_WORDS[word][0]}
+        return rank_from_question(plan_metrics()), adjust
+
     if tool in ("compare", "value") and _all_schemes([plan.get("a"), plan.get("b")] if tool == "compare"
                                                      else plan.get("groups") or []):
-        # The plan used the segment calculation for schemes (RFM, hybrid, ...): use the scheme one.
         adjust.append("Compared backtest schemes, since the question is about schemes, not segments.")
         tool = "compare_schemes" if tool == "compare" else "schemes"
         plan = {**plan, "schemes": plan.get("groups") or [], "metrics": [
             m for m in (plan.get("metrics") or []) if m in SCHEME_METRICS] or metrics_named_in(question, "scheme")[:1]
             or ["top20_revenue_capture"]}
-        if tool == "schemes":
-            return sem.schemes(_metrics(plan["metrics"], "scheme"), [_scheme(s) for s in plan["schemes"]] or None), adjust
+
+    if tool == "value":
+        groups = named_groups or _groups(plan.get("groups") or plan.get("group") or "all", seg)
+        ms = plan_metrics()
+        if COMBINE.search(question) and len(groups) > 1:
+            groups = [combine(groups)]
+        return sem.value(groups, ms), adjust
+    if tool == "profile":
+        groups = named_groups or _groups(plan.get("group") or plan.get("groups"), seg)
+        return sem.profile(groups[0]), adjust
+    if tool == "share":
+        m = plan_metrics(default="customers")[0]
+        groups = named_groups or _groups(plan.get("groups") or plan.get("group") or "all", seg)
+        if m.agg != "sum":
+            adjust.append(f"Reported {m.label} for the group: it's a measure of the group itself, "
+                          "not a share of all customers.")
+            return sem.value(groups, [m]), adjust
+        if WHICH.search(question) and re.search(UP_OR_DOWN, question, re.IGNORECASE):
+            adjust.append("Ranked, since the question asks which one has the largest or smallest share.")
+            ranked = rank_from_question([m])
+            top = re.findall(r"\((C\d(?:-B\d)?|B\d)[,)]", ranked.facts[0])
+            if top:  # the question asked for a share: state it
+                grp = resolve_one(top[0], seg)
+                part = sem.seg.loc[grp.codes, m.column].sum() / sem.seg[m.column].sum()
+                ranked.facts.append(f"That is {part:.1%} of all {m.label}.")
+            return ranked, adjust
+        if COMBINE.search(question) and len(groups) > 1:
+            groups = [combine(groups)]
+        if all(grp.kind == "all" for grp in groups):
+            raise PlanError("a share needs a part of the total (a segment, tier or buying style), not 'all'")
+        return sem.share(groups, m), adjust
+    if tool == "rank":
+        within = None
+        if plan.get("within"):
+            within = [_group_or_combined(v, seg) for v in (plan["within"] if isinstance(plan["within"], list)
+                                                          else [plan["within"]])]
+        planned = {"highest": 1, "lowest": -1}.get(str(plan.get("direction", "")).lower(), 0)
+        return rank_from_question(plan_metrics(), planned, within or None), adjust
     if tool == "compare":
+        extra = [plan[k] for k in ("c", "d", "e") if plan.get(k)]
         if len(named_groups) >= 2:
-            a, b = named_groups[:2]
+            groups = named_groups
         else:
-            a, b = _groups([plan.get("a"), plan.get("b")], seg)
-        ms = check_metric(_metrics(plan.get("metrics") or plan.get("metric")))
+            groups = [_group_or_combined(v, seg) for v in [plan.get("a"), plan.get("b"), *extra] if v]
+        if len(groups) < 2:
+            raise PlanError("a comparison needs two groups")
+        ms = plan_metrics()
+        if COMBINE.search(question) and not re.search(
+                r"\b(or|vs\.?|versus|than|compare[ds]?|more|less|bigger|smaller|higher|lower)\b", question, re.I):
+            adjust.append("Added the groups together: the question asks for a combined figure.")
+            return sem.value([combine(groups)], ms), adjust
+        if COMBINE.search(question) and len(groups) >= 3:
+            groups = [groups[0], combine(groups[1:])]  # "X, or Y and Z combined"
+            adjust.append(f"Compared {groups[0].label} with {groups[1].label}.")
+        if len(groups) >= 3:
+            return sem.compare_many(groups, ms), adjust
         asked = asked_direction(question, ms[0]) if YES_NO.search(question) else 0
-        return sem.compare(a, b, ms, asked, ms[0]), adjust
+        return sem.compare(groups[0], groups[1], ms, asked, ms[0]), adjust
     if tool == "crosstab":
-        ms = check_metric(_metrics(plan.get("metric") or "expected_revenue"))
-        return sem.crosstab(ms[0]), adjust
+        return sem.crosstab(plan_metrics(default="expected_revenue")[0]), adjust
     if tool == "count_where":
-        m = _metrics(plan.get("metric"))[0]
-        value = float(plan.get("value"))
+        if not HAS_THRESHOLD.search(question):
+            # "How many customers are in C4-B1?" is a lookup, not a threshold count.
+            adjust.append("Looked up the group's value: the question has no threshold.")
+            groups = named_groups or _groups(plan.get("groups") or plan.get("within") or "all", seg)
+            if COMBINE.search(question) and len(groups) > 1:
+                groups = [combine(groups)]
+            return sem.value(groups, plan_metrics(default="customers")), adjust
+        m = plan_metrics()[0]
+        value = plan.get("value")
+        if isinstance(value, (list, dict)) or value is None:
+            raise PlanError("count_where needs one number as 'value'")
+        value = float(value)
         if m.unit == "percent" and value > 1:
             value /= 100
-        return sem.count_where(m, str(plan.get("op", ">")), value), adjust
+        return sem.count_where(m, str(plan.get("op", ">")), value, named_groups or None), adjust
     if tool == "traits":
-        return sem.traits(str(plan.get("word", "")).strip()), adjust
+        word = str(plan.get("word", "")).strip()
+        if word and word.lower() in " ".join(sem.seg.TRAITS).lower():
+            return sem.traits(word), adjust
+        # Not a trait: answer what the question is really about.
+        if named_groups:
+            named = metrics_named_in(question)
+            if named:
+                adjust.append(f"'{word}' isn't a segment trait; reported {SEGMENT_METRICS[named[0]].label} instead.")
+                return sem.value(named_groups, [SEGMENT_METRICS[named[0]]]), adjust
+            adjust.append(f"'{word}' isn't a segment trait; showing the profile instead.")
+            return sem.profile(named_groups[0]), adjust
+        key = METRIC_WORDS.get(word.lower(), (None,))[0] or next(iter(metrics_named_in(question)), None)
+        if key:
+            adjust.append(f"'{word}' isn't a segment trait; ranked by {SEGMENT_METRICS[key].label} instead.")
+            plan = {**plan, "metric": key, "n": 3}
+            return rank_from_question([SEGMENT_METRICS[key]], METRIC_WORDS.get(word.lower(), (None, 1))[1]), adjust
+        raise PlanError(f"'{word}' isn't one of the segment traits; use another calculation")
+    fold_match = FOLD.search(question)
+    fold = (plan.get("fold") or (fold_match.group(1) if fold_match else None) or "").lower() or None
     if tool == "schemes":
-        ms = check_metric(_metrics(plan.get("metrics") or plan.get("metric"), "scheme"), "scheme")
-        keys = [_scheme(s) for s in plan.get("schemes") or []]
+        ms = plan_metrics("scheme")
+        raw = plan.get("schemes") or plan.get("scheme") or []
+        keys = [_scheme(x) for x in (raw if isinstance(raw, list) else [raw]) if str(x).strip()]
         planned = {"highest": 1, "lowest": -1}.get(str(plan.get("direction", "")).lower(), 0)
-        direction = planned
-        if re.search(UP_OR_DOWN, question, re.IGNORECASE):
-            direction = check_direction(ms[0], planned)
-        return sem.schemes(ms, keys or None, direction), adjust
+        direction = check_direction(ms[0], planned) if re.search(UP_OR_DOWN, question, re.IGNORECASE) else planned
+        return sem.schemes(ms, keys or None, direction, fold), adjust
     if tool == "compare_schemes":
+        if not plan.get("a") or not plan.get("b"):
+            raise PlanError("compare_schemes needs two schemes, 'a' and 'b'")
         a, b = _scheme(plan.get("a")), _scheme(plan.get("b"))
-        ms = check_metric(_metrics(plan.get("metrics") or plan.get("metric"), "scheme"), "scheme")
+        ms = plan_metrics("scheme")
         asked = asked_direction(question, ms[0]) if YES_NO.search(question) else 0
-        return sem.compare_schemes(a, b, ms, asked), adjust
+        return sem.compare_schemes(a, b, ms, asked, fold), adjust
     if tool == "k_choice":
         axis = str(plan.get("axis") or "both").lower()
         return sem.k_choice(axis if axis in ("value", "behavior") else None), adjust
@@ -490,7 +607,6 @@ def execute(plan: dict, question: str, sem: Semantics) -> tuple[Result, list[str
             step_word = ""
         return sem.cleaning(step_word or None), adjust
     raise PlanError(f"unknown tool '{tool}'")
-
 
 UP_OR_DOWN = (r"\b(most|highest|best|top|largest|biggest|longest|oldest|least|lowest|worst|bottom|smallest|"
               r"fewest|shortest|newest|rank)\b")
@@ -538,7 +654,7 @@ def build_graph(llm, data, checkpointer=None):
     def analytical(state: CopilotState) -> dict:
         trace = list(state["trace"])
         question = state["question"]
-        if CUSTOMER_LEVEL.search(question):
+        if CUSTOMER_LEVEL.search(question) and not TOOL_WORDS["cleaning"].search(question):
             reason = ("the published results describe each segment as a whole (sizes, medians, averages), "
                       "with no rows for individual customers, so lists, histograms and distributions "
                       "aren't available")
