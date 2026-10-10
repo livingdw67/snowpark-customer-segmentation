@@ -104,8 +104,16 @@ def test_gives_up_after_repeated_failures(data):
 def test_model_decline(data):
     llm = FakeListChatModel(responses=["analytical", plan(tool="decline", reason="there is no gender column",
                                                           closest="the size of each top-spender segment")])
-    out = ask(build_graph(llm, data), "What is the gender split of top spenders?")
+    out = ask(build_graph(llm, data), "Which marketing channel do top spenders come from?")
     assert out["declined"] and "size of each top-spender segment" in out["messages"][-1].content
+
+
+@pytest.mark.parametrize("question", ["What is the gross margin of the Top spenders tier?",
+                                      "Which products do holiday buyers buy most?",
+                                      "How many customers live in France?"])
+def test_missing_data_is_declined_before_planning(data, question):
+    out = ask(build_graph(FakeListChatModel(responses=["analytical"]), data), question)
+    assert out["declined"] and out["messages"][-1].content.startswith("I can't answer that from this data")
 
 
 @pytest.mark.parametrize("question", ["age histogram for C3", "List the customer IDs in C1-B1",

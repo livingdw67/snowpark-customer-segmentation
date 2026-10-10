@@ -43,6 +43,13 @@ SYNONYMS = {
     "calculated": ["poisson", "regressor", "model", "trained"],
     "computed": ["poisson", "regressor", "model", "trained"],
     "probability": ["calibrated", "temperature", "active"],
+    "period": ["2009", "2011", "snapshots", "covers"], "cover": ["2009", "2011", "snapshots", "period"],
+    "covers": ["2009", "2011", "snapshots", "period"], "dates": ["2009", "2011", "snapshots"],
+    "rescored": ["re-scoring", "monthly", "task"], "re-scored": ["re-scoring", "monthly", "task"],
+    "often": ["monthly", "re-scoring"], "split": ["backtest", "fold", "fits", "scores"],
+    "criterion": ["r2", "r²", "value", "axis", "chooses"], "r2": ["r²", "criterion", "value", "axis"],
+    "medians": ["median", "combined", "pooled"], "averaged": ["median", "combined", "pooled"],
+    "snowflake": ["never", "leaves", "procedures", "stored"],
     "estimated": ["calibrated", "classifier", "gradient", "boosting", "model"],
     "active": ["buys", "again", "classifier", "calibrated", "probability"],
     "algorithms": ["scikit", "learn", "bisectingkmeans", "histgradientboostingclassifier", "used"],
@@ -83,6 +90,28 @@ def _glossary() -> list[Section]:
                        "B1 = Bulk buyers (the largest baskets, wholesale-like), B2 = Holiday buyers (most of "
                        "their revenue falls in October-December), B3 = Small-basket buyers (smaller baskets "
                        "at higher unit prices). A segment code like C2-B2 is <value tier>-<buying style>."))
+    faq = {
+        "data period and snapshots": "The data is UCI Online Retail II, transactions from 1 December 2009 to "
+            "9 December 2011. Customer features are built at five quarterly snapshots (2010-12-10, 2011-03-10, "
+            "2011-06-10, 2011-09-10 and 2011-12-10), each looking back 365 days, with outcomes over the next 91 days.",
+        "backtest split train eval": "Each backtest fits on one snapshot and scores the next one: the q2 fold fits "
+            "on 2011-03-10 and scores 2011-06-10; the q3 fold fits on 2011-06-10 and scores 2011-09-10. Scores are "
+            "compared with what customers actually did in the 91 days after the scoring snapshot.",
+        "re-scoring how often": "Customers are re-scored monthly: a Snowflake Task calls RESCORE_CUSTOMERS at "
+            "06:00 UTC on the 1st of each month, using the frozen production models.",
+        "next-revenue R2 criterion": "The value axis chooses its number of segments k by out-of-fold R² of "
+            "next-quarter log revenue explained by segment membership; the behavior axis uses silhouette. Both "
+            "require bootstrap stability ARI ≥ 0.85 and every segment holding ≥ 5% of customers, and prefer fewer "
+            "segments within a tolerance of 0.01.",
+        "why medians can't be combined": "A tier's median isn't the average of its segments' medians: the median "
+            "of the pooled customers depends on every customer's value, and the published results only hold each "
+            "segment's median. So tier medians aren't reported; per-segment medians are.",
+        "why Snowflake": "Customer data never leaves Snowflake: steps 01-04 are SQL, and all fitting, scoring and "
+            "evaluation run in Python stored procedures inside Snowflake. The local machine only issues CALL "
+            "statements, and the charts read aggregated tables only.",
+    }
+    for title, text in faq.items():
+        out.append(Section(f"Glossary: {title}", text))
     out.append(Section("Glossary: schemes", "The compared schemes are: " +
                        "; ".join(f"{k} = {v}" for k, v in SCHEME_NAMES.items()) + "."))
     return out

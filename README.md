@@ -42,10 +42,11 @@ All numbers are the mean of two folds: fit in March and scored in June, and fit 
 
 1. **There are no natural clusters.** HDBSCAN labels 61–78% of customers as noise on the full feature set, and k-means silhouettes are 0.2–0.3. The segments are a *useful, stable* partition of a continuum, chosen for predictive value and stability, not "discovered tribes". The map below shows the overlap.
 2. **Nothing much beats plain RFM at predicting who buys again.** The hybrid's AUC is 0.02 below the RFM baseline, and even the unsegmented model gains only 0.03. Buying again is driven mostly by recency. The hybrid earns its place on *revenue concentration* (+15 points over RFM) and on *buying style*, not on this metric.
-3. **At 3–4 segments, C collapses to spend bands** (e.g. `net_revenue > 3598`). The model is saying that trailing 12-month spend dominates next-quarter value. The behavior axis is what adds new information.
-4. **The £ forecasts are only trustworthy for seasons the model has seen.** C is trained on all past quarters pooled, with the snapshot month as a feature. The fold that ended in the holiday quarter had never seen one, and it under-forecast revenue by 44%. The rankings held up, so use `expected_revenue_next_quarter` to *rank and size* customers, not as a budget number.
-5. **Some grid cells are small.** "Top spenders / Holiday buyers" and "Top spenders / Small-basket buyers" hold 45 and 49 customers. The 5% minimum segment size is enforced per axis, not per cell.
-6. **One selection rule was changed after seeing results.** k for each axis is chosen by the best score among stable candidates, preferring fewer segments within a tie tolerance. The tolerance was widened from 0.005 to 0.01 after production picked 7 value segments over 4 for a 0.006 R² gain, with stability just over the bar. Both backtest folds were unaffected. The full k-selection table is in [results/k_selection.csv](results/k_selection.csv).
+3. **The hybrid's lead over the simpler grid is thin.** Option B's value × behavior grid uses no gradient boosting and separates buying styles just as well (η² 0.34). It captures 66% of next-quarter revenue in its top 20%, against the hybrid's 71%. Across the two backtests the hybrid ranges from 67.5% to 74.4% and the grid from 65.9% to 66.1%, so the 5-point gain is suggestive, not established. If the outcome model's extra machinery matters, the grid is the simpler choice; more backtest folds would settle it.
+4. **At 3–4 segments, C collapses to spend bands** (e.g. `net_revenue > 3598`). The model is saying that trailing 12-month spend dominates next-quarter value. The behavior axis is what adds new information.
+5. **The £ forecasts are only trustworthy for seasons the model has seen.** C is trained on all past quarters pooled, with the snapshot month as a feature. The fold that ended in the holiday quarter had never seen one, and it under-forecast revenue by 44%. The rankings held up, so use `expected_revenue_next_quarter` to *rank and size* customers, not as a budget number. Adding a September 2010 snapshot, with a shorter lookback because the data starts in December 2009, would give the model one holiday quarter to learn from. That isn't done yet.
+6. **Some grid cells are small.** "Top spenders / Holiday buyers" and "Top spenders / Small-basket buyers" hold 45 and 49 customers. The 5% minimum segment size is enforced per axis, not per cell. For a wholesaler, 45 top-spender holiday accounts holding about 10% of predicted value is a key-account list. For broad campaigns, merge small cells into their value tier.
+7. **One selection rule was changed after seeing results.** k for each axis is chosen by the best score among stable candidates, preferring fewer segments within a tie tolerance. The tolerance was widened from 0.005 to 0.01 after production picked 7 value segments over 4 for a 0.006 R² gain, with stability just over the bar. Both backtest folds were unaffected. The full k-selection table is in [results/k_selection.csv](results/k_selection.csv).
 
 ![Segment map](docs/img/segment_map.png)
 
@@ -86,6 +87,8 @@ The rebuild moves every definition into code ([copilot/semantics.py](copilot/sem
 - Unknown segment names get a question back instead of a guess.
 - Country targeting is declined, and injected instructions ("ignore all previous rules…") are stripped.
 
+**Why an LLM at all?** The calculation agent is a natural-language front end to parameterised queries. A dashboard with dropdowns would answer those questions with no model, no inference cost and no risk of a wrong pick. The model earns its place where a dashboard can't help: follow-ups ("what about holiday buyers?"), explanations grounded in this README, and drafting persona cards and campaigns from the segment profiles. Its job in the calculation agent is narrow on purpose: choosing what to compute, never computing it.
+
 Every answer shows how it was produced: the routing decision, the plan and any adjustment code made to it, the rows computed, and a figure check ([copilot/verify.py](copilot/verify.py)). Follow-ups like "what about holiday buyers?" edit the previous plan.
 
 **Accuracy** is measured by [copilot/evaluate.py](copilot/evaluate.py) against answers computed directly from the CSVs with pandas, scoring words ("No", "lower") as well as figures. There are three sets: questions used while tuning, held-out questions never tuned against, and the failures from the adversarial test. On the last full run with `qwen2.5:7b`:
@@ -103,9 +106,30 @@ Every figure in every answer traced back to the data. Results are in `results/co
 | Round | Questions graded | Correct |
 |---|---|---|
 | Model-written SQL | 137 | 47% |
-| First rebuild (semantic layer) | 200 | 63% |
+| First rebuild (semantic layer) | 200 (5 categories) | 63% |
+| Second rebuild | 200 (all 9 categories) | 69% overall, 73% on round 2's categories |
 
-The second round's failures were mostly the model picking the wrong calculation, or one that didn't exist yet: revenue per customer, combined groups, differences and ratios, per-fold backtests. Those have since been added or guarded in code. A fresh round on new questions is needed before claiming more.
+Round 3 by category:
+
+| Category | Correct |
+|---|---|
+| Lookups | 85% |
+| Comparisons | 83% |
+| Rankings | 74% |
+| Declines | 73% |
+| Follow-ups | 65% |
+| Crosstabs | 60% |
+| Methodology | 60% |
+| Writing | 50% |
+| Backtest and k questions | 27% |
+
+**Fixes since round 3:**
+- **Wording:** "Top spenders" is no longer read as "top"; group filters are kept inside rankings.
+- **Writing agent:** checks the user's description of a segment against the data, and figures marked "(proposed)" can no longer stand in for data.
+- **New calculations:** for the k table and per-fold backtests.
+- **Documentation:** glossary entries for the methodology questions it missed.
+
+Replayed, 59 of round 3's 62 failures now answer correctly. A fresh round on new questions is needed before claiming a new overall number.
 
 | | Offline (default) | Live |
 |---|---|---|
