@@ -49,7 +49,8 @@ SEGMENT_METRICS = {m.key: m for m in [
            ("churn", "at risk", "risk", "unlikely"),
            ("buy again", "buys again", "order again", "p(buys again)", "p(active)", "p_active", "probability",
             "likely", "churn", "retention", "at risk", "loyal", "engaged", "engagement", "active", "returning",
-            "return next quarter", "likely to return", "come back", "coming back", "repeat")),
+            "return next quarter", "likely to return", "come back", "coming back", "repeat", "chance of buying",
+            "buying again", "buy again", "purchase again", "chance of ordering", "chance of buying again")),
     Metric("recency_days", "MEDIAN_RECENCY_DAYS", "days since last order", "days", "median",
            "more lapsed", "more recent",
            ("lapsed", "dormant", "inactive", "longest since", "least recent"), ("recent", "recently", "fresh"),
@@ -87,7 +88,16 @@ SEGMENT_METRICS = {m.key: m for m in [
     Metric("non_uk_customers", "NON_UK_CUSTOMERS", "customers outside the UK (estimated from the UK share)",
            "count", "sum", "more customers outside the UK", "fewer customers outside the UK", (), (),
            ("non-uk customers", "customers outside the uk", "customers are non-uk", "are non-uk",
+            "based outside the uk", "customers based outside",
             "how many international", "customers abroad")),
+    Metric("uk_customers", "UK_CUSTOMERS", "customers in the UK (estimated from the UK share)", "count", "sum",
+           "more customers in the UK", "fewer customers in the UK", (), (),
+           ("uk customers", "customers in the uk", "customers are in the uk", "based in the uk")),
+    Metric("expected_orderers", "EXPECTED_ORDERERS",
+           "customers expected to order next quarter (customers × chance of ordering)", "count", "sum",
+           "more expected orderers", "fewer expected orderers", (), (),
+           ("expect to place an order", "expected to order", "expected to place an order", "expected buyers",
+            "will order next quarter", "expected orderers", "expected to buy")),
     Metric("non_uk_share", "NON_UK_SHARE", "share of customers outside the UK", "percent", "weighted",
            "more international", "more UK-based", (), (), ("outside the uk", "international", "abroad", "non-uk")),
 ]}
@@ -214,6 +224,16 @@ def difference(m: Metric, va: float, vb: float) -> str:
     return text + "."
 
 
+def convert_days(text: str, unit: str) -> str:
+    """'393 days' -> '393 days (about 56.1 weeks)' for each day count in the text."""
+    per = {"week": 7, "weeks": 7, "month": 30.44, "months": 30.44, "year": 365.25, "years": 365.25}[unit]
+    name = unit if unit.endswith("s") else unit + "s"
+    if "(about" in text:
+        return text
+    return re.sub(r"(\d[\d,]*(?:\.\d+)?) days",
+                  lambda mm: f"{mm.group(0)} (about {float(mm.group(1).replace(',', '')) / per:.1f} {name})", text)
+
+
 def combine(groups: list[Group]) -> Group:
     """Several groups as one ("C1-B2 and C1-B3 combined")."""
     codes = list(dict.fromkeys(c for g in groups for c in g.codes))
@@ -275,6 +295,11 @@ def resolve(text: str, seg: pd.DataFrame) -> list[Group]:
         for w in ws:
             for m in re.finditer(rf"(?<![\w-]){re.escape(w)}(?![\w-])", used):
                 words.append((m.start(), "style", code))
+    # Bare tier and style codes ("the C1 tier", "B2 customers", "C1-*") count like the words.
+    for m in re.finditer(r"(?<![\w-])c([1-4])(?:-\*)?(?![\w-])", used):
+        words.append((m.start(), "tier", f"C{m.group(1)}"))
+    for m in re.finditer(r"(?<![\w-])b([1-3])(?:-\*)?(?![\w-])", used):
+        words.append((m.start(), "style", f"B{m.group(1)}"))
     words.sort()
     i = 0
     while i < len(words):
@@ -426,6 +451,8 @@ class Semantics:
         self.seg["NON_UK_SHARE"] = 1 - self.seg.UK_SHARE
         self.seg["REV_PER_CUSTOMER"] = self.seg.EXPECTED_REVENUE / self.seg.CUSTOMERS
         self.seg["NON_UK_CUSTOMERS"] = (self.seg.CUSTOMERS * (1 - self.seg.UK_SHARE)).round()
+        self.seg["UK_CUSTOMERS"] = (self.seg.CUSTOMERS * self.seg.UK_SHARE).round()
+        self.seg["EXPECTED_ORDERERS"] = (self.seg.CUSTOMERS * self.seg.MEAN_P_ACTIVE).round()
         self.bt = backtest
         self.k = k_choices
         self.clean = cleaning.sort_values("STEP")
@@ -507,6 +534,14 @@ class Semantics:
             facts.append(f"{g.label} holds {pct(part / total)} of all {m.label} ({fmt(m, part)} of {fmt(m, total)}).")
             rows.append({"Group": g.label, cap(m.label): fmt(m, part), "Share of total": pct(part / total)})
         return Result(facts, pd.DataFrame(rows))
+
+    def share_within(self, part: Group, whole: Group, m: Metric) -> Result:
+        p = float(self.seg.loc[part.codes, m.column].sum())
+        w = float(self.seg.loc[whole.codes, m.column].sum())
+        fact = (f"{part.label} holds {pct(p / w)} of {whole.label}'s {m.label} "
+                f"({fmt(m, p)} of {fmt(m, w)}).")
+        return Result([fact], pd.DataFrame([{"Part": part.label, "Whole": whole.label, cap(m.label): fmt(m, p),
+                                             "Whole total": fmt(m, w), "Share": pct(p / w)}]))
 
     def rank(self, m: Metric, level: str, direction: int, n: int = 1, within: list[Group] | None = None) -> Result:
         """Rank segments, tiers or buying styles. direction +1 = highest first. Ties are kept."""
@@ -682,8 +717,24 @@ class Semantics:
                  if any(m.agg == "median" for m in metrics) and len(codes) > 1 else [])
         return Result(facts, table, notes)
 
-    def breakdown(self, level: str, m: Metric) -> Result:
+    def breakdown(self, level: str, m: Metric, more: list[Metric] | None = None) -> Result:
         """Totals per value tier or buying style, with each one's share of the whole."""
+        if more:
+            keys = list(TIER_NAMES) if level == "tier" else list(BEHAVIOR_NAMES)
+            base = self.seg.reset_index(drop=True)
+            rows, notes = [], []
+            for k in keys:
+                g = resolve_one(k, base)
+                row = {"Group": g.label}
+                for mm in [m, *more]:
+                    v, note = self.group_value(g, mm)
+                    row[cap(mm.label)] = fmt(mm, v) if v is not None else "per segment only"
+                    if note:
+                        notes.append(note)
+                rows.append(row)
+            word = "value tier" if level == "tier" else "buying style"
+            return Result([f"{len(keys)} {word}s: " + ", ".join(mm.label for mm in [m, *more]) + "."],
+                          pd.DataFrame(rows), list(dict.fromkeys(notes)))
         if m.agg == "median":
             return self.crosstab(m)
         keys = list(TIER_NAMES) if level == "tier" else list(BEHAVIOR_NAMES)
@@ -736,10 +787,18 @@ class Semantics:
                     continue
                 rows.append({"Scheme": SCHEME_NAMES[key], "Measure": m.label, "q2 backtest": fmt(m, q2),
                              "q3 backtest": fmt(m, q3)})
-                facts.append(f"{SCHEME_NAMES[key]}, {m.label}: {fmt(m, q2)} in q2 vs {fmt(m, q3)} in q3. "
-                             f"{difference(m, q2, q3)}")
+                better = "q2" if q2 > q3 else "q3" if q3 > q2 else "neither"
+                facts.append(f"{SCHEME_NAMES[key]}, {m.label}: {fmt(m, q2)} in q2 vs {fmt(m, q3)} in q3, so it was "
+                             f"higher in {better}. {difference(m, q2, q3)}")
         return Result(facts or ["Those schemes don't have that measure in both backtests."], pd.DataFrame(rows),
                       ["q2: fit on 2011-03-10, scored on 2011-06-10. q3: fit on 2011-06-10, scored on 2011-09-10."])
+
+    def fold_dates(self) -> Result:
+        d = self.bt.groupby("RUN_ID")[["TRAIN_SNAPSHOT", "EVAL_SNAPSHOT"]].first()
+        facts = [f"{run.replace('backtest_', '')}: fit on {r.TRAIN_SNAPSHOT}, scored on {r.EVAL_SNAPSHOT}, with outcomes "
+                 "over the next 91 days." for run, r in d.iterrows()]
+        return Result(facts, d.reset_index().rename(columns={"RUN_ID": "Backtest", "TRAIN_SNAPSHOT": "Fit (train) snapshot",
+                                                              "EVAL_SNAPSHOT": "Scored (eval) snapshot"}))
 
     def k_detail(self, axis: str | None, question: str) -> Result:
         """Questions about the k-selection table itself: one k, a ranking of k, or the candidates."""
@@ -747,13 +806,17 @@ class Semantics:
         cols = {"stability": "STABILITY_ARI", "ari": "STABILITY_ARI", "silhouette": "SILHOUETTE",
                 "r2": "NEXT_REVENUE_R2", "r²": "NEXT_REVENUE_R2", "r-squared": "NEXT_REVENUE_R2",
                 "smallest segment": "MIN_SHARE", "min share": "MIN_SHARE", "minimum share": "MIN_SHARE"}
-        col = next((c for w, c in cols.items() if w in q), None)
+        wanted = list(dict.fromkeys(c for w, c in cols.items() if w in q))
+        col = wanted[0] if wanted else None
         k = self.k if not axis else self.k[self.k.AXIS == axis]
         m = re.search(r"\bk\s*=?\s*(\d)\b", q)
         label = {"STABILITY_ARI": "stability ARI", "SILHOUETTE": "silhouette", "NEXT_REVENUE_R2": "next-revenue R²",
                  "MIN_SHARE": "smallest segment share"}
         def val(c, v):
             return pct(v) if c == "MIN_SHARE" else f"{v:.4f}"
+        if len(wanted) > 1 or (col and re.search(r"\btable\b", q)):
+            part = k[["AXIS", "K", *wanted, "CHOSEN"]].rename(columns=label)
+            return Result([f"k candidates with {', '.join(label[c] for c in wanted)}."], part)
         if m and col:
             part = k[k.K == int(m.group(1))]
             facts = [f"{r.AXIS.capitalize()} axis, k={int(r.K)}: {label[col]} {val(col, r[col])}." for _, r in part.iterrows()]
@@ -766,7 +829,7 @@ class Semantics:
                 facts.append(f"{ax.capitalize()} axis: k={int(r.K)} has the {'lowest' if down else 'highest'} "
                              f"{label[col]} ({val(col, r[col])}).")
             return Result(facts, k[["AXIS", "K", col]].rename(columns={col: label[col]}))
-        if re.search(r"\b(how many|candidates|which ks?|range)\b", q):
+        if re.search(r"\b(how many|candidates|range)\b", q):
             facts = [f"{ax.capitalize()} axis: {len(part)} candidates, k={int(part.K.min())} to {int(part.K.max())}."
                      for ax, part in k.groupby("AXIS", sort=False)]
             return Result(facts, k[["AXIS", "K", "ELIGIBLE", "CHOSEN"]])
