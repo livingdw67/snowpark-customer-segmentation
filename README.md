@@ -129,7 +129,7 @@ Round 3 by category:
 - **New calculations:** for the k table and per-fold backtests.
 - **Documentation:** glossary entries for the methodology questions it missed.
 
-Replayed, 59 of round 3's 62 failures now answer correctly. A fresh round on new questions is needed before claiming a new overall number.
+Replayed, 57 of round 3's 62 failures now answer correctly. Still open: SMS requests that also produce a persona card, a short list request that returns fewer items, a three-way tie comparison, and one terse follow-up. A fresh round on new questions is needed before claiming a new overall number.
 
 | | Offline (default) | Live |
 |---|---|---|
