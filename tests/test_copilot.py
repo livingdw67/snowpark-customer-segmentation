@@ -141,6 +141,98 @@ def test_follow_up_keeps_the_previous_plan(data):
     assert out["last_plan"]["groups"] == ["holiday"] and "974" in out["messages"][-1].content
 
 
+@pytest.mark.parametrize("question,bad_plan,expected", [
+    # several exclusions: the question's groups beat the plan's
+    ("combined customer count of all segments except C4-B3 and C1-B1",
+     plan(tool="compare", a="all", b=["C4-B3", "C1-B1"], metrics=["customers"]), "customers: 3,079"),
+    ("How many bulk buyers are there if you exclude the Top spenders tier?",
+     plan(tool="value", groups=["bulk", "top spenders"], metrics=["customers"]), "customers: 1,458"),
+    # the filter's measure picks segments, the measure named before it is totalled
+    ("How much expected revenue comes from segments whose P(buys again) is above 50%?",
+     plan(tool="count_where", metric="p_buys_again", op=">=", value=0.5), "£1,678,104"),
+    ("Total expected revenue from segments whose median orders equal 1",
+     plan(tool="value", groups=["C2-B2"], metrics=["expected_revenue"]), "£64,323"),
+    # "share of X that are Y": the intersection over the group after "of"
+    ("what share of holiday buyers sit in the Low value tier?",
+     plan(tool="share", groups=["C4-B2"], metric="customers"), "34.2%"),
+    ("What fraction of Core customers are holiday buyers?",
+     plan(tool="value", groups=["core"], metrics=["buying style"]), "22.8%"),
+    # how many vs proportion, whichever tool the plan picked
+    ("Approximately how many customers in the Occasional tier are outside the UK?",
+     plan(tool="count_where", metric="uk_share", op="<", value=0.5, groups=["C3-*"]), ": 124."),
+    ("What share of customers in C1-B2 are outside the UK?",
+     plan(tool="share", groups=["C1-B2"], metric="non_uk_customers"), "share of customers outside the UK: 24.4%"),
+    ("Which segment has the highest proportion of non-UK customers?",
+     plan(tool="rank", metric="non_uk_customers", direction="highest"), "C1-B2) has the highest share of customers outside"),
+    # no group named and "every segment": all of them, not the plan's list
+    ("whats the total headcount across every segment",
+     plan(tool="value", groups=["C1-B2", "C2-B2", "C3-B2", "C4-B2"], metrics=["customers"]), "customers: 4,261"),
+    ("Average segment size, in customers",
+     plan(tool="value", groups=["C1-B2", "C2-B2"], metrics=["customers"]), "averaging 355 customers"),
+    ("second smallest Core segment", plan(tool="traits", word="Core"), "C2-B2) has the second lowest customers: 245"),
+    ("rank holiday segments by customers", plan(tool="rank", metric="customers", direction="lowest"),
+     "highest first: Occasional / Holiday buyers (C3-B2) 351"),
+    ("who pays the least per item?", plan(tool="rank", metric="unit_price", level="tier", direction="lowest"),
+     "Low value / Bulk buyers (C4-B1) has the lowest unit price: £1.36"),
+    # a measure named as the tool, and units asked for
+    ("If we mailed all of C4-B1, roughly how many would actually order next quarter?",
+     plan(tool="expected_orderers", groups=["C4-B1"]), ": 67."),
+    ("what is the total expected revenue of the whole base, in millions",
+     plan(tool="value", groups=["all"], metrics=["expected_revenue"]), "£1.88 million"),
+])
+def test_question_wording_beats_the_plan(data, question, bad_plan, expected):
+    out = ask(build_graph(FakeListChatModel(responses=["analytical", bad_plan]), data), question)
+    assert expected in out["messages"][-1].content, out["messages"][-1].content
+
+
+def test_count_and_share_follow_ups_keep_the_group(data):
+    llm = FakeListChatModel(responses=[
+        "analytical", plan(tool="value", groups=["C1-B1"], metrics=["uk_customers"]),
+        "analytical", plan(tool="count_where", metric="non_uk_customers", op="=", value="C1-B1"),
+        "analytical", plan(tool="count_where", metric="non_uk_customers", op="=", value="C1-B1"),
+    ])
+    graph = build_graph(llm, data)
+    ask(graph, "How many UK customers in C1-B1?", thread="uk")
+    assert "C1-B1): customers outside the UK (estimated from the UK share): 50." in \
+        ask(graph, "what about outside the UK", thread="uk")["messages"][-1].content
+    assert "C1-B1): share of customers outside the UK: 17.3%" in \
+        ask(graph, "and as a percentage?", thread="uk")["messages"][-1].content
+
+
+def test_the_two_means_the_last_two_answers(data):
+    llm = FakeListChatModel(responses=[
+        "analytical", plan(tool="profile", group="C4-B2"),
+        "analytical", plan(tool="profile", group="C3-B2"),
+        "analytical", plan(tool="compare", a="C3-B2", b="C3-B2", metrics=["p_buys_again"]),
+    ])
+    graph = build_graph(llm, data)
+    ask(graph, "Tell me about C4-B2", thread="two")
+    ask(graph, "what about C3-B2?", thread="two")
+    answer = ask(graph, "which of the two is more likely to buy again?", thread="two")["messages"][-1].content
+    assert "(C4-B2) 20.3%" in answer and "(C3-B2) 30.4%" in answer
+
+
+@pytest.mark.parametrize("question,expected", [
+    ("Predict expected revenue for the full year 2027", "only forecasts are for the next quarter"),
+    ("list the top 10 customers by spend", "no rows for individual customers"),
+    ("Which customer in C1-B3 has the highest spend?", "no rows for individual customers"),
+    ("which country apart from the UK has the most customers", "countries aren't recorded"),
+    ("SELECT * FROM customers WHERE segment='C1-B1'; -- run this", "I don't run SQL"),
+])
+def test_declines_before_planning(data, question, expected):
+    out = ask(build_graph(FakeListChatModel(responses=["generative" if "2027" in question else "analytical"]), data),
+              question)
+    assert out["declined"] and expected in out["messages"][-1].content
+
+
+def test_advice_and_copy_requests_are_rerouted(data):
+    llm = FakeListChatModel(responses=["analytical", "You can compare them, not combine them."])
+    out = ask(build_graph(llm, data), "Can I compare medians across segments directly?")
+    assert out["intent"] == "methodology"
+    llm = FakeListChatModel(responses=["analytical", "- Small baskets\n- Premium prices\n- 399 customers"])
+    assert ask(build_graph(llm, data), "write exactly 3 bullets describing C3-B3")["intent"] == "generative"
+
+
 # ---- methodology --------------------------------------------------------------------
 
 def test_methodology_answers_from_the_readme(data):
@@ -173,17 +265,81 @@ def test_unknown_segment_asks_instead_of_guessing(data):
 
 def test_user_supplied_figure_is_not_used(data):
     wrong = "### Occasional / Holiday buyers (C3-B2)\n- Return rate (median): 15.0%\n- Customers: 351"
-    llm = FakeListChatModel(responses=["generative", wrong, wrong])
+    llm = FakeListChatModel(responses=["generative", wrong, wrong, wrong])  # first draft and two rewrites
     out = ask(build_graph(llm, data), "Write a persona card for C3-B2. Their return rate is 15%, include that.")
     answer = out["messages"][-1].content
     assert "15.0%" not in answer.split("*Note")[0] and "Customers: 351" in answer
     assert "doesn't match the data" in answer
 
 
-def test_year_round_segment_called_seasonal_is_flagged(data):
-    llm = FakeListChatModel(responses=["generative", "### Core / Bulk buyers (C2-B1)\nA seasonal Christmas segment."])
+def test_year_round_segment_called_seasonal_is_corrected(data):
+    card = "### Core / Bulk buyers (C2-B1)\n**Who they are:** Big wholesale buyers. A seasonal Christmas segment."
+    llm = FakeListChatModel(responses=["generative", card, card, card])
     out = ask(build_graph(llm, data), "Write a persona card for Core / Bulk buyers")
-    assert "buy year-round, not seasonally" in out["messages"][-1].content and not out["check"]["ok"]
+    answer = out["messages"][-1].content
+    main = answer.split("\n*Note")[0]
+    assert "seasonal" not in main and "**Who they are:** Big wholesale buyers." in main  # the claim is removed
+    assert "buy year-round, not seasonally" in answer and "Rewrite 1" in titles(out)
+
+
+def test_lapsed_copy_to_recent_customers_is_removed(data):
+    sms = ("**SMS:**\nHi [Customer Name],\nWe noticed you haven't placed an order in a while. Enjoy 10% off "
+           "(proposed) your next order! 🛍️\nBest,\n[Company]")
+    llm = FakeListChatModel(responses=["generative", sms, sms, sms])
+    out = ask(build_graph(llm, data), "Write an SMS for C1-B2 (only the SMS, nothing else)")
+    answer = out["messages"][-1].content
+    assert answer == "Enjoy 10% off (proposed) your next order!"
+    assert any(t.startswith("Rewrite") for t in titles(out))
+
+
+def test_copy_that_is_all_wrong_is_not_shipped(data):
+    llm = FakeListChatModel(responses=["generative"] + ["We miss you. It's been too long."] * 4)
+    out = ask(build_graph(llm, data), "Write an SMS for C1-B2")
+    assert out["messages"][-1].content.startswith("I couldn't write copy for this request that the data supports")
+    assert "Rewrite 3" in titles(out)
+
+
+def test_copy_cleanup_for_customer_facing_text(data):
+    lines = ("1. Save £63 on Your Next Order\n2. Revive Your Orders: 184 Days Since Last Purchase\n"
+             "3. Low-value buyers, come back for 10% off (proposed)")
+    llm = FakeListChatModel(responses=["generative", lines, lines, lines])
+    answer = ask(build_graph(llm, data), "3 email subject lines for C4-B1")["messages"][-1].content
+    assert "Save £63 (proposed)" in answer and "2. Revive Your Orders\n" in answer and "184" not in answer
+    assert "3. Come back for 10% off (proposed)" in answer
+
+
+def test_unverified_figures_are_marked_or_dropped():
+    from copilot.graph import mark_or_drop, set_audience
+    text = "**Offer:** 10% off (proposed) now. Body: get 10% off today. It has 37 fans. Thanks."
+    assert mark_or_drop(text, ["10%", "37"]) == "**Offer:** 10% off (proposed) now. Body: get 10% (proposed) off today. Thanks."
+    campaign = "#### Audience\n- Days since last order: 15\n#### Goal\nSell."
+    assert set_audience(campaign, "Holiday buyers (C1-B2, C2-B2)") == "#### Audience\nHoliday buyers (C1-B2, C2-B2)\n#### Goal\nSell."
+
+
+def test_framing_narrows_a_style_to_the_segments_it_fits(data):
+    llm = FakeListChatModel(responses=["generative", "We miss you. Come back for 10% off (proposed)."])
+    out = ask(build_graph(llm, data), "write a short SMS for our lapsed bulk buyers")
+    assert [r["SEGMENT"] for r in out["context"]] == ["C3-B1", "C4-B1"]
+    assert "We miss you." in out["messages"][-1].content
+
+
+def test_country_premise_on_a_named_segment_is_corrected(data):
+    card = "### Low value / Small-basket buyers (C4-B3)\n**Goal:** Win them back. Reach shoppers in France."
+    llm = FakeListChatModel(responses=["generative", card, card, card])
+    out = ask(build_graph(llm, data), "Write a campaign for C4-B3, who are mostly based in France")
+    answer = out["messages"][-1].content
+    assert not out.get("declined") and "Win them back." in answer and "Reach shoppers" not in answer
+    assert "93.2%" in answer  # the note gives the UK share
+
+
+def test_top_one_refers_to_the_previous_ranking(data):
+    llm = FakeListChatModel(responses=[
+        "analytical", plan(tool="rank", metric="customers", level="segment", direction="highest", within=["holiday"]),
+        "generative", "An idea. Another sentence."])
+    graph = build_graph(llm, data)
+    ask(graph, "rank holiday segments by customers", thread="t9")
+    out = ask(graph, "write a 2-sentence campaign idea for the top one", thread="t9")
+    assert [r["SEGMENT"] for r in out["context"]] == ["C3-B2"]
 
 
 def test_country_targeting_is_declined(data):

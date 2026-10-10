@@ -98,6 +98,7 @@ Every answer shows how it was produced: the routing decision, the plan and any a
 | Tuning (21) | 21 (100%) |
 | Held out (11) | 11 (100%) |
 | Red-team failures (20) | 20 (100%) |
+| Round 5 failures (15) | 15 (100%) |
 
 Every figure in every answer traced back to the data. Results are in `results/copilot_eval.csv`; rerun with `python -m copilot.evaluate`. These sets are small, and the rebuild was tuned against the red-team failures, so read them as a regression check, not a measure of accuracy on new questions.
 
@@ -108,6 +109,8 @@ Every figure in every answer traced back to the data. Results are in `results/co
 | Model-written SQL | 137 | 47% |
 | First rebuild (semantic layer) | 200 (5 categories) | 63% |
 | Second rebuild | 200 (all 9 categories) | 69% overall, 73% on round 2's categories |
+| Round 4 | 150 (all 9 categories) | 72.7% overall, 75.8% on round 2's categories |
+| Round 5 | 300 (all 9 categories) | 70.7% overall, 74.2% on round 2's categories |
 
 Round 3 by category:
 
@@ -130,6 +133,14 @@ Round 3 by category:
 - **Documentation:** glossary entries for the methodology questions it missed.
 
 Replayed, 57 of round 3's 62 failures now answer correctly. Still open: SMS requests that also produce a persona card, a short list request that returns fewer items, a three-way tie comparison, and one terse follow-up. A fresh round on new questions is needed before claiming a new overall number.
+
+**Fixes after round 5:**
+- **The question's wording beats the plan:** several exclusions ("except C4-B3 and C1-B1"), "every segment" meaning all of them, a filter's measure kept apart from the measure being totalled ("expected revenue from segments whose P(buys again) is above 50%"), "share of X that are Y" divided by X, "how many" vs "what proportion" in every calculation, ordinals ("second smallest") and per-segment averages.
+- **Rankings:** groups narrowed to one segment each are ranked and labelled as segments; tiers and styles on a median are shown as the range of their segments instead of an error.
+- **Writing agent:** wording the data contradicts (lapsed, seasonal, bulk, infrequent, a "December spike") is rewritten, and if it survives two rewrites it is removed rather than noted; £ and % offers are marked "(proposed)"; SMS, tweets and notes are stripped of headings, greetings, persona cards, codes and internal segment names.
+- **Units and declines:** pence, thousands, millions and a no-exchange-rate note; SQL, "which customer" and "which country" requests are declined.
+
+Replayed, 84 of round 5's 88 failures now answer correctly. Still open: a terse "why?" follow-up that misstates the k rule, a "2-sentence idea" that reads recency as frequency, and two campaigns that the clean-up leaves thin (no offer or an empty body).
 
 | | Offline (default) | Live |
 |---|---|---|

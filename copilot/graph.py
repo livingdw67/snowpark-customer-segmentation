@@ -28,7 +28,7 @@ from segmentation.naming import BEHAVIOR_NAMES, TIER_NAMES, segment_name
 
 from . import docs, verify
 from .semantics import (SCHEME_ALIASES, SCHEME_METRICS, SCHEME_NAMES, SEGMENT_METRICS, Group, Result, Semantics, combine,
-                        convert_days,
+                        convert_days, convert_money, group_words,
                         metric_match_lengths, strip_group_words,
                         asked_direction, metric, metrics_named_in, resolve, resolve_one, resolve_scheme)
 
@@ -38,13 +38,24 @@ MAX_PLAN_ATTEMPTS = 2
 INTENTS = ("analytical", "methodology", "generative", "out_of_scope")
 GENERATIVE_WORDS = re.compile(
     r"\b(draft|write|persona|card|campaign|email|e-mail|message|sms|copy|slogan|tagline|pitch|"
-    r"brainstorm|ideas?|subject line|newsletter|offer)\b", re.IGNORECASE)
+    r"brainstorm|ideas?|subject lines?|newsletter|offer|tweet|linkedin|post|push notification|notification|"
+    r"bullets?|bullet points?|thank-you note|thank you note|blurb|headlines?|taglines?|letter|script)\b", re.IGNORECASE)
+# A request for written copy in a set format: always the generative agent.
+COPY_FORMAT = re.compile(r"\b(\d+|two|three|four|five) bullets?\b|\bbullet points?\b|\btweet\b|\blinkedin\b|"
+                         r"\bpush notification\b|\bthank[- ]you note\b|\bsubject lines?\b|\bsms\b|\bemail\b", re.IGNORECASE)
+ADVICE = re.compile(r"^\s*(should (i|we)|can (i|we) (use|trust|compare|combine|add|sum|average|rely|merge|email|target)|"
+                    r"is it (ok|okay|safe|wise|fair|valid|sensible|reasonable)|does it make sense|how much can (i|we) trust)\b",
+                    re.IGNORECASE)
+DOMAIN = re.compile(r"\b(segments?|tiers?|buying styles?|cleaning|clean|rows|backtests?|schemes?|customers?|k|"
+                    r"clusters?|revenue|forecasts?)\b", re.IGNORECASE)
+OFF_TOPIC = re.compile(r"\b(python|javascript|code|function|linked list|weather|poem|recipe|joke|capital of|football)\b",
+                       re.IGNORECASE)
 METHOD_WORDS = re.compile(
     r"^\s*(how (are|is|was|were|do|does|did)|why|explain|what does .* mean|what is (an? )?(ari|auc|eta|"
     r"silhouette|hybrid|rfm|recency|tenure|p\(buys again\))|define)\b", re.IGNORECASE)
 INJECTION = re.compile(
     r"(ignore (all |any )?(previous|prior|above|your) (rules|instructions)[^.!?\n]*[.!?]?|"
-    r"you are now [^.!?\n]*[.!?]?|from now on[^.!?\n]*[.!?]?|system:[^\n]*|"
+    r"you are now [^.!?\n]*[.!?]?|from now on[^.!?\n]*[.!?]?|system:[^\n]*|</?\s*system\s*>|"
     r"(verifier|checker|guard) (is )?disabled[^.!?\n]*[.!?]?|pretend (to be|you are)[^.!?\n]*[.!?]?)",
     re.IGNORECASE)
 GEOGRAPHY = re.compile(
@@ -56,24 +67,47 @@ NO_DATA = re.compile(
 SAME = re.compile(r"^\s*(same|and|now|ok|okay)?\s*(same for|what about|how about|and for|now for|and)\b", re.IGNORECASE)
 CUSTOMER_LEVEL = re.compile(
     r"\b(histograms?|distributions?|spread of|customer ids?|list (the |all |of )?(individual )?customers|"
-    r"individual customers|which customers|who are the customers|"
-    r"names of (the )?customers)\b", re.IGNORECASE)
+    r"individual customers|which customers|who are the customers|which customer|what customer|"
+    r"names of (the )?customers|(top|best|biggest|largest) \d+ customers|customer with the|"
+    r"(each|every|a single|one) customer's|list (the )?(top|best|biggest) customers)\b", re.IGNORECASE)
 # Words a question needs before a specialised calculation makes sense.
 TOOL_WORDS = {
     "cleaning": re.compile(r"\b(clean|cleaning|rows?|duplicates?|raw|overlap|write-offs?|staging|step)\b", re.I),
     "k_choice": re.compile(r"\b(k|ks|axis|axes|how many segments|number of segments|clusters?|stability|ari|silhouette)\b", re.I),
 }
 FOLLOW_UP = re.compile(r"\b(that|those|them|this one|these|it|its|their|they|same|the one)\b", re.IGNORECASE)
+GROUP_AHEAD = r"(?=\s+(?:the\s+|our\s+)?(?:top|core|occasional|low|bulk|holiday|small|c[1-4]|b[1-3])\b)"
 EXCLUSION = re.compile(
-    r"\b(?:excluding|except(?: for)?|other than|apart from|besides|not in|leaving out|outside(?: of)? the"
-    r"(?= (?:top|core|occasional|low|bulk|holiday|small)))\s+(?:the\s+)?(.+?)(?=[,?.]|$|\s+(?:which|what|how|who)\b)",
+    r"\b(?:excluding|exclude|excludes|except(?: for)?|other than|apart from|besides|not in|leaving out|leave out|"
+    r"without|not counting|minus|outside(?: of)? the" + GROUP_AHEAD + r"|(?:are|is|aren't|isn't)?\s*not" + GROUP_AHEAD +
+    r")\s+(?:the\s+)?(.+?)(?=[,?.]|$|\s+(?:which|what|how|who)\b)",
     re.IGNORECASE)
-SHARE_WORDS = re.compile(r"\b(share|percent|percentage|proportion|fraction)\b|%", re.IGNORECASE)
-HOW_MANY = re.compile(r"\b(how many|number of|in absolute (numbers|terms)|absolute number)\b", re.IGNORECASE)
-PER_CUSTOMER = re.compile(r"\bper\s+(?:[\w-]+\s+){0,3}customers?\b|\beach customer\b", re.IGNORECASE)
+SHARE_WORDS = re.compile(r"\b(shares?|percent|percentages?|proportions?|fractions?|pct)\b|%", re.IGNORECASE)
+HOW_MANY = re.compile(r"\b(how many|number of|in absolute (numbers|terms)|absolute number|headcount|count of)\b",
+                      re.IGNORECASE)
+PER_CUSTOMER = re.compile(r"\bper\s+(?:[\w-]+\s+){0,3}customers?\b|\beach customer\b|\bper (head|capita)\b",
+                          re.IGNORECASE)
 COUNT_OF = {"uk_share": "uk_customers", "non_uk_share": "non_uk_customers", "p_buys_again": "expected_orderers"}
+SHARE_OF = {v: k for k, v in COUNT_OF.items()}
 UNIT = re.compile(r"\b(?:in|as|into)\s+(weeks|months|years)\b|\b(weeks|months|years)\s*(?:please|\?|$)", re.IGNORECASE)
-FOLD_DATES = re.compile(r"\bsnapshot dates?\b|\btrain(?:ing)? and eval|\bfit and scor|\bwhich dates\b", re.IGNORECASE)
+MONEY_UNIT = re.compile(r"\b(?:in|as|into)\s+(?:(pence|pennies|p)\b|(?:£\s?)?(thousands|k\b|000s)|(?:£\s?)?(millions|m\b|mn))",
+                        re.IGNORECASE)
+CURRENCY = re.compile(r"\b(?:in|to|into|as)\s+(?:us\s+)?(dollars|usd|\$|euros?|eur|€|yen|jpy)\b|\bus dollars\b",
+                      re.IGNORECASE)
+FOLD_DATES = re.compile(r"\bsnapshot dates?\b|\btrain(?:ing)? and eval|\bfit and scor|\bwhich dates\b|"
+                        r"\b(eval(?:uation)?|train(?:ing)?|scoring|fit|scored)\s+snapshots?\b|\bsnapshots?\b.{0,30}\b"
+                        r"(q2|q3|backtest|fold)|\b(q2|q3|backtest\w*|fold)\b.{0,30}\bsnapshots?\b", re.IGNORECASE)
+ALL_SCOPE = re.compile(r"\b(every|all)\s+(?:of\s+)?(?:the\s+|our\s+)?segments?\b|\bwhole\b|\bentire\b|\boverall\b|"
+                       r"\beveryone\b|\ball (?:of )?(?:our |the )?customers\b|\bacross the board\b", re.IGNORECASE)
+PER_SEGMENT = re.compile(r"\b(average|mean|typical)\s+(segment\s+size|size\s+of\s+(?:a|each|the)\s+segments?|"
+                         r"(?:number of\s+)?customers\s+per\s+segment|size)\b|\bper segment\b", re.IGNORECASE)
+ORDINAL = re.compile(r"\b(second|third|fourth|fifth|2nd|3rd|4th|5th)\b", re.IGNORECASE)
+ORDINALS = {"second": 2, "2nd": 2, "third": 3, "3rd": 3, "fourth": 4, "4th": 4, "fifth": 5, "5th": 5}
+CROSSTAB = re.compile(r"cross-?tab|\btiers?\s*(?:x|×|by|and)\s*(?:buying\s+)?styles?\b|\bstyles?\s*(?:x|×|by)\s*tiers?\b|"
+                      r"\bgrid\b", re.IGNORECASE)
+SCHEME_AVERAGE = re.compile(r"\b(average|mean)\b.*\b(across|over|of)\s+(?:all\s+|the\s+|every\s+)*schemes\b|"
+                            r"\bacross (?:all |every )?(?:the )?schemes\b.*\b(average|mean)\b", re.IGNORECASE)
+SQL = re.compile(r"^\s*(select|with|insert|update|delete|drop)\b.*\b(from|into|table|where)\b", re.IGNORECASE | re.DOTALL)
 PAST = re.compile(r"\blast (christmas|year|month|quarter|season)\b|\bhistorical (revenue|sales)\b", re.IGNORECASE)
 FUTURE = re.compile(r"\b20(2[6-9]|[3-9]\d)\b|\bnext year\b|\bin (two|three|four|2|3|4) quarters\b", re.IGNORECASE)
 DIRECTION_FOLLOW_UP = re.compile(
@@ -227,7 +261,9 @@ Reply with the JSON object only."""
 
 METHOD_PROMPT = """You explain how a customer-segmentation project works, using ONLY the \
 documentation excerpts below. Answer in two to five plain sentences. Quote figures exactly as \
-the excerpts write them. If the excerpts don't answer the question, say so in one sentence. \
+the excerpts write them. Answer from whatever in the excerpts is relevant, even if it covers \
+only part of the question; for a "should I / can I" question, give the advice the excerpts \
+support. Only if nothing in the excerpts is relevant, say the documentation doesn't cover it. \
 Don't add facts from elsewhere.
 
 {excerpts}"""
@@ -349,11 +385,189 @@ FRAMINGS = [
     (r"\b(seasonal|christmas|holiday[- ]heavy|q4|mainly in december|for the holidays)\b", "MEDIAN_Q4_REVENUE_SHARE",
      lambda v, all_: v >= 0.5,
      "Revenue bought in Oct-Dec (median share)"),
-    (r"\b(bulk buyers?|biggest bulk|large baskets|big orders)\b", "MEDIAN_AVG_UNITS_PER_ORDER",
-     lambda v, all_: v >= all_.median(), "Units per order (median)"),
+    (r"\b(bulk buyers?|bulk (?:orders?|purchases?)|biggest bulk|large baskets|big orders|huge (?:bulk )?orders)\b",
+     "MEDIAN_AVG_UNITS_PER_ORDER", lambda v, all_: v >= all_.median(), "Units per order (median)"),
     (r"\b(outside the uk|overseas|abroad|international|foreign)\b", "UK_SHARE", lambda v, all_: v < 0.5,
      "UK customers"),
+    (r"\b(rarely (?:buy|order|purchase)\w*|rarely|infrequent\w*|seldom|hardly ever)\b", "MEDIAN_ORDERS",
+     lambda v, all_: v < all_.median(), "Orders in the last 12 months (median)"),
+    (r"\b((?:december|christmas|holiday|festive|q4) (?:spike|peak|rush|surge)|spike)\b", "MEDIAN_Q4_REVENUE_SHARE",
+     lambda v, all_: v >= 0.5, "Revenue bought in Oct-Dec (median share)"),
+    (r"\b(year[- ]round|all year)\b", "MEDIAN_Q4_REVENUE_SHARE", lambda v, all_: v < 0.5,
+     "Revenue bought in Oct-Dec (median share)"),
 ]
+
+# Descriptions in the copy itself, checked against the data: (pattern, column, supported(v, all), label).
+# A description that doesn't hold for every segment written for is rewritten, then removed.
+OUTPUT_CLAIMS = [
+    (r"\b(?:haven'?t|have not|hasn'?t|not)\s+(?:yet\s+)?(?:placed|made|ordered|shopped|bought|purchased|been|"
+     r"visited|seen|heard)\b|\bbeen a while\b|\b(?:in|for) a (?:while|long time)\b|\bwe miss you\b|\bmiss you\b|"
+     r"\bdormant\b|\blapsed\b|\binactive\b|\breactivat\w*|\bwin[- ]?back\b|\bit'?s been (?:too |so )?long\b|"
+     r"\bcome back\b|\bwelcome (?:you )?back\b", "MEDIAN_RECENCY_DAYS", lambda v, all_: v > 90,
+     "Days since last order (median)"),
+    (r"\b(?:recently (?:ordered|purchased|bought)|ordered recently|recent (?:buyers|customers|orders))\b",
+     "MEDIAN_RECENCY_DAYS", lambda v, all_: v <= 90, "Days since last order (median)"),
+    (r"\b(?:seasonal\w*|christmas|festive|holiday season|holiday shoppers|holiday-heavy|for the holidays|"
+     r"holiday rush|(?:december|holiday|christmas) (?:spike|peak|surge))\b", "MEDIAN_Q4_REVENUE_SHARE",
+     lambda v, all_: v >= 0.3, "Revenue bought in Oct-Dec (median share)"),
+    (r"\b(?:year[- ]round|all year(?: long)?|throughout the year)\b", "MEDIAN_Q4_REVENUE_SHARE",
+     lambda v, all_: v < 0.5, "Revenue bought in Oct-Dec (median share)"),
+    (r"\b(?:bulk(?!\s+buyers)|in bulk|high (?:number|volume) of units|large (?:baskets|quantities|volumes?)|"
+     r"big baskets|wholesale quantities)\b", "MEDIAN_AVG_UNITS_PER_ORDER", lambda v, all_: v >= all_.quantile(1 / 3),
+     "Units per order (median)"),
+    (r"\b(?:infrequent\w*|rarely|seldom|hardly ever|once in a while)\b", "MEDIAN_ORDERS",
+     lambda v, all_: v < all_.median(), "Orders in the last 12 months (median)"),
+    (r"\b(?:frequent (?:buyers|orders|purchases|customers)|(?:order|buy|purchase|shop)s? (?:frequently|often|regularly)|"
+     r"regular (?:customers|buyers|orders))\b", "MEDIAN_ORDERS", lambda v, all_: v >= all_.median(),
+     "Orders in the last 12 months (median)"),
+]
+INTERNAL_LABEL = re.compile(r"\b(low[- ]value|occasional|core|top[- ]spenders?|small[- ]basket|holiday buyers|bulk buyers)"
+                            r"(?:\s+(?:customers|buyers|shoppers))?\b", re.IGNORECASE)
+NOT_PROPOSED = r"(?![\d,]|\.\d)(?![^.!?\n]{0,30}\(proposed\))"
+OFFER_MONEY = re.compile(r"£\s?\d[\d,]*(?:\.\d+)?" + NOT_PROPOSED + r"(?=[^.!?\n]{0,25}\b(?:off|discount|voucher|credit)\b)|"
+                         r"(?:\b(?:save|saving|over|above|minimum(?: order)?(?: of)?|spend|orders? over|credit of|voucher)\s+)"
+                         r"£\s?\d[\d,]*(?:\.\d+)?" + NOT_PROPOSED + r"|"
+                         r"(?<![\w.])\d+(?:\.\d+)?\s?%" + NOT_PROPOSED + r"(?=\s*(?:off|discount)\b)", re.IGNORECASE)
+CARD_LABELS = re.compile(r"^\s*(?:[-*]\s*)?(?:#{1,4}\s*)?\*{0,2}(who they are|key (?:numbers|statistics|stats|metrics|figures)|"
+                         r"what they respond to|risk|next best action)\s*:?\s*\*{0,2}\s*:?\s*$|"
+                         r"^\s*(?:[-*]\s*)?\*\*(who they are|key (?:numbers|statistics|stats|metrics|figures)|"
+                         r"what they respond to|risk|next best action)\s*:?\s*\*\*", re.IGNORECASE | re.MULTILINE)
+EMOJI = re.compile(r"[\U0001F300-\U0001FAFF☀-➿⭐⬆↔-↪]️?")
+
+
+def claim_conflicts(answer: str, stats: pd.DataFrame, everyone: pd.DataFrame) -> list[tuple[str, str]]:
+    """Descriptions in the copy that the data contradicts for at least one segment written for:
+    [(pattern, issue)]. 'haven't ordered in a while' to a segment that ordered 8 days ago."""
+    out = []
+    for pattern, col, test, label in OUTPUT_CLAIMS:
+        hit = re.search(pattern, answer, re.IGNORECASE)
+        if hit and not all(test(v, everyone[col]) for v in stats[col]):
+            shown = ", ".join(f"{r.SEGMENT} {_profile_value(col, r[col])}" for _, r in stats.iterrows())
+            out.append((pattern, f"don't say '{hit.group(0)}': the data doesn't support it ({label}: {shown})"))
+    return out
+
+
+def set_audience(text: str, audience: str) -> str:
+    """A campaign for a whole tier or buying style names that audience, not one of its segments."""
+    lines, out, skipping = text.splitlines(), [], False
+    for line in lines:
+        if re.match(r"^\s*\*\*audience:?\*\*", line, re.I):
+            out.append(f"**Audience:** {audience}")
+            continue
+        if re.match(r"^\s*#{1,4}\s*audience\b", line, re.I):
+            out += [line, audience]
+            skipping = True
+            continue
+        if skipping:
+            if re.match(r"^\s*(#{1,4}\s|\*\*[^*]+:?\*\*\s*$)", line):
+                skipping = False
+            else:
+                continue
+        out.append(line)
+    return "\n".join(out)
+
+
+MONTH = r"(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\.?"
+DATE = re.compile(rf"\b{MONTH}\s+\d{{1,2}}(?:st|nd|rd|th)?\b|\b\d{{1,2}}(?:st|nd|rd|th)?\s+(?:of\s+)?{MONTH}(?![\w])",
+                  re.IGNORECASE)
+
+
+def unnumbered(text: str) -> str:
+    """List numbering ('1. ', '2) ') and calendar dates ('November 15') aren't figures about the data."""
+    return DATE.sub(" ", re.sub(r"(?m)^(\s*)\d+[.)]\s+", r"\1", text))
+
+
+def mark_or_drop(text: str, bad: list[str]) -> str:
+    """Figures not in the data: a £ or % amount in an offer ('£63 off', 'save 10%') is the writer's
+    proposal and gets '(proposed)'; any other unverified figure takes its sentence with it."""
+    for b in dict.fromkeys(bad):
+        pat = rf"(?<![\w.,£]){re.escape(b)}(?![\d,]|\.\d)"
+        drop = False
+
+        def one(mm):
+            nonlocal drop
+            after = text_now[mm.end():mm.end() + 40]
+            before = text_now[max(0, mm.start() - 25):mm.start()]
+            if re.match(r"[^.!?\n]{0,30}\(proposed\)", after):
+                return mm.group(0)
+            offer = re.match(r"[^.!?\n]{0,25}\b(off|discount|voucher|credit|minimum|back)\b", after, re.I) or \
+                re.search(r"\b(save|saving|over|above|minimum|spend|get|enjoy|extra)\s+$", before, re.I)
+            if offer and ("£" in b or "%" in b):
+                return mm.group(0) + " (proposed)"
+            drop = True
+            return mm.group(0)
+        text_now = text
+        text = re.sub(pat, one, text)
+        if drop:
+            keep = re.compile(pat + r"(?=[^.!?\n]{0,30}\(proposed\))")
+            text = "\n".join(line if keep.search(line) else drop_sentences(line, pat) for line in text.splitlines())
+    return text
+
+
+def drop_sentences(text: str, pattern: str) -> str:
+    """Remove each sentence matching `pattern`, keeping list markers and bold labels; a line left
+    with nothing but its marker goes too."""
+    out = []
+    for line in text.splitlines():
+        if not re.search(pattern, line, re.IGNORECASE) or line.lstrip().startswith("#"):
+            out.append(line)
+            continue
+        prefix = re.match(r"^(\s*(?:[-*•]|\d+[.)])?\s*(?:\*\*[^*\n]+?:?\*\*:?\s*)?)", line).group(1)
+        sentences = re.split(r"(?<=[.!?])\s+", line[len(prefix):])
+        kept = [s for s in sentences if not re.search(pattern, s, re.IGNORECASE)]
+        if kept and "".join(kept).strip():
+            out.append(prefix + " ".join(kept))
+    return "\n".join(out)
+
+
+def strip_card(text: str) -> str:
+    """Remove persona-card sections ('Who they are', 'Key numbers' and its bullets, ...) from copy
+    that isn't a persona card."""
+    out, in_card = [], False
+    for line in text.splitlines():
+        if CARD_LABELS.match(line):
+            in_card = True
+            continue
+        if in_card and (re.match(r"^\s*([-*•]|\d+[.)])\s+", line) or not line.strip()):
+            continue
+        in_card = False
+        out.append(line)
+    return re.sub(r"\n{3,}", "\n\n", "\n".join(out)).strip()
+
+
+def sms_only(text: str) -> str:
+    """Just the SMS text: no heading, label, greeting, sign-off or success metric."""
+    keep = []
+    for line in text.splitlines():
+        s = line.strip()
+        if not s or s.startswith("#") or re.match(r"^\*?\*?(success metric|audience|goal|timing|channel|offer|"
+                                                   r"note)\b", s, re.I):
+            continue
+        s = re.sub(r"^\*\*[^*]+:\*\*\s*", "", s)
+        if not s or re.match(r"^(best|regards|kind regards|thanks|thank you|cheers|sincerely|warmly)\b[^.!?]{0,30},?$", s, re.I) \
+                or re.match(r"^\[[^\]]+\]$", s) or re.match(r"^(the )?\[?[\w ]+\]? team$", s, re.I):
+            continue
+        s = re.sub(r"^(hi|hey|hello|dear)\b[^,!.]{0,30}[,!]\s*", "", s, flags=re.I)
+        if s:
+            keep.append(s)
+    if len(keep) > 1 and not re.search(r"[.!?:]\W*$", keep[0]) and len(keep[0].split()) <= 10:
+        keep = keep[1:]  # a title line ("Exclusive Offer for You") isn't part of an SMS
+    sms = EMOJI.sub("", " ".join(keep)).replace("  ", " ").strip().strip('"').strip()
+    return sms[:1].upper() + sms[1:]
+
+
+def pick_from_previous(question: str, previous: str) -> list[str]:
+    """Which segment 'the top one', 'that one' or 'the last one' means in the previous answer."""
+    codes = list(dict.fromkeys(c.upper() for c in re.findall(r"\bC\d-B\d\b", previous, re.IGNORECASE)))
+    if not codes:
+        return []
+    if re.search(r"\b(both|them|those|these|they|all of them)\b", question, re.IGNORECASE):
+        first = previous.split("\n\n")[0]
+        return list(dict.fromkeys(c.upper() for c in re.findall(r"\bC\d-B\d\b", first, re.IGNORECASE))) or codes[:2]
+    if re.search(r"\b(last|bottom|lowest|least|worst)\b", question, re.IGNORECASE):
+        return [codes[-1]] if len(codes) > 1 and "\n|" in previous else [codes[0]]
+    winner = re.search(r"\((C\d-B\d)\) (?:is higher|is lower|has the)", previous)
+    return [winner.group(1)] if winner else [codes[0]]
 UNSUPPORTED = re.compile(r"\b(summer|spring|easter|january|february|march|april|may|june|july|august|september)\b",
                          re.IGNORECASE)
 
@@ -453,6 +667,10 @@ def _scheme(v) -> str:
 YES_NO = re.compile(r"^\s*(is|are|does|do|did|has|have|can|will)\b", re.IGNORECASE)
 
 
+TOOLS = ("value", "profile", "share", "rank", "compare", "crosstab", "count_where", "traits", "schemes",
+         "compare_schemes", "k_choice", "cleaning", "decline", "by_fold")
+SIZE_WORDS = re.compile(r"\b(headcount|segment size|times (bigger|larger|smaller|as big|as large|the size)|"
+                        r"(bigger|smaller) than)\b", re.IGNORECASE)
 COMBINE = re.compile(r"\b(combined|together|altogether|sum of|added up|put together)\b", re.IGNORECASE)
 WHICH = re.compile(r"^\s*(which|who|what)\b", re.IGNORECASE)
 HAS_THRESHOLD = re.compile(r"\d|\bzero\b|\bnone\b|\babove\b|\bbelow\b|\bover\b|\bunder\b|\bat least\b", re.IGNORECASE)
@@ -530,8 +748,9 @@ def schemes_named_in(text: str) -> list[str]:
     return list(dict.fromkeys(k for _, k in sorted(found)))
 
 
-K_WORDS = re.compile(r"\bk\s*=?\s*\d\b|\bk candidates\b|\bwhich k\b|\b(value|behaviou?r)[ -]axis\b|\bsilhouette\b|\bari\b",
-                     re.IGNORECASE)
+K_WORDS = re.compile(r"\bk\s*=?\s*\d\b|\bk candidates\b|\bwhich k\b|\b(value|behaviou?r)[ -]axis\b|\bsilhouette\b|\bari\b|"
+                     r"\b(chosen|selected|picked|final)\s+(value\s+|behaviou?r\s+)?k\b|\b(value|behaviou?r)\s+k\b|"
+                     r"\bk[- ]selection\b|\bnext[- ]revenue r(2|²|-squared)\b", re.IGNORECASE)
 ZERO = re.compile(r"\bzero\b|(?<![\d.])0(\.0+)?\s?%", re.IGNORECASE)
 RANK_WORDS = re.compile(r"\b(rank|order|sort|list)\b", re.IGNORECASE)
 TABLE = re.compile(r"\btable\b|\bshow (me )?all\b", re.IGNORECASE)
@@ -540,9 +759,13 @@ CODES = re.compile(r"\b[cb]\d(-b\d)?\b|\bq[234]\b|\bk\s*=?\s*\d\b|\btop[- ]?20\b
 
 
 def is_superlative(question: str) -> bool:
+    """'Which segment is biggest?', and terse ones that open with the superlative: 'smallest
+    segment overall', 'second smallest Core segment'."""
     q = strip_group_words(question)
-    return bool(re.search(r"\b(which|who)\b|^\s*what\b", q, re.IGNORECASE) and re.search(UP_OR_DOWN, q, re.IGNORECASE)
-                and not YES_NO.search(q))
+    terse = re.search(r"^\s*(the\s+)?((second|third|fourth|2nd|3rd|4th)[- ])?(most|least|highest|lowest|largest|"
+                      r"biggest|smallest|fewest|best|worst|cheapest|longest|shortest|newest|oldest)\b", q, re.IGNORECASE)
+    return bool((re.search(r"\b(which|who)\b|^\s*what\b", q, re.IGNORECASE) or terse)
+                and re.search(UP_OR_DOWN, q, re.IGNORECASE) and not YES_NO.search(q))
 
 
 def split_exclusion(text: str, seg: pd.DataFrame) -> tuple[str, Group | None]:
@@ -557,6 +780,70 @@ def split_exclusion(text: str, seg: pd.DataFrame) -> tuple[str, Group | None]:
     return text[:m.start()] + " " + text[m.end():], excluded
 
 
+def share_of_intersection(question: str, seg: pd.DataFrame) -> tuple[Group, Group] | None:
+    """'What fraction of Core customers are holiday buyers?' -> (C2-B2, the Core tier): a tier and
+    a buying style are both named, and the one after 'of / among / within' is the denominator."""
+    words = group_words(question)
+    tiers = {code for _, kind, code in words if kind == "tier"}
+    styles = {code for _, kind, code in words if kind == "style"}
+    if len(tiers) != 1 or len(styles) != 1 or re.search(r"\bc\d-b\d\b", question, re.IGNORECASE):
+        return None
+    lower = question.lower().replace("’", "'")
+    starts = {pos: (kind, code) for pos, kind, code in words}
+    for m in re.finditer(r"\b(?:of|among|amongst|within)\s+(?:all\s+)?(?:the\s+|our\s+)?", lower):
+        if m.end() in starts:
+            kind, code = starts[m.end()]
+            tier, style = next(iter(tiers)), next(iter(styles))
+            whole = resolve_one(code, seg)
+            part_code = f"{tier}-{style}"
+            return Group("segment", [part_code], f"{segment_name(part_code)} ({part_code})"), whole
+    return None
+
+
+FILTER = re.compile(r"\bsegments?\s+(?:whose|with(?:\s+an?)?|where(?:\s+the)?|that\s+(?:have|has)(?:\s+an?)?|"
+                    r"having(?:\s+an?)?)\s+(?P<cond>.+)$", re.IGNORECASE)
+FILTER_OPS = [
+    (r"\bnon-?zero\b|\bnot zero\b|\b(?:greater|more|higher) than zero\b|\babove zero\b", ">", 0.0),
+    (r"\bat least\b|\b(?:greater|more|higher) than or equal to\b|>=|\bor more\b|\bor above\b", ">=", None),
+    (r"\bat most\b|\b(?:less|fewer|lower) than or equal to\b|<=|\bor less\b|\bor fewer\b|\bor below\b", "<=", None),
+    (r"\babove\b|\bover\b|\bmore than\b|\bgreater than\b|\bhigher than\b|\bexceed(?:s|ing)?\b|>", ">", None),
+    (r"\bbelow\b|\bunder\b|\bless than\b|\bfewer than\b|\blower than\b|<", "<", None),
+    (r"\bequal(?:s| to)?\b|\bexactly\b|=|\bof\b|\bis\b|\bare\b|\bzero\b", "=", None),
+]
+
+
+def parse_filter(question: str) -> tuple[str | None, str, float, str] | None:
+    """'segments whose P(buys again) is above 50%' -> ('p_buys_again', '>', 0.5, text before the
+    filter). The filter's metric is kept apart from what the question reports."""
+    m = FILTER.search(question)
+    if not m:
+        return None
+    cond = m.group("cond")
+    op = value = None
+    for pattern, o, fixed in FILTER_OPS:
+        if re.search(pattern, cond, re.IGNORECASE):
+            op, value = o, fixed
+            break
+    if op is None:
+        return None
+    if value is None:
+        num = re.search(r"(?<![\w.])(-?\d[\d,]*(?:\.\d+)?)\s*(%|percent|per cent)?", cond)
+        if num:
+            value = float(num.group(1).replace(",", ""))
+            pct_given = bool(num.group(2))
+        elif re.search(r"\b(zero|none|no)\b", cond, re.IGNORECASE):
+            value, pct_given = 0.0, False
+        else:
+            return None
+    else:
+        pct_given = False
+    named = metrics_named_in(cond)
+    key = named[0] if named else None
+    if key and SEGMENT_METRICS[key].unit == "percent" and (pct_given or value > 1):
+        value /= 100
+    return key, op, value, question[:m.start()]
+
+
 def execute(plan: dict, question: str, sem: Semantics, context: str = "", group_text: str | None = None
             ) -> tuple[Result, list[str]]:
     result, adjust = _execute(plan, question, sem, context, group_text)
@@ -564,6 +851,13 @@ def execute(plan: dict, question: str, sem: Semantics, context: str = "", group_
     if unit and "days" in " ".join(result.facts):
         word = (unit.group(1) or unit.group(2)).lower()
         result.facts = [convert_days(f, word) for f in result.facts]
+    money = MONEY_UNIT.search(question)
+    if money and "£" in " ".join(result.facts):
+        word = "pence" if money.group(1) else "thousands" if money.group(2) else "millions"
+        result.facts = [convert_money(f, word) for f in result.facts]
+    if CURRENCY.search(question) and "£" in " ".join(result.facts + [result.markdown()]):
+        result.notes.append("The results are in pounds sterling and hold no exchange rate, so I can't convert "
+                            "them to another currency.")
     return result, adjust
 
 
@@ -575,27 +869,55 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
     seg = sem.seg.reset_index(drop=True)
     tool = plan.get("tool")
     adjust = []
+    if tool not in TOOLS:
+        # A measure or a table named as the tool ("expected_orderers", "backtest"): map it to a calculation.
+        if str(tool) in SEGMENT_METRICS:
+            plan = {**plan, "tool": "value", "metrics": [tool]}
+        elif str(tool) in SCHEME_METRICS or re.search(r"backtest|scheme|auc|fold", str(tool), re.I):
+            plan = {**plan, "tool": "schemes", "metrics": plan.get("metrics") or plan.get("metric")
+                    or ([tool] if str(tool) in SCHEME_METRICS else [])}
+        else:
+            raise PlanError(f"unknown tool '{tool}'. Use one of: {', '.join(TOOLS)}")
+        tool = plan["tool"]
+        adjust.append(f"Read the plan's tool as '{tool}'.")
+    trust_named = False  # the question's own groups (after exclusions) beat the plan's
     text, excluded = split_exclusion(group_text or question, seg)
     named_groups = narrow(resolve(text, seg), text)
     if excluded:
         base = named_groups or [Group("all", list(sem.seg.SEGMENT), "all customers")]
+        left_out = excluded.label.split(" (")[0] if excluded.kind in ("tier", "style") else " and ".join(excluded.codes)
         kept = []
         for grp in base:
             codes = [c for c in grp.codes if c not in excluded.codes]
             if codes:
                 kept.append(Group("combined" if len(codes) > 1 else "segment", codes,
-                                  f"{grp.label.split(' (')[0]} excluding {excluded.label.split(' (')[0]}"
+                                  f"{grp.label.split(' (')[0]} excluding {left_out}"
                                   if len(codes) > 1 else f"{segment_name(codes[0])} ({codes[0]})"))
         named_groups = kept
+        trust_named = True
         adjust.append(f"Left out {excluded.label}, as the question asks.")
-    if not named_groups and context and FOLLOW_UP.search(question):
+    if not named_groups and (ALL_SCOPE.search(question) or PER_SEGMENT.search(question)):
+        # "total headcount across every segment": all of them, whatever groups the plan lists
+        named_groups = [Group("all", list(sem.seg.SEGMENT), "all customers")]
+    loose_follow_up = (SAME.search(question) or re.search(r"^\s*(and|now|ok|so)\b", question, re.IGNORECASE)) \
+        and tool not in ("rank", "crosstab", "schemes", "compare_schemes", "k_choice", "cleaning") \
+        and not is_superlative(question) and not RANK_WORDS.search(question)
+    if not named_groups and context and (FOLLOW_UP.search(question) or loose_follow_up
+                                         or re.search(r"\b(the two|both)\b", question, re.IGNORECASE)):
         many = re.search(r"\b(the two|both|those|them|these)\b", question, re.IGNORECASE)
-        named_groups = narrow(resolve(context, seg))[:2 if many else 1]
+        first = context.split("\n\n")[0]  # the answer's sentences, not its table
+        named_groups = narrow(resolve(first, seg))[:2 if many else 1]
+        if named_groups and named_groups[0].kind != "segment" and len(resolve(first, seg)) > 2 \
+                and not FOLLOW_UP.search(question):
+            named_groups = []  # a previous breakdown over every tier isn't one group to carry on
         if named_groups:
             adjust.append("Used the groups from the previous answer: " + ", ".join(g.label for g in named_groups) + ".")
     superlative = is_superlative(question)
     fold_hits = sorted(set(m.lower() for m in FOLD.findall(question)))
     fold = fold_hits[0] if len(fold_hits) == 1 else None  # a fold only when the question names one
+    if not fold_hits and context and str(plan.get("fold") or "").lower() in ("q2", "q3") \
+            and FOLD.search(context.split("\n\n")[0]):
+        fold = str(plan["fold"]).lower()  # a follow-up keeps the fold the conversation is about
     schemes_q = schemes_named_in(question)
     scheme_metrics = metrics_named_in(question, "scheme")
 
@@ -603,42 +925,68 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
         raise PlanError(f"the '{tool}' calculation doesn't fit this question; pick another calculation, "
                         "or decline if none fits")
 
-    def plan_metrics(level="segment", default=None):
+    def plan_metrics(level="segment", default=None, convert=True):
         ms = _plan_metrics(level, default)
-        if level != "segment":
+        if level != "segment" or not convert:
             return ms
-        if tool != "count_where" and HOW_MANY.search(question) and any(m.key in COUNT_OF for m in ms):
+        how_many, share = HOW_MANY.search(question), SHARE_WORDS.search(question)
+        if how_many and not share and any(m.key in COUNT_OF for m in ms):
             # "how many are in the UK / will order": a count of customers, not the share
             ms = [SEGMENT_METRICS[COUNT_OF.get(m.key, m.key)] for m in ms]
             adjust.append(f"Counted customers ({ms[0].label}), since the question asks how many.")
+        elif share and not how_many and tool != "share" and any(m.key in SHARE_OF for m in ms):
+            # "highest proportion of non-UK customers": the share, not the head count
+            ms = [SEGMENT_METRICS[SHARE_OF.get(m.key, m.key)] for m in ms]
+            adjust.append(f"Used {ms[0].label}, since the question asks for a proportion.")
         if PER_CUSTOMER.search(question) and any(m.key in ("expected_revenue", "net_revenue_12m") for m in ms) \
-                and re.search(r"predict|expect|forecast|next[- ]quarter", question, re.IGNORECASE):
+                and re.search(r"predict|expect|forecast|next[- ]quarter|worth|valu", question, re.IGNORECASE):
             ms = [SEGMENT_METRICS["revenue_per_customer"] if m.key in ("expected_revenue", "net_revenue_12m")
                   else m for m in ms]
         return ms
 
     def _plan_metrics(level="segment", default=None):
         raw = plan.get("metrics") or plan.get("metric") or default
-        ms = _metrics(raw, level) if raw else []
+        raw = raw if isinstance(raw, list) else [raw] if raw else []
+        ms, unknown = [], []
+        for v in raw:  # a plan naming a group or a made-up measure ("buying style") keeps the rest
+            try:
+                ms.append(metric(str(v), level))
+            except ValueError:
+                unknown.append(str(v))
         lengths = metric_match_lengths(question, level)
-        if ms or len(lengths) > 1:
+        if level == "segment" and (ms or len(lengths) > 1) and not SIZE_WORDS.search(question):
             lengths.pop("customers", None)  # "customers" names who, not what: it never overrides a measure
         named = sorted(lengths, key=lambda k: -lengths[k])
         if not ms:
-            if not named:
-                raise PlanError("the plan names no metric")
-            return [metric(named[0], level)]
+            if named:
+                return [metric(named[0], level)]
+            if default:
+                return _metrics(default, level)
+            raise PlanError(f"the plan names no known metric ({', '.join(unknown) or 'none'})")
         if not named:
             return ms  # the question names no metric: trust the plan
         best = named[0]
         if any(m.key == best for m in ms) or lengths.get(ms[0].key, 0) >= lengths[best]:
             return ms  # the plan's metric is the one the question names most specifically
+        if level == "segment" and ({ms[0].key, best} in [{a, b} for a, b in COUNT_OF.items()]):
+            # A count and its share: "what share of customers in C1-B2 are outside the UK" names the
+            # share; otherwise the plan stands and plan_metrics settles it from the wording.
+            if best in COUNT_OF and SHARE_WORDS.search(question) and not HOW_MANY.search(question):
+                return [metric(best, level)] + ms[1:]
+            return ms
         adjust.append(f"Used {metric(best, level).label} because the question names it "
                       f"(the plan said {ms[0].label}).")
-        return [metric(best, level)] + [m for m in ms[1:] if m.key != best]
+        return [metric(best, level)] + [m for m in ms[1:] if m.key != best and m.key in lengths]
 
     def check_direction(m, planned: int) -> int:
         asked = asked_direction(question, m)
+        if not asked:
+            if re.search(r"\b(ascending|increasing|smallest first|lowest first|bottom up)\b", question, re.I):
+                asked = -1
+            elif re.search(r"\b(descending|decreasing|largest first|highest first)\b", question, re.I) \
+                    or (RANK_WORDS.search(question) and not DIRECTION_FOLLOW_UP.search(question)
+                        and not re.search(UP_OR_DOWN.replace("|rank", ""), strip_group_words(question), re.I)):
+                asked = 1  # "rank X by Y" with no direction: highest first
         if asked and planned and asked != planned:
             adjust.append(f"Ranked {'highest' if asked > 0 else 'lowest'} first: in this question that means "
                           f"{m.high if asked > 0 else m.low}.")
@@ -648,7 +996,10 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
     def rank_from_question(ms, planned=0, within=None, level=None):
         m = ms[0]
         direction = check_direction(m, planned)
-        level = level or _level(question, plan.get("level") or "segment")
+        planned_level = str(plan.get("level") or "segment").lower().replace("buying ", "").replace("value ", "")
+        if planned_level in ("tier", "style") and not re.search(r"\b(them|those|these|tiers?|styles?)\b", question, re.I):
+            planned_level = "segment"  # "who pays the least per item?" names no tier or style: rank segments
+        level = level or _level(question, planned_level)
         named_within = [g for g in named_groups if g.kind in ("tier", "style", "segment", "combined")]
         if named_within:
             within = named_within  # the groups the question names beat the plan's filter
@@ -657,7 +1008,9 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
         n = int(plan.get("n") or 1) if str(plan.get("n") or "1").isdigit() else 1
         if RANK_WORDS.search(question) or re.search(r"\ball\b", question, re.IGNORECASE):
             n = max(n, 12 if level == "segment" else 4)
-        return sem.rank(m, level, direction, n, within)
+        ordinal = ORDINAL.search(question)
+        nth = ORDINALS[ordinal.group(1).lower()] if ordinal else 1
+        return sem.rank(m, level, direction, n, within, nth)
 
     # ---- questions about the k table or the backtest schemes --------------------------
     if K_WORDS.search(question) and tool not in ("k_choice",):
@@ -685,11 +1038,53 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
         if plan.get("a") and plan.get("a") == plan.get("b") or (len(schemes_q) == 1 and len(fold_hits) == 2):
             tool = "by_fold"
         elif ALL_SCHEMES.search(question) or len(schemes_q) < 2:
-            tool = "schemes"
+            pair = [resolve_scheme(str(plan.get(k) or "")) for k in ("a", "b")]
+            if not (context and not schemes_q and all(pair) and pair[0] != pair[1]
+                    and not ALL_SCHEMES.search(question)):
+                tool = "schemes"  # "so which is better?" after two schemes keeps comparing those two
     if tool == "schemes" and len(schemes_q) == 1 and (len(fold_hits) == 2 or re.search(r"\b(each|both|per) folds?\b|\bboth backtests\b", question, re.I)):
         tool = "by_fold"
 
     # ---- segment questions ---------------------------------------------------------------
+    segment_tool = tool not in ("schemes", "compare_schemes", "k_choice", "cleaning", "by_fold")
+    flt = parse_filter(question) if segment_tool else None
+    if flt:
+        # "expected revenue from segments whose P(buys again) is above 50%": the filter's measure
+        # picks the segments, and the measure named before it is what gets totalled.
+        key, op, value, before = flt
+        if key is None:
+            key = plan_metrics(convert=False)[0].key
+            if SEGMENT_METRICS[key].unit == "percent" and value > 1:
+                value /= 100
+        fm = SEGMENT_METRICS[key]
+        reported = [k for k in metrics_named_in(before) if k != key and k != "customers"]
+        report = SEGMENT_METRICS[reported[0]] if reported else None
+        if report and HOW_MANY.search(before) and report.key in COUNT_OF:
+            report = SEGMENT_METRICS[COUNT_OF[report.key]]
+        within = [g for g in named_groups if g.kind != "all"] or None
+        adjust.append(f"Filtered segments on {fm.label} {op} {value:g}"
+                      + (f" and totalled {report.label}." if report else "."))
+        return sem.count_where(fm, op, value, within, report), adjust
+    if segment_tool and SHARE_WORDS.search(question):
+        within_share = share_of_intersection(question, seg)
+        if within_share:
+            part, whole = within_share
+            ms = plan_metrics(default="customers")
+            m = next((x for x in ms if x.agg == "sum"), SEGMENT_METRICS[
+                "expected_revenue" if re.search(r"revenue|value", question, re.I) else "customers"])
+            adjust.append(f"Divided by {whole.label}, the group the question asks about.")
+            return sem.share_within(part, whole, m), adjust
+    if segment_tool and CROSSTAB.search(question) and (SHARE_WORDS.search(question) or tool == "crosstab"):
+        m = plan_metrics(default="customers")[0]
+        if m.agg != "sum" and m.key in SHARE_OF:
+            m = SEGMENT_METRICS[SHARE_OF[m.key]]
+        return sem.crosstab(m, as_share=bool(SHARE_WORDS.search(question)) and m.agg == "sum"), adjust
+    if segment_tool and PER_SEGMENT.search(question) and not superlative:
+        m = plan_metrics(default="customers")[0]
+        if m.agg == "sum":
+            groups = named_groups or [Group("all", list(sem.seg.SEGMENT), "all customers")]
+            adjust.append("Averaged over segments: the question asks for a per-segment average.")
+            return sem.mean_per_segment(groups, m), adjust
     if SHARE_WORDS.search(question) and len(named_groups) >= 2 and tool not in ("schemes", "compare_schemes", "k_choice"):
         for part in named_groups:
             whole = next((w for w in named_groups if w is not part and set(part.codes) < set(w.codes)), None)
@@ -709,7 +1104,8 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
             extra.append(SEGMENT_METRICS["revenue_per_customer"])
         allm = list(dict.fromkeys(ms + extra))
         return sem.breakdown("tier" if tier_q else "style", allm[0], allm[1:] or None), adjust
-    if ZERO.search(question) and tool in ("rank", "traits", "value", "count_where") and metrics_named_in(question):
+    if ZERO.search(question) and tool in ("rank", "traits", "value", "count_where") and metrics_named_in(question) \
+            and re.search(r"\b(segments?|which|how many|any)\b", question, re.IGNORECASE):
         m = SEGMENT_METRICS[metrics_named_in(question)[0]]
         adjust.append(f"Listed the segments whose {m.label} is exactly 0.")
         return sem.count_where(m, "=", 0.0, [g for g in named_groups if g.kind != "all"] or None), adjust
@@ -768,6 +1164,11 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
         return sem.value(groups, ms), adjust
     if tool == "profile":
         groups = named_groups or _groups(plan.get("group") or plan.get("groups"), seg)
+        asked = [k for k in metrics_named_in(question) if k != "customers"]
+        if asked and not re.search(r"\b(profile|tell me about|describe|overview|everything|summary|summar\w+)\b",
+                                   question, re.IGNORECASE):
+            adjust.append(f"Looked up {SEGMENT_METRICS[asked[0]].label}: the question asks for that measure.")
+            return sem.value(groups, [SEGMENT_METRICS[asked[0]]]), adjust
         if len(groups) > 1 and all(g.single for g in groups):
             return sem.compare_many(groups, [SEGMENT_METRICS[k] for k in
                                              ("customers", "expected_revenue", "p_buys_again", "recency_days")]), adjust
@@ -788,12 +1189,24 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
     if tool == "rank":
         within = None
         if plan.get("within"):
-            within = [_group_or_combined(v, seg) for v in (plan["within"] if isinstance(plan["within"], list)
-                                                          else [plan["within"]])]
+            try:
+                within = [_group_or_combined(v, seg) for v in (plan["within"] if isinstance(plan["within"], list)
+                                                              else [plan["within"]])]
+            except PlanError:
+                within = None  # the question's own groups (if any) are used instead
         planned = {"highest": 1, "lowest": -1}.get(str(plan.get("direction", "")).lower(), 0)
         return rank_from_question(plan_metrics(), planned, within or None), adjust
     if tool == "compare":
         extra = [plan[k] for k in ("c", "d", "e") if plan.get(k)]
+        if not named_groups and re.search(r"\b(buying styles|styles|value tiers|tiers)\b", question, re.IGNORECASE) \
+                and not re.search(r"\bsegments?\b", question, re.IGNORECASE):
+            # "compare buying styles on X": every style, not the two the plan picked
+            level = "style" if re.search(r"\bstyles\b", question, re.IGNORECASE) else "tier"
+            adjust.append(f"Compared every {'buying style' if level == 'style' else 'value tier'}.")
+            return sem.breakdown(level, plan_metrics(default="customers")[0]), adjust
+        if trust_named and len(named_groups) == 1:
+            adjust.append("Reported the group left after the exclusion.")
+            return sem.value(named_groups, plan_metrics(default="customers")), adjust
         if len(named_groups) >= 2:
             groups = named_groups
         else:
@@ -820,10 +1233,14 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
             return sem.breakdown("tier" if tier_q else "style", m), adjust
         return sem.crosstab(m), adjust
     if tool == "count_where":
-        if not HAS_THRESHOLD.search(CODES.sub(" ", question)):
+        value_group = None
+        if isinstance(plan.get("value"), str) and not re.fullmatch(r"\s*-?[\d.,]+\s*%?\s*", plan["value"]):
+            value_group = resolve_one(re.sub(r"-\*$|\*$", "", plan["value"].strip()), seg)  # "value": "C1-B1"
+        if value_group or not HAS_THRESHOLD.search(CODES.sub(" ", question)):
             # "How many customers are in C4-B1?" is a lookup, not a threshold count.
             adjust.append("Looked up the group's value: the question has no threshold.")
-            groups = named_groups or _groups(plan.get("groups") or plan.get("within") or "all", seg)
+            groups = named_groups or ([value_group] if value_group else None) or \
+                _groups(plan.get("groups") or plan.get("within") or "all", seg)
             if COMBINE.search(question) and len(groups) > 1:
                 groups = [combine(groups)]
             return sem.value(groups, plan_metrics(default="customers")), adjust
@@ -864,7 +1281,8 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
             keys = []
         planned = {"highest": 1, "lowest": -1}.get(str(plan.get("direction", "")).lower(), 0)
         direction = check_direction(ms[0], planned) if re.search(UP_OR_DOWN, strip_group_words(question), re.I) else planned
-        return sem.schemes(ms, keys or None, direction if len(keys) != 1 else 0, fold), adjust
+        return sem.schemes(ms, keys or None, direction if len(keys) != 1 else 0, fold,
+                           average=bool(SCHEME_AVERAGE.search(question)) and len(keys) != 1), adjust
     if tool == "compare_schemes":
         a, b = schemes_q[:2] if len(schemes_q) >= 2 else (_scheme(plan.get("a")), _scheme(plan.get("b")))
         ms = plan_metrics("scheme")
@@ -886,7 +1304,7 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
     raise PlanError(f"unknown tool '{tool}'")
 
 UP_OR_DOWN = (r"\b(most|highest|best|top|largest|biggest|longest|oldest|least|lowest|worst|bottom|smallest|"
-              r"fewest|shortest|newest|rank)\b")
+              r"fewest|shortest|newest|cheapest|rank)\b")
 
 
 def _all_schemes(values) -> bool:
@@ -928,8 +1346,17 @@ def build_graph(llm, data, checkpointer=None):
         if intent in ("out_of_scope", "methodology") and len(state["messages"]) > 1 and FOLLOW_UP.search(question) \
                 and (intent == "out_of_scope" or metrics_named_in(question)) and not METHOD_WORDS.search(question):
             intent, how = "analytical", "follow-up to the previous answer"
-        if intent == "analytical" and re.search(r"^\s*(should (i|we)|can (i|we) use|is it (ok|safe|wise))\b", question, re.I):
+        if intent == "analytical" and ADVICE.search(question):
             intent, how = "methodology", "advice about using the results"
+        elif intent == "analytical" and COPY_FORMAT.search(question) and re.search(
+                r"\b(write|draft|describ\w*|give me|create|make|generate|compose)\b", question, re.I):
+            intent, how = "generative", "asks for written copy in a set format"
+        elif intent == "generative" and not GENERATIVE_WORDS.search(question):
+            intent, how = ("methodology" if METHOD_WORDS.search(question) else "analytical",
+                           "nothing to write: no copy was asked for")
+        elif intent == "out_of_scope" and not OFF_TOPIC.search(question) and (
+                DOMAIN.search(question) or resolve(question, sem.seg.reset_index(drop=True))):
+            intent, how = "analytical", "about this segmentation's data"
         trace.append(step("Intent", f"{intent}: {how}"))
         return {"question": question, "intent": intent, "trace": trace}
 
@@ -954,15 +1381,31 @@ def build_graph(llm, data, checkpointer=None):
             trace.append(step("Not answerable from this data", reason))
             return {"plan": None, "rows": None, "declined": True, "trace": trace, "check": None,
                     "messages": [AIMessage(f"I can't answer that from this data: {reason}.")]}
+        if SQL.search(question):
+            reason = ("I don't run SQL, and the published results have no customer-level rows; they describe "
+                      "each segment as a whole (sizes, medians, averages)")
+            trace.append(step("Not answerable from this data", reason))
+            return {"plan": None, "rows": None, "declined": True, "trace": trace, "check": None,
+                    "messages": [AIMessage(f"I can't do that: {reason}. Ask in words instead, for example "
+                                           "*What is C1-B1's expected revenue?*")]}
+        measure_words = re.search(r"\bper (item|product|unit)\b|\b(items?|products?) per order\b|\bproduct lines\b",
+                                  question, re.I)
         no_data = None if TOOL_WORDS["cleaning"].search(question) or CUSTOMER_LEVEL.search(question) \
-            else NO_DATA.search(question)
-        if no_data or GEOGRAPHY.search(question) and not re.search(r"\buk\b", question, re.I):
+            or measure_words else NO_DATA.search(question)
+        which_place = re.search(r"\b(which|what|top|list|by)\b[^?]{0,30}\b(country|countries|region|regions|city|cities)\b",
+                                question, re.I)
+        if no_data or GEOGRAPHY.search(question) and (not re.search(r"\buk\b", question, re.I) or which_place):
             what = {"profitable": "profit", "profitability": "profit", "profits": "profit", "costs": "cost",
                     "margins": "margin", "items": "product", "products": "product", "skus": "product",
                     "categories": "product category"}.get(no_data.group(0).lower(), no_data.group(0).lower()) \
                 if no_data else "location"
             reason = (f"the published results have no {what} data. They describe each segment by size, spend, "
                       "order patterns, returns, seasonality, UK share and predicted next-quarter value")
+            if not no_data:
+                outside = round(sem.seg.NON_UK_CUSTOMERS.sum())
+                reason = (f"the published results record only whether customers are in the UK, not which country "
+                          f"they're in. About {outside:,} customers are outside the UK (estimated from each "
+                          "segment's UK share), but their countries aren't recorded")
             trace.append(step("Not answerable from this data", reason))
             return {"plan": None, "rows": None, "declined": True, "trace": trace, "check": None,
                     "messages": [AIMessage(f"I can't answer that from this data: {reason}.")]}
@@ -982,6 +1425,11 @@ def build_graph(llm, data, checkpointer=None):
                                         "or 'and the lowest?' changes only what it names.)"))
         prompt = [SystemMessage(plan_prompt), *_history(state), *context, HumanMessage(question)]
         previous = _text(state["messages"][-2]) if len(state["messages"]) >= 2 else ""
+        if re.search(r"\b(the two|both|those two|these two)\b", question, re.I):
+            # "which of the two ...": the groups of the last two answers, not just the last one
+            answers = [_text(m).split("\n\n")[0] for m in state["messages"][:-1] if isinstance(m, AIMessage)][-2:]
+            if len(answers) == 2 and len(resolve(answers[-1], sem.seg.reset_index(drop=True))) < 2:
+                previous = " ".join(answers)
         last_plan = state.get("last_plan")
         error = None
         for attempt in range(1, MAX_PLAN_ATTEMPTS + 1):
@@ -1011,6 +1459,13 @@ def build_graph(llm, data, checkpointer=None):
                     # "what about X?" / "same for X": the previous calculation for the new group.
                     plan = {**last_plan, "groups": [question], "a": None, "b": None, "group": question}
                     trace.append(step("Reused the previous calculation", "follow-up names a new group"))
+                named_schemes = schemes_named_in(question)
+                if last_plan and last_plan.get("tool") in ("schemes", "compare_schemes", "by_fold") and named_schemes \
+                        and (SAME.search(question) or re.search(r"^\s*(and|now|ok|so)\b", question, re.I)) \
+                        and not metrics_named_in(question, "scheme"):
+                    # "and RFM?": the previous backtest measure (and fold) for the newly named scheme.
+                    plan = {**last_plan, "tool": "schemes", "schemes": named_schemes, "a": None, "b": None}
+                    trace.append(step("Reused the previous calculation", "follow-up names another scheme"))
                 group_text = None
                 if last_plan and DIRECTION_FOLLOW_UP.search(question):
                     # "and the shortest?": the previous calculation and groups, the other direction.
@@ -1043,7 +1498,13 @@ def build_graph(llm, data, checkpointer=None):
     def methodology(state: CopilotState) -> dict:
         trace = list(state["trace"])
         question = state["question"]
-        found = docs.retrieve(question, k=2, corpus=corpus)
+        query = question
+        if len(re.findall(r"\w+", question)) <= 4 and len(state["messages"]) > 1:
+            # "why?": search with the question it follows up
+            earlier = [_text(m) for m in state["messages"][:-1] if isinstance(m, HumanMessage)]
+            if earlier:
+                query = f"{earlier[-1]} {question}"
+        found = docs.retrieve(query, k=2, corpus=corpus)
         if not found:
             answer = ("The project documentation doesn't cover that. The README explains how the data was "
                       "cleaned, how the segments and forecasts are built, and how they were backtested.")
@@ -1070,7 +1531,8 @@ def build_graph(llm, data, checkpointer=None):
         trace = list(state["trace"])
         question = state["question"]
         seg = sem.seg.reset_index(drop=True)
-        if GEOGRAPHY.search(question):
+        place = GEOGRAPHY.search(question)
+        if place and not any(g.kind == "segment" for g in resolve(question, seg)):
             trace.append(step("Not answerable from this data", "the data has no country or region"))
             answer = ("The data doesn't record countries or regions, only what share of each segment's "
                       "customers are in the UK, so I can't target a campaign by location. I can write one "
@@ -1106,8 +1568,13 @@ def build_graph(llm, data, checkpointer=None):
                 codes = re.findall(r"\(C\d-B\d\)", ranked.facts[0])
                 groups = [resolve_one(c.strip("()"), seg) for c in codes]
                 how = f"picked by data: {ranked.facts[0]}"
-        if not groups and FOLLOW_UP.search(question):
-            groups = resolve(" ".join(_text(m) for m in _history(state)), seg)
+        if not groups and (FOLLOW_UP.search(question) or re.search(
+                r"\b(top|first|last|bottom|best|winner|that|this)\s+(one|segment)\b|\bthe (top|first|winner)\b",
+                question, re.IGNORECASE)):
+            # "for the top one" / "for that one": the segment the previous answer singled out
+            previous = next((_text(m) for m in reversed(state["messages"][:-1]) if isinstance(m, AIMessage)), "")
+            picked = pick_from_previous(question, previous)
+            groups = [resolve_one(c, seg) for c in picked] or resolve(" ".join(_text(m) for m in _history(state)), seg)
             how = "named earlier in the conversation"
         if not groups:
             options = ", ".join(f"{n} ({c})" for c, n in list(names.items())[:4])
@@ -1119,12 +1586,33 @@ def build_graph(llm, data, checkpointer=None):
             return {"trace": trace, "check": None, "messages": [AIMessage(answer)]}
 
         codes = list(dict.fromkeys(c for g in groups for c in g.codes))
+        notes_first, notes = [], []
+        if len(codes) > 1 and not any(g.kind == "segment" for g in groups):
+            # "lapsed bulk customers": a framing that holds for some of the group's segments picks them out.
+            group_text = " ".join(w for g in groups for w in g.label.lower().split(" (")[0].split())
+            for pattern, col, test, label in FRAMINGS:
+                hit = re.search(pattern, question, re.IGNORECASE)
+                if not hit or any(w in group_text for w in hit.group(0).lower().split()):
+                    continue
+                hold = [c for c in codes if test(sem.seg.loc[c, col], sem.seg[col])]
+                if hold and len(hold) < len(codes):
+                    shown = ", ".join(f"{c} {_profile_value(col, sem.seg.loc[c, col])}" for c in hold)
+                    notes.append(f"Note: written for the segments the data shows as '{hit.group(0)}' ({label}: {shown}).")
+                    codes = hold
+                    how += f"; narrowed to the '{hit.group(0)}' segments"
         stats = sem.seg.loc[codes].reset_index(drop=True)[STAT_COLUMNS]
         records = stats.to_dict("records")
         trace.append(step("Retrieved segment statistics", how, kind="table", data=records))
         claims = claimed_figures(question, records)
         framings = framing_conflicts(question, stats, sem.seg)
+        if place:
+            uk = ", ".join(f"{r.SEGMENT} {r.UK_SHARE:.1%}" for r in stats.itertuples())
+            framings.append(f"the request places them in '{place.group(0)}', but the data records no countries, "
+                            f"only the share of customers in the UK (UK customers: {uk})")
         prompt = GENERATIVE_PROMPT.format(stats=readable_profiles(stats))
+        if len(codes) > 1:
+            prompt += (f"\n\nWrite for all {len(codes)} segments below together, as one audience; don't leave "
+                       "any of them out.")
         if framings:
             prompt += ("\n\nThe request describes the segment in ways the data doesn't support: "
                        + "; ".join(framings) + ". Don't describe them that way; follow the profiles.")
@@ -1136,106 +1624,210 @@ def build_graph(llm, data, checkpointer=None):
         messages = [SystemMessage(prompt), *_history(state), HumanMessage(question)]
         answer = _text(llm.invoke(messages))
         labels = " ".join(PROFILE_LABELS.values())
-
-        # Figures that aren't in the profiles get one rewrite; any that survive (and any figure
-        # taken from the request) are removed line by line rather than shown.
-        check = verify.check(proposals_removed(answer), records, allowed_text=labels, segment_names=names)
-        if not check.ok:
-            bad = [f.text for f in check.unverified] + check.segments
-            answer = _text(llm.invoke(messages + [AIMessage(answer), HumanMessage(
-                f"These aren't in the segment profiles: {', '.join(bad)}. Rewrite using only figures and "
-                "segments from the profiles (your own proposals must say '(proposed)').")]))
-        issues = []
-        for note in framings:
-            phrase = re.search(r"'([^']+)'", note)
-            if not phrase:
-                continue
-            keys = [w for w in re.findall(r"[a-z-]+", phrase.group(1).lower())
-                    if len(w) > 3 and w not in ("biggest", "their", "they", "mostly", "very", "highly")]
-            if any(re.search(rf"(?<![\w]){re.escape(k)}", answer, re.IGNORECASE) for k in keys):
-                issues.append(f"don't describe them as '{phrase.group(1)}': the data doesn't support it")
-        if PERSONAL.search(answer):
-            issues.append("don't present segment medians as the reader's own figures (e.g. 'your last order was "
-                          "£401', 'you placed 12 orders'); describe the offer instead")
-        for pattern, col, test, label in FRAMINGS:
-            if col in FRAMING_CONSEQUENCES and re.search(pattern, question, re.I) and any(
-                    "UK customers" in n for n in framings):
-                for w in FRAMING_CONSEQUENCES[col]:
-                    if re.search(rf"\b{w}\b", answer, re.I):
-                        issues.append(f"don't make the copy '{w}': {label} is high")
-        if re.search(r"\bsms\b|text message", question, re.I) and (
-                len(answer) > 480 or re.search(r"subject|dear |persona|key numbers|campaign brief", answer, re.I)):
-            issues.append("reply with only the SMS: one or two sentences under 160 characters, with no subject line, "
-                          "greeting, persona card or brief")
+        is_card = re.search(r"\b(persona|card|profile)\b", question, re.I)
+        customer_copy = re.search(r"\b(email|e-mail|sms|subject lines?|text message|letter|headlines?|taglines?|tweet|"
+                                  r"linkedin|post|push|notification|thank[- ]you|note|newsletter|social|message)\b",
+                                  question, re.I) and not re.search(r"\b(persona|brief|card)\b", question, re.I)
+        sms = re.search(r"\bsms\b|text message", question, re.I)
+        wants_stats = re.search(r"\b(mention\w*|include|quote|use|with|noting)\b.*\b(median|figure|number|stat\w*|count)",
+                                question, re.I)
         count = re.search(r"\b(?:exactly )?(\d+|two|three|four|five|six) (subject lines?|bullets?|bullet points|ideas|"
                           r"options|headlines|taglines|names)\b", question, re.I)
-        if count:
-            n = int(count.group(1)) if count.group(1).isdigit() else COUNT_WORDS[count.group(1).lower()]
-            items = [l for l in answer.splitlines() if re.match(r"\s*([-*•]|\d+[.)])\s+\S", l)]
-            if len(items) != n:
-                issues.append(f"give exactly {n} {count.group(2)} as a list and nothing else")
-        customer_copy = re.search(r"\b(email|sms|subject lines?|text message|letter|headlines?|taglines?)\b", question, re.I) \
-            and not re.search(r"\b(persona|brief|card)\b", question, re.I)
-        if customer_copy and re.search(r"\*\*(key numbers|who they are|what they respond to)", answer, re.I):
-            issues.append("write only the requested copy, with no persona card or key-number list")
-        if customer_copy and verify.check(proposals_removed(answer), records).figures and not re.search(
-                r"\b(mention|include|quote|use)\b.*\b(median|figure|number|stat)", question, re.I):
-            issues.append("don't quote segment statistics (medians, counts, shares) in customer-facing copy; "
-                          "write to the customer about the offer")
-        if re.search(r"\b(email|sms|subject lines?|message|letter|text)\b", question, re.I) and any(
-                re.search(r"\bC\d-B\d\b", l) for l in answer.splitlines() if not l.lstrip().startswith("#")):
-            issues.append("don't put internal segment codes like C2-B2 in customer-facing text")
-        if issues:
+        framing_keys = []
+        for note in framings:
+            phrase = re.search(r"'([^']+)'", note)
+            if phrase:
+                framing_keys.append((phrase.group(1), [w for w in re.findall(r"[a-z-]+", phrase.group(1).lower())
+                                                       if len(w) > 3 and w not in ("biggest", "their", "they", "mostly",
+                                                                                   "very", "highly", "bulk")]))
+
+        def copy_lines(text):
+            return [l for l in text.splitlines() if l.strip() and not l.lstrip().startswith("#")]
+
+        def stat_figures(line):
+            body = re.sub(r"^\s*(?:[-*•]|\d+[.)])\s+", "", line)
+            result = verify.check(proposals_removed(body), records)
+            bad = {f.text for f in result.unverified}
+            return [f.text for f in result.figures if f.text not in bad]
+
+        def issues_of(text):
+            """Everything wrong with the copy, as instructions for a rewrite."""
+            found = []
+            check = verify.check(unnumbered(proposals_removed(text)), records, allowed_text=labels, segment_names=names)
+            if not check.ok:
+                bad = [f.text for f in check.unverified] + check.segments
+                found.append(f"these aren't in the segment profiles: {', '.join(bad)}. Use only figures and segments "
+                             "from the profiles, and write '(proposed)' right after each number that is your own idea")
+            for phrase, keys in framing_keys:
+                if any(re.search(rf"(?<![\w]){re.escape(k)}", text, re.IGNORECASE) for k in keys):
+                    found.append(f"don't describe them as '{phrase}': the data doesn't support it")
+            found += [issue for _, issue in claim_conflicts(text, stats, sem.seg)]
+            if PERSONAL.search(text):
+                found.append("don't present segment medians as the reader's own figures (e.g. 'your last order was "
+                             "£401', 'you placed 12 orders'); describe the offer instead")
+            for pattern, col, test, label in FRAMINGS:
+                if col in FRAMING_CONSEQUENCES and re.search(pattern, question, re.I) and any(
+                        "UK customers" in n for n in framings):
+                    for w in FRAMING_CONSEQUENCES[col]:
+                        if re.search(rf"\b{w}\b", text, re.I):
+                            found.append(f"don't make the copy '{w}': {label} is high")
+            if place and re.search(GEOGRAPHY.pattern, text, re.I):
+                found.append("don't mention countries or regions: the data only records UK share")
+            if sms and (len(text) > 320 or re.search(r"subject|dear |hi \[|persona|key numbers|campaign brief|success metric|"
+                                                     r"^#|\*\*sms", text, re.I | re.M)):
+                found.append("reply with only the SMS: one or two sentences under 160 characters, with no heading, "
+                             "subject line, greeting, sign-off, persona card or brief")
+            if count:
+                n = int(count.group(1)) if count.group(1).isdigit() else COUNT_WORDS[count.group(1).lower()]
+                items = [l for l in text.splitlines() if re.match(r"\s*([-*•]|\d+[.)])\s+\S", l)]
+                if len(items) != n:
+                    found.append(f"give exactly {n} {count.group(2)} as a list and nothing else")
+            sentences = re.search(r"\b(\d|one|two|three|four|five)[- ]sentences?\b", question, re.I)
+            if sentences:
+                n = int(sentences.group(1)) if sentences.group(1).isdigit() else \
+                    {"one": 1, **COUNT_WORDS}[sentences.group(1).lower()]
+                body = " ".join(l for l in text.splitlines() if l.strip() and not l.lstrip().startswith(("#", "*Note")))
+                got = len([s for s in re.split(r"(?<=[.!?])\s+", body.strip()) if re.search(r"\w{3,}", s)])
+                if got != n:
+                    found.append(f"write exactly {n} full sentences, with no heading")
+            if not is_card and CARD_LABELS.search(text):
+                found.append("write only what was asked for, with no persona card or key-number list")
+            if customer_copy and not wants_stats and any(stat_figures(l) for l in copy_lines(text)):
+                found.append("don't quote segment statistics (medians, counts, shares, days) in customer-facing copy; "
+                             "write to the customer about the offer")
+            if customer_copy and any(re.search(r"\bC\d-B\d\b", l) for l in copy_lines(text)):
+                found.append("don't put internal segment codes like C2-B2 in customer-facing text")
+            if customer_copy and any(INTERNAL_LABEL.search(l) for l in copy_lines(text)
+                                     if not re.match(r"\s*\*\*(audience|goal|channel|timing)", l, re.I)):
+                found.append("don't address customers by internal segment names (Low value, Core, Top spenders, "
+                             "Holiday buyers ...)")
+            if OFFER_MONEY.search(text):
+                found.append("write '(proposed)' right after every £ amount in an offer, or use a percentage")
+            return found
+
+        # Two rewrites at most; whatever is still wrong after them is removed, not shown.
+        for attempt in (1, 2):
+            issues = issues_of(answer)
+            if not issues:
+                break
+            trace.append(step(f"Rewrite {attempt}", "; ".join(issues)[:400]))
             answer = _text(llm.invoke(messages + [AIMessage(answer), HumanMessage(
                 "Rewrite it: " + "; ".join(issues) + ". Keep everything else.")]))
-            # Still there after the rewrite: drop the sentences that make the unsupported claim.
-            for note in framings:
-                phrase = re.search(r"'([^']+)'", note)
-                keys = [w for w in re.findall(r"[a-z-]+", phrase.group(1).lower())
-                        if len(w) > 3 and w not in ("biggest", "their", "they", "mostly", "very", "highly")] if phrase else []
-                for k in keys:  # keep a markdown label like "**Who they are:**", drop only the sentence
-                    answer = re.sub(rf"(\*\*[^*\n]+:\*\*\s*)?[^.!?\n*]*(?<![\w]){re.escape(k)}[^.!?\n]*[.!?]?",
-                                    lambda mm: mm.group(1) or "", answer, flags=re.IGNORECASE)
-        for claim in claims:
-            figure = claim_pattern(claim)
-            answer = "\n".join(line for line in answer.splitlines() if not figure.search(line))
-        # A profile line whose figure still doesn't match the data is removed, not shown.
-        bad_lines = verify.check(proposals_removed(answer), records, allowed_text=labels, segment_names=names)
-        if bad_lines.unverified:
-            labels_l = [l.lower().split(" (")[0] for l in PROFILE_LABELS.values()]
-            bad = [f.text for f in bad_lines.unverified]
-            answer = "\n".join(line for line in answer.splitlines()
-                                if not (any(l in line.lower() for l in labels_l) and any(b in line for b in bad)))
+
+        def enforce(answer):
+            """Remove what is still wrong after the rewrites; returns the copy and what was removed."""
+            removed = []
+            for phrase, keys in framing_keys:
+                for k in keys:
+                    if re.search(rf"(?<![\w]){re.escape(k)}", answer, re.IGNORECASE):
+                        answer = drop_sentences(answer, rf"(?<![\w]){re.escape(k)}")
+                        removed.append(f"'{phrase}'")
+            for pattern, issue in claim_conflicts(answer, stats, sem.seg):
+                answer = drop_sentences(answer, pattern)
+                removed.append(re.search(r"say ('.+?')(?=: the data)", issue).group(1))
+            for claim in claims:  # a figure taken from the request: drop the sentence, not the whole line
+                answer = drop_sentences(answer, claim_pattern(claim).pattern)
+            if PERSONAL.search(answer):
+                answer = drop_sentences(answer, PERSONAL.pattern)
+                removed.append("segment medians presented as the reader's own figures")
+            if place:
+                answer = drop_sentences(answer, GEOGRAPHY.pattern)
+            if not is_card and CARD_LABELS.search(answer):
+                answer = strip_card(answer)
+            if customer_copy:
+                lines = []
+                for line in answer.splitlines():
+                    if not line.lstrip().startswith("#"):
+                        line = re.sub(r"\s*\((?:C\d-B\d(?:,\s*)?)+\)", "", line)
+                        line = re.sub(r"\bC\d-B\d\b\s*", "", line)
+                        line = re.sub(r"^(\s*(?:[-*•]|\d+[.)])?\s*)" + INTERNAL_LABEL.pattern + r",\s*(\w)",
+                                      lambda mm: mm.group(1) + mm.group(mm.lastindex).upper(), line, flags=re.IGNORECASE)
+                        if not re.match(r"\s*\*\*(audience|goal|channel|timing|success)", line, re.I):
+                            # "our top spenders offer" -> "our offer"; "perfect for holiday buyers" -> "perfect for you"
+                            line = re.sub(r"\b(for|to)\s+(?:our\s+|the\s+)?" + INTERNAL_LABEL.pattern, r"\1 you", line,
+                                          flags=re.IGNORECASE)
+                            # "As a Top Spender, we're ..." -> "We're ..."
+                            line = re.sub(r"\b[Aa]s (?:a|an|one of our)\s+" + INTERNAL_LABEL.pattern + r",\s*(\w)",
+                                          lambda mm: mm.group(mm.lastindex).upper(), line, flags=re.IGNORECASE)
+                            line = re.sub(r"\s*" + INTERNAL_LABEL.pattern + r"(?=\s)", "", line, flags=re.IGNORECASE)
+                        if not wants_stats and not re.match(r"\s*\*\*(audience|goal|channel|timing|success)", line, re.I):
+                            for fig in stat_figures(line):
+                                # "Revive Your Orders: 184 Days Since Last Purchase" -> "Revive Your Orders"
+                                parts = re.split(r"\s*[:–—-]\s+", line)
+                                if "**" not in line and len(parts) > 1 and fig not in parts[0] \
+                                        and re.match(r"\s*([-*•]|\d+[.)])\s+\S", line):
+                                    line = parts[0]
+                                else:
+                                    line = drop_sentences(line, rf"(?<![\d.,]){re.escape(fig)}(?![\d,])")
+                    lines.append(line)
+                answer = "\n".join(lines)
+            answer = OFFER_MONEY.sub(lambda mm: mm.group(0) + " (proposed)", answer)
+            # A figure that still doesn't match the data: on a profile line the line goes; elsewhere an
+            # offer amount is marked as a proposal and any other sentence with it is dropped.
+            bad_lines = verify.check(unnumbered(proposals_removed(answer)), records, allowed_text=labels, segment_names=names)
+            if bad_lines.unverified:
+                labels_l = [l.lower().split(" (")[0] for l in PROFILE_LABELS.values()]
+                bad = [f.text for f in bad_lines.unverified]
+                answer = "\n".join(line for line in answer.splitlines()
+                                   if not (any(l in line.lower() for l in labels_l) and any(b in line for b in bad)))
+                answer = mark_or_drop(answer, bad)
+            if sms:
+                answer = sms_only(answer)
+            elif re.search(r"\bno emojis?\b|\bwithout emojis?\b", question, re.I):
+                answer = EMOJI.sub("", answer)
+            if len(codes) > 1 and not any(g.kind == "segment" for g in groups):
+                audience = " + ".join(dict.fromkeys(g.label.split(" (")[0] for g in groups))
+                answer = set_audience(answer, f"{audience} ({', '.join(codes)})")
+            # Codes in a campaign's draft (subject line, body) are customer-facing too.
+            lines, in_draft = [], False
+            for line in answer.splitlines():
+                if re.search(r"\*\*draft\b|^#+\s*draft\b|subject line", line, re.I):
+                    in_draft = True
+                if in_draft and not line.lstrip().startswith("#"):
+                    line = re.sub(r"\s*\((?:C\d-B\d(?:,\s*)?)+\)|\s*\b(?:(?:for|to|from)\s+(?:our\s+)?)?C\d-B\d\b"
+                                  r"(?:\s+(?:customers|buyers|special))?", "", line, flags=re.IGNORECASE)
+                lines.append(line)
+            answer = "\n".join(lines)
+            # Chatter around the copy ("Sure, here are the subject lines ...:") isn't part of it.
+            answer = re.sub(r"(?im)^\s*(sure|certainly|of course|absolutely|here (are|is)|below (are|is))\b[^\n]*:\s*$\n?",
+                            "", answer)
+            answer = re.sub(r"(?im)^[\s*_]*\(proposed\)[\s*_.]*$\n?", "", answer)  # a stray marker on its own line
+            answer = re.sub(r"\n{3,}", "\n\n", answer).strip()
+            return answer, removed
+
+        answer, removed = enforce(answer)
+        if not re.sub(r"(?m)^#.*$", "", answer).strip():
+            # Everything was wrong: one more attempt with the issues spelled out, then the same clean-up.
+            trace.append(step("Rewrite 3", "nothing was left after removing unsupported wording"))
+            answer = _text(llm.invoke(messages + [HumanMessage(
+                "Write it again, following the rules strictly. Describe only what the profiles support: "
+                "no lapsed or win-back wording for recent customers, no seasonal wording for year-round ones, "
+                "and no statistics in customer-facing copy.")]))
+            answer, removed = enforce(answer)
+        if not re.sub(r"(?m)^#.*$", "", answer).strip():
+            answer = ("I couldn't write copy for this request that the data supports. Try asking without the "
+                      "framing, for example *Write a short email for " + names[codes[0]] + "*.")
 
         if len(codes) == 1:  # the card heading always names the segment properly
             answer = re.sub(r"^#{1,4} .*\(" + codes[0] + r"\).*$", f"### {names[codes[0]]} ({codes[0]})",
                             answer, count=1, flags=re.MULTILINE)
-        notes = []
         if claims:
             notes.append(f"Note: the request mentioned {', '.join(claims)}, which doesn't match the data, "
                          "so the data's figure is used.")
-        if conflict := seasonality_conflict(answer, stats):
-            notes.append(conflict)
         for note in framings:
-            notes.append(f"Note: {note}.")
-        if PERSONAL.search(answer):
-            notes.append("Note: the figures are segment medians, not this customer's own orders.")
-            conflict = conflict or "segment median presented as the customer's own figure"
-        if re.search(r"haven't (placed an? )?order|been a while|we miss you", answer, re.IGNORECASE) \
-                and (stats.MEDIAN_RECENCY_DAYS <= 90).all():
-            notes.append("Note: these customers ordered recently (median "
-                         + ", ".join(f"{d:.0f}" for d in stats.MEDIAN_RECENCY_DAYS) + " days ago), so don't "
-                         "send them a lapsed-customer message.")
-            conflict = conflict or "recent customers described as lapsed"
-        check = verify.check(proposals_removed(answer), records, allowed_text=labels, segment_names=names)
+            (notes_first if re.search(r"\b(right|correct|true)\s*\?|\b(isn't it|aren't they|don't they)\b", question, re.I)
+             else notes).append(f"Note: {note}.")
+        conflict = seasonality_conflict(" ".join(removed), stats) if removed else None
         if conflict:
-            check.segments = check.segments or []
-        trace.append(step("Checked figures", check.summary() + ("; " + conflict if conflict else ""),
-                          kind="check", data=check.ok and not conflict))
+            notes.append(conflict)
+        if removed and not re.search(r"\bonly\b|nothing else", question, re.I):
+            notes.append("Note: removed wording the data doesn't support (" + ", ".join(dict.fromkeys(removed)) + ").")
+        check = verify.check(unnumbered(proposals_removed(answer)), records, allowed_text=labels, segment_names=names)
+        trace.append(step("Checked figures", check.summary() + (f"; removed {', '.join(removed)}" if removed else ""),
+                          kind="check", data=check.ok))
         state_check = _check_state(check)
-        if conflict:
-            state_check["ok"] = False
-            state_check["unverified"].append("seasonal claim")
+        if notes_first:
+            answer = "\n".join(f"*{n}*" for n in notes_first) + "\n\n" + answer
         if notes:
             answer += "\n\n" + "\n".join(f"*{n}*" for n in notes)
         return {"context": records, "trace": trace, "check": state_check, "messages": [AIMessage(answer)]}
