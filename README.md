@@ -216,12 +216,22 @@ The experimental callbacks API (new in 1.9) isn't used: none of the clustering o
 
 ## Reproduce
 
-Requires a Snowflake account with key-pair auth and Python 3.11.
+**You need:**
+- Python 3.11.
+- A Snowflake account with a user that signs in with [key-pair authentication](https://docs.snowflake.com/en/user-guide/key-pair-auth).
+- **A role that can:**
+  - create a database (step 02 creates `CUSTOMER_SEGMENTATION` with `RAW`, `STAGING`, `MARTS` and `ML` schemas, so `SYSADMIN` on a trial account works);
+  - create stages, tables, views and Python procedures in it;
+  - create and run tasks: `EXECUTE TASK` on the account, for the optional monthly re-scoring.
+- An X-Small warehouse that role can use.
+
+Put the account, user, private-key path, role and warehouse in `.env` (copy it from `.env.example`).
 
 ```bash
-python -m venv .venv && .venv/Scripts/activate      # or source .venv/bin/activate
+python -m venv .venv
+source .venv/bin/activate           # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env                                 # fill in account, user, key path, role, warehouse
+cp .env.example .env                # then fill it in
 
 python 01_fetch_data.py               # download + convert (about 1 min)
 python 02_load_raw.py                 # creates CUSTOMER_SEGMENTATION db, stage, RAW table
@@ -233,7 +243,7 @@ python 07_run_production.py           # fit Sep 2011, score Dec 2011 -> ML.CUSTO
 python 08_make_charts.py
 ```
 
-Then create the monthly re-scoring Task by running [sql/rescore_task.sql](sql/rescore_task.sql) in a worksheet (set its warehouse first). If you deployed before re-scoring existed, run `python 05_deploy_procedures.py` and `python 07_run_production.py --view-only`; the second recreates the view without retraining.
+Then, optionally, create the monthly re-scoring Task. Run [sql/rescore_task.sql](sql/rescore_task.sql) in a Snowsight SQL worksheet or with SnowSQL (`snowsql -f sql/rescore_task.sql`), after setting its `WAREHOUSE` line to your warehouse. If you deployed before re-scoring existed, run `python 05_deploy_procedures.py` and `python 07_run_production.py --view-only`; the second recreates the view without retraining.
 
 Everything runs on an X-Small warehouse. Developing the whole project, including every rerun, used under 2.5 credits.
 
