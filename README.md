@@ -8,9 +8,14 @@ Three approaches were compared on two out-of-time backtests, scored against what
 - **Option C, outcome-guided segments:** gradient boosting turned into readable rules.
 - **A hybrid:** C's value tiers crossed with B's behavior axis.
 
-The hybrid is the only approach that does both jobs:
+Option A, one clustering over all 11 features, was dropped earlier. A 109-configuration bake-off ([exploration/](exploration/)) found that adding the buying-behavior features made segments *worse* at predicting next quarter than clustering on recency, frequency and spend alone: buys-again AUC fell from 0.752 to 0.732 and next-revenue R² from 0.28 to 0.26, for the best configuration of each. That's why B keeps value and behavior on separate axes.
 
-![Method trade-off](docs/img/method_tradeoff.png)
+Two schemes separate buying styles, and the hybrid also concentrates more next-quarter revenue. Its lead over the simpler grid is narrow (see finding 3):
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/method_tradeoff-dark.png">
+  <img alt="Revenue held by the top 20% against buying-style separation for each scheme; the hybrid and the B grid separate buying styles, and the hybrid holds 71% against the grid's 66%" src="docs/img/method_tradeoff.png">
+</picture>
 
 | Scheme | Segments | Top-20% revenue capture | Buying-style separation (η²) | Buys again (AUC) |
 |---|---|---|---|---|
@@ -29,7 +34,10 @@ All numbers are the mean of two folds: fit in March and scored in June, and fit 
 
 ## What the segments say
 
-![Hybrid grid](docs/img/hybrid_grid.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/hybrid_grid-dark.png">
+  <img alt="Heatmap of predicted next-quarter value by value tier and buying style; Top spenders / Bulk buyers hold 52% with 289 customers" src="docs/img/hybrid_grid.png">
+</picture>
 
 - **The top 7% of customers, "Top spenders / Bulk buyers", hold 52% of next quarter's predicted value.** They order a median 12 times a year at 337 units per order and £1.73 per unit, which is wholesale behavior.
 - **Holiday buyers are a distinct style at every value level.** 59–100% of their revenue falls in October–December. A "Top spender / Holiday buyer" needs a different calendar from a "Top spender / Bulk buyer" even though both are worth about the same.
@@ -42,10 +50,11 @@ All numbers are the mean of two folds: fit in March and scored in June, and fit 
 
 1. **There are no natural clusters.** HDBSCAN labels 61–78% of customers as noise on the full feature set, and k-means silhouettes are 0.2–0.3. The segments are a *useful, stable* partition of a continuum, chosen for predictive value and stability, not "discovered tribes". The map below shows the overlap.
 2. **Nothing much beats plain RFM at predicting who buys again.** The hybrid's AUC is 0.02 below the RFM baseline, and even the unsegmented model gains only 0.03. Buying again is driven mostly by recency. The hybrid earns its place on *revenue concentration* (+15 points over RFM) and on *buying style*, not on this metric.
-3. **At 3–4 segments, C collapses to spend bands** (e.g. `net_revenue > 3598`). The model is saying that trailing 12-month spend dominates next-quarter value. The behavior axis is what adds new information.
-4. **The £ forecasts are only trustworthy for seasons the model has seen.** C is trained on all past quarters pooled, with the snapshot month as a feature. The fold that ended in the holiday quarter had never seen one, and it under-forecast revenue by 44%. The rankings held up, so use `expected_revenue_next_quarter` to *rank and size* customers, not as a budget number.
-5. **Some grid cells are small.** "Top spenders / Holiday buyers" and "Top spenders / Small-basket buyers" hold 45 and 49 customers. The 5% minimum segment size is enforced per axis, not per cell.
-6. **One selection rule was changed after seeing results.** k for each axis is chosen by the best score among stable candidates, preferring fewer segments within a tie tolerance. The tolerance was widened from 0.005 to 0.01 after production picked 7 value segments over 4 for a 0.006 R² gain, with stability just over the bar. Both backtest folds were unaffected. The full k-selection table is in [results/k_selection.csv](results/k_selection.csv).
+3. **The hybrid's lead over the simpler grid is thin.** Option B's value × behavior grid uses no gradient boosting and separates buying styles just as well (η² 0.34). It captures 66% of next-quarter revenue in its top 20%, against the hybrid's 71%. Across the two backtests the hybrid ranges from 67.5% to 74.4% and the grid from 65.9% to 66.1%, so the 5-point gain is suggestive, not established. If the outcome model's extra machinery matters, the grid is the simpler choice; more backtest folds would settle it.
+4. **At 3–4 segments, C collapses to spend bands** (e.g. `net_revenue > 3598`). The model is saying that trailing 12-month spend dominates next-quarter value. The behavior axis is what adds new information.
+5. **The £ forecasts are only trustworthy for seasons the model has seen.** C is trained on all past quarters pooled, with the snapshot month as a feature. The fold that ended in the holiday quarter had never seen one, and it under-forecast revenue by 44%. The rankings held up, so use `expected_revenue_next_quarter` to *rank and size* customers, not as a budget number. Adding a September 2010 snapshot, with a shorter lookback because the data starts in December 2009, would give the model one holiday quarter to learn from. That isn't done yet.
+6. **Some grid cells are small.** "Top spenders / Holiday buyers" and "Top spenders / Small-basket buyers" hold 45 and 49 customers. The 5% minimum segment size is enforced per axis, not per cell. For a wholesaler, 45 top-spender holiday accounts holding about 10% of predicted value is a key-account list. For broad campaigns, merge small cells into their value tier.
+7. **One selection rule was changed after seeing results.** k for each axis is chosen by the best score among stable candidates, preferring fewer segments within a tie tolerance. The tolerance was widened from 0.005 to 0.01 after production picked 7 value segments over 4 for a 0.006 R² gain, with stability just over the bar. Both backtest folds were unaffected. The full k-selection table is in [results/k_selection.csv](results/k_selection.csv).
 
 ![Segment map](docs/img/segment_map.png)
 
@@ -72,7 +81,11 @@ Checking that each figure came from the query caught almost none of these, becau
 
 The rebuild moves every definition into code ([copilot/semantics.py](copilot/semantics.py)):
 - **A metric catalogue** says what each measure means, which direction is "better", and how it combines: customers and predicted revenue add up, probabilities are customer-weighted, medians are never combined.
-- **About a dozen tested calculations:** value, profile, share, rank, compare, crosstab, threshold count, traits, scheme comparison, k choice and cleaning.
+- **About a dozen tested calculations:**
+  - value (including revenue per customer and combined groups), profile and share;
+  - rank (within a tier or style when asked) and compare (with differences, ratios and tier-by-tier medians);
+  - crosstab, threshold count and traits;
+  - backtest schemes (per fold or averaged), k choice and cleaning.
 - **The model only chooses** a calculation and its inputs. Code resolves names ("core holiday buyers" → C2-B2), corrects the sort direction from the question's wording, swaps in the metric the question names, reports ties, and declines anything that needs customer-level rows.
 
 **Writing-agent guards:**
@@ -82,17 +95,56 @@ The rebuild moves every definition into code ([copilot/semantics.py](copilot/sem
 - Unknown segment names get a question back instead of a guess.
 - Country targeting is declined, and injected instructions ("ignore all previous rules…") are stripped.
 
+**Why an LLM at all?** The calculation agent is a natural-language front end to parameterised queries. A dashboard with dropdowns would answer those questions with no model, no inference cost and no risk of a wrong pick. The model earns its place where a dashboard can't help: follow-ups ("what about holiday buyers?"), explanations grounded in this README, and drafting persona cards and campaigns from the segment profiles. Its job in the calculation agent is narrow on purpose: choosing what to compute, never computing it.
+
 Every answer shows how it was produced: the routing decision, the plan and any adjustment code made to it, the rows computed, and a figure check ([copilot/verify.py](copilot/verify.py)). Follow-ups like "what about holiday buyers?" edit the previous plan.
 
-**Accuracy** is measured by [copilot/evaluate.py](copilot/evaluate.py) against answers computed directly from the CSVs with pandas, scoring words ("No", "lower") as well as figures. There are three sets: questions used while tuning, held-out questions never tuned against, and the failures from the adversarial test. On the last full run with `qwen2.5:7b`:
+**Accuracy on fresh questions.** Each round, a tester agent writes new adversarial questions, checked against every earlier round's so none repeat, in formal, casual, terse and typo-laden wording. Every answer is graded against truths computed with pandas from the result CSVs:
+
+| Round | Questions graded | Correct | On round 2's 5 categories |
+|---|---|---|---|
+| 1: model-written SQL | 137 | 47% | |
+| 2: first semantic layer | 200 (5 categories) | 63% | 63% |
+| 3: second rebuild | 200 (9 categories) | 69% | 73% |
+| 4 | 150 (9 categories) | 73% | 76% |
+| 5 | 300 (9 categories) | 71% | 74% |
+
+**Accuracy has plateaued at about 70% since round 3.** Each round's fixes repair most of that round's failures when the same questions are replayed (57 of 62 after round 3, 39 of 41 after round 4, 84 of 88 after round 5), but new questions keep finding new gaps. More wording rules are giving diminishing returns. The next thing to try is a larger model (`qwen2.5:14b` locally, or Cortex), which hasn't been tested yet.
+
+Round 5 by category:
+
+| Category | Correct |
+|---|---|
+| Comparisons | 93% |
+| Crosstabs | 87% |
+| Backtest, k and cleaning | 76% |
+| Declines and injection | 76% |
+| Methodology and advice | 72% |
+| Rankings | 69% |
+| Lookups and totals | 65% |
+| Follow-ups | 63% |
+| Writing | 50% |
+
+No answer in round 5 was unsafe. The most common failure is an unhelpful answer (wrong format, partial, or a unit ignored) at 12% of questions, then a wrong claim or direction (8%) and a wrong number (6%).
+
+**Fixes after round 5:**
+- **The question's wording beats the plan:** several exclusions ("except C4-B3 and C1-B1"), "every segment" meaning all of them, a filter's measure kept apart from the measure being totalled ("expected revenue from segments whose P(buys again) is above 50%"), "share of X that are Y" divided by X, "how many" vs "what proportion" in every calculation, ordinals ("second smallest") and per-segment averages.
+- **Rankings:** groups narrowed to one segment each are ranked and labelled as segments; tiers and styles on a median are shown as the range of their segments instead of an error.
+- **Writing agent:** wording the data contradicts (lapsed, seasonal, bulk, infrequent, a "December spike") is rewritten, and if it survives two rewrites it is removed rather than noted; £ and % offers are marked "(proposed)"; SMS, tweets and notes are stripped of headings, greetings, persona cards, codes and internal segment names.
+- **Units and declines:** pence, thousands, millions and a no-exchange-rate note; SQL, "which customer" and "which country" requests are declined.
+
+Still open from round 5: a terse "why?" follow-up that misstates the k rule, a "2-sentence idea" that reads recency as frequency, and two campaigns that the clean-up leaves thin (no offer or an empty body).
+
+**Regression check.** [copilot/evaluate.py](copilot/evaluate.py) re-asks 67 questions from development and earlier rounds, scoring words ("No", "lower") as well as figures against pandas. On the last full run with `qwen2.5:7b`:
 
 | Set | Correct |
 |---|---|
 | Tuning (21) | 21 (100%) |
-| Held out (11) | 10 (91%) |
-| Red-team failures (20) | 19 (95%) |
+| Held out (11) | 11 (100%) |
+| Earlier red-team failures (20) | 20 (100%) |
+| Round 5 failures (15) | 15 (100%) |
 
-Every figure in every answer traced back to the data. Results are in `results/copilot_eval.csv`; rerun with `python -m copilot.evaluate`. The held-out set is small, and some of its questions resemble the prompt's examples, so treat these as a floor check, not a guarantee.
+Every figure in every answer traced back to the data. Most of these questions were tuned against, so 100% means past fixes still hold, not that new questions will be answered correctly; the rounds above measure that. Results are in `results/copilot_eval.csv`; rerun with `python -m copilot.evaluate`.
 
 | | Offline (default) | Live |
 |---|---|---|
@@ -100,7 +152,7 @@ Every figure in every answer traced back to the data. Results are in `results/co
 | LLM | Ollama, `qwen2.5:7b` | Snowflake Cortex, `llama3.1-70b` |
 | Needs | [Ollama](https://ollama.com) | `.env` with Snowflake credentials |
 
-Live mode is untested. The calculations work on segment-level tables, so customer-level questions are declined in both modes.
+Offline mode exists so anyone can try the app without a Snowflake account. It reads the segment-level result tables exported to `results/` (no customer rows), and DuckDB runs the same fixed queries over them. Live mode is untested. The calculations work on segment-level tables, so customer-level questions are declined in both modes.
 
 ```bash
 pip install -r requirements-copilot.txt   # no scikit-learn needed
@@ -111,6 +163,8 @@ streamlit run app.py
 `COPILOT_MODE` (`auto`/`local`/`live`), `COPILOT_LLM` (`auto`/`ollama`/`cortex`), `OLLAMA_MODEL`, `CORTEX_MODEL` and `LLM_TIMEOUT` override the defaults. The app only runs fixed, read-only queries, and offline DuckDB has file and network access switched off. In live mode, also run the app under a read-only role.
 
 ## How it works
+
+The segmentation needs only Snowflake and scikit-learn. The Segment Copilot (LangGraph, Streamlit, DuckDB and an LLM) is an optional app that reads the results; nothing in the pipeline depends on it.
 
 ```mermaid
 flowchart LR
@@ -203,12 +257,22 @@ The experimental callbacks API (new in 1.9) isn't used: none of the clustering o
 
 ## Reproduce
 
-Requires a Snowflake account with key-pair auth and Python 3.11.
+**You need:**
+- Python 3.11.
+- A Snowflake account with a user that signs in with [key-pair authentication](https://docs.snowflake.com/en/user-guide/key-pair-auth).
+- **A role that can:**
+  - create a database (step 02 creates `CUSTOMER_SEGMENTATION` with `RAW`, `STAGING`, `MARTS` and `ML` schemas, so `SYSADMIN` on a trial account works);
+  - create stages, tables, views and Python procedures in it;
+  - create and run tasks: `EXECUTE TASK` on the account, for the optional monthly re-scoring.
+- An X-Small warehouse that role can use.
+
+Put the account, user, private-key path, role and warehouse in `.env` (copy it from `.env.example`).
 
 ```bash
-python -m venv .venv && .venv/Scripts/activate      # or source .venv/bin/activate
+python -m venv .venv
+source .venv/bin/activate           # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env                                 # fill in account, user, key path, role, warehouse
+cp .env.example .env                # then fill it in
 
 python 01_fetch_data.py               # download + convert (about 1 min)
 python 02_load_raw.py                 # creates CUSTOMER_SEGMENTATION db, stage, RAW table
@@ -217,14 +281,14 @@ python 04_build_customer_features.py
 python 05_deploy_procedures.py        # zip package to stage, CREATE PROCEDURE x6
 python 06_run_backtest.py             # two out-of-time folds -> ML.METHOD_COMPARISON
 python 07_run_production.py           # fit Sep 2011, score Dec 2011 -> ML.CUSTOMER_SEGMENTS_CURRENT
-python 08_make_charts.py
+python 08_make_charts.py             # charts in light and dark; --from-results redraws two of them without Snowflake
 ```
 
-Then create the monthly re-scoring Task by running [sql/rescore_task.sql](sql/rescore_task.sql) in a worksheet (set its warehouse first). If you deployed before re-scoring existed, run `python 05_deploy_procedures.py` and `python 07_run_production.py --view-only`; the second recreates the view without retraining.
+Then, optionally, create the monthly re-scoring Task. Run [sql/rescore_task.sql](sql/rescore_task.sql) in a Snowsight SQL worksheet or with SnowSQL (`snowsql -f sql/rescore_task.sql`), after setting its `WAREHOUSE` line to your warehouse. If you deployed before re-scoring existed, run `python 05_deploy_procedures.py` and `python 07_run_production.py --view-only`; the second recreates the view without retraining.
 
 Everything runs on an X-Small warehouse. Developing the whole project, including every rerun, used under 2.5 credits.
 
-**Tests:** 27 pipeline tests on synthetic customers with planted structure. They check that the methods recover it, that segment codes are ordered by meaning, that every generated rule is true for the customers it describes, that re-scoring builds the same cells as the hybrid, and the metric edge cases. 65 copilot tests:
+**Tests:** 27 pipeline tests on synthetic customers with planted structure. They check that the methods recover it, that segment codes are ordered by meaning, that every generated rule is true for the customers it describes, that re-scoring builds the same cells as the hybrid, and the metric edge cases. 118 copilot tests:
 - every calculation, checked against pandas on the cases the SQL version got wrong;
 - the figure checker;
 - the agents with a scripted chat model: plan repair, direction and metric corrections, declines, follow-ups, documentation answers, the writing guards;

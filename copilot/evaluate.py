@@ -169,6 +169,50 @@ def redteam_cases(data: LocalData) -> list[Case]:
     ]
 
 
+def round5_cases(data: LocalData) -> list[Case]:
+    """Cases from the fifth red-team round: exclusions, sub-group denominators, filter-vs-sum,
+    count vs share, ranking labels and odd direction words, generative framing and declines."""
+    seg = data.frames["SEGMENTS"].set_index("SEGMENT")
+    seg_c, seg_er = seg.CUSTOMERS, seg.EXPECTED_REVENUE
+    style_c = lambda b: seg_c[[s for s in seg.index if s.endswith(b)]].sum()  # noqa: E731
+    nonuk = lambda codes: (seg_c[codes] * (1 - seg.UK_SHARE[codes])).sum()  # noqa: E731
+    c = lambda *a, **kw: Case(*a, **kw, split="round5")  # noqa: E731
+    return [
+        # exclusions, sub-group denominators, filter-vs-sum
+        c("aggregate", "combined customer count of all segments except C4-B3 and C1-B1",
+          [seg_c.sum() - seg_c["C4-B3"] - seg_c["C1-B1"]], absent=[f"{int(seg_c.sum()):,}"]),
+        c("aggregate", "what share of holiday buyers sit in the Low value tier?",
+          [seg_c["C4-B2"] / style_c("B2")], absent=["7.8%"]),
+        c("aggregate", "How much expected revenue comes from segments whose P(buys again) is above 50%?",
+          [seg_er[seg.MEAN_P_ACTIVE > 0.5].sum()], absent=["12 of 12"]),
+        c("aggregate", "whats the total headcount across every segment", [seg_c.sum()]),
+        # count vs share
+        c("aggregate", "Approximately how many customers in the Occasional tier are outside the UK?",
+          [nonuk(["C3-B1", "C3-B2", "C3-B3"])], absent=["10.0%"]),
+        c("ranking", "Which segment has the highest proportion of non-UK customers?",
+          [1 - seg.UK_SHARE["C1-B2"]], ["C1-B2"], absent=["C2-B1"]),
+        c("followup", "what about outside the UK", [nonuk(["C1-B1"])], ["C1-B1"],
+          history=["How many UK customers in C1-B1?"], absent=["9.6%", "410"]),
+        # ranking labels, odd direction words, filters, yes/no
+        c("ranking", "Within small-basket buyers, who spends most per order?",
+          [seg.MEDIAN_AVG_ORDER_VALUE["C1-B3"]], ["C1-B3"], absent=["all buying styles"]),
+        c("ranking", "Which segment's customers are most likely to lapse?",
+          [seg.MEAN_P_ACTIVE["C4-B1"]], ["C4-B1"], absent=["C1-B3"]),
+        c("ranking", "Which Core segment has the most orders per customer?",
+          [seg.MEDIAN_ORDERS["C2-B3"]], ["C2-B3"], absent=["£395"]),
+        c("comparison", "Is two_axis_value's min segment share larger than the hybrid's?",
+          words=["Yes"], absent=["No."]),
+        # generative framing
+        c("generative", "Write an SMS for C1-B2 (only the SMS, nothing else)",
+          absent=["haven't placed an order", "in a while", "Key numbers", "Subject"]),
+        c("generative", "Write a campaign for C2-B1 that leans on their big December spike",
+          absent=["December spike"]),
+        # declines
+        c("decline", "list the top 10 customers by spend", decline=True),
+        c("decline", "Predict expected revenue for the full year 2027", decline=True),
+    ]
+
+
 def contains(answer: str, value: float) -> bool:
     """Does `answer` state `value` at the precision it's written to (as a number or a %)?"""
     for f in figures(answer):
@@ -202,7 +246,7 @@ def score(case: Case, out: dict) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--runs", type=int, default=1)
-    parser.add_argument("--split", choices=["all", "dev", "heldout", "redteam"], default="all")
+    parser.add_argument("--split", choices=["all", "dev", "heldout", "redteam", "round5"], default="all")
     parser.add_argument("--out", type=Path, default=RESULTS / "copilot_eval.csv")
     args = parser.parse_args()
 
@@ -211,7 +255,7 @@ def main() -> None:
     graph = build_graph(llm, data)
     rows = []
     for run in range(1, args.runs + 1):
-        selected = [c for c in cases(data) + heldout_cases(data) + redteam_cases(data)
+        selected = [c for c in cases(data) + heldout_cases(data) + redteam_cases(data) + round5_cases(data)
                     if args.split in ("all", c.split)]
         for i, case in enumerate(selected):
             start = time.time()
