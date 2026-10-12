@@ -10,9 +10,12 @@ Three approaches were compared on two out-of-time backtests, scored against what
 
 Option A, one clustering over all 11 features, was dropped earlier. A 109-configuration bake-off ([exploration/](exploration/)) found that adding the buying-behavior features made segments *worse* at predicting next quarter than clustering on recency, frequency and spend alone: buys-again AUC fell from 0.752 to 0.732 and next-revenue R² from 0.28 to 0.26, for the best configuration of each. That's why B keeps value and behavior on separate axes.
 
-The hybrid is the only approach that does both jobs:
+Two schemes separate buying styles, and the hybrid also concentrates more next-quarter revenue. Its lead over the simpler grid is narrow (see finding 3):
 
-![Method trade-off](docs/img/method_tradeoff.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/method_tradeoff-dark.png">
+  <img alt="Revenue held by the top 20% against buying-style separation for each scheme; the hybrid and the B grid separate buying styles, and the hybrid holds 71% against the grid's 66%" src="docs/img/method_tradeoff.png">
+</picture>
 
 | Scheme | Segments | Top-20% revenue capture | Buying-style separation (η²) | Buys again (AUC) |
 |---|---|---|---|---|
@@ -31,7 +34,10 @@ All numbers are the mean of two folds: fit in March and scored in June, and fit 
 
 ## What the segments say
 
-![Hybrid grid](docs/img/hybrid_grid.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/hybrid_grid-dark.png">
+  <img alt="Heatmap of predicted next-quarter value by value tier and buying style; Top spenders / Bulk buyers hold 52% with 289 customers" src="docs/img/hybrid_grid.png">
+</picture>
 
 - **The top 7% of customers, "Top spenders / Bulk buyers", hold 52% of next quarter's predicted value.** They order a median 12 times a year at 337 units per order and £1.73 per unit, which is wholesale behavior.
 - **Holiday buyers are a distinct style at every value level.** 59–100% of their revenue falls in October–December. A "Top spender / Holiday buyer" needs a different calendar from a "Top spender / Bulk buyer" even though both are worth about the same.
@@ -275,7 +281,7 @@ python 04_build_customer_features.py
 python 05_deploy_procedures.py        # zip package to stage, CREATE PROCEDURE x6
 python 06_run_backtest.py             # two out-of-time folds -> ML.METHOD_COMPARISON
 python 07_run_production.py           # fit Sep 2011, score Dec 2011 -> ML.CUSTOMER_SEGMENTS_CURRENT
-python 08_make_charts.py
+python 08_make_charts.py             # charts in light and dark; --from-results redraws two of them without Snowflake
 ```
 
 Then, optionally, create the monthly re-scoring Task. Run [sql/rescore_task.sql](sql/rescore_task.sql) in a Snowsight SQL worksheet or with SnowSQL (`snowsql -f sql/rescore_task.sql`), after setting its `WAREHOUSE` line to your warehouse. If you deployed before re-scoring existed, run `python 05_deploy_procedures.py` and `python 07_run_production.py --view-only`; the second recreates the view without retraining.

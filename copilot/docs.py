@@ -168,6 +168,7 @@ def sections(readme: Path = README) -> list[Section]:
     text = readme.read_text(encoding="utf-8")
     text = re.sub(r"```mermaid.*?```", "", text, flags=re.DOTALL)
     text = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", text)  # images
+    text = re.sub(r"<picture>.*?</picture>", "", text, flags=re.DOTALL)  # light/dark images
     parts, title, buf = [], "Overview", []
     for line in text.splitlines():
         m = re.match(r"^#{1,4}\s+(.*)", line)
