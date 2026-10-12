@@ -2,6 +2,10 @@
 
 Segments 4,261 active wholesale-gift customers (UCI Online Retail II, 1.07M transactions) by **what they're worth next quarter** and **how they buy**, with every model trained and scored inside Snowflake on scikit-learn 1.9.1.
 
+> **The Big Takeaway**
+>
+> Letting the AI write its own SQL made the chatbot *less* accurate. In an adversarial test, model-written SQL answered 47% of questions correctly, and most errors were real numbers attached to wrong conclusions. Moving every metric definition into tested code, so the model only chooses which calculation to run, raised accuracy to about 70% on fresh questions, with every figure traceable to the data. ([Details](#why-the-model-doesnt-write-sql))
+
 **Why I built this.** Most segmentation projects stop at clusters that look tidy. I wanted segments a business could act on, so every scheme is scored by what customers actually did over the next quarter. It showcases the skills I bring to a senior data science role:
 
 - in-warehouse ML on Snowflake (Snowpark stored procedures and Tasks)
