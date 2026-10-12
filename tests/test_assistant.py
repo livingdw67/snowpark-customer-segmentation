@@ -1,4 +1,4 @@
-"""Copilot graph tests with a scripted chat model: routing, plans and their cross-checks,
+"""Assistant graph tests with a scripted chat model: routing, plans and their cross-checks,
 methodology answers, generative guard rails, memory and the Streamlit app.
 
 They run offline on the committed results/*.csv and need neither Ollama nor Snowflake.
@@ -9,8 +9,8 @@ import pytest
 import streamlit as st
 from langchain_core.language_models.fake_chat_models import FakeListChatModel
 
-from copilot.data import LocalData, UnsafeQuery, validate_sql
-from copilot.graph import OUT_OF_SCOPE_REPLY, SQL, build_graph, turn_input
+from assistant.data import LocalData, UnsafeQuery, validate_sql
+from assistant.graph import OUT_OF_SCOPE_REPLY, SQL, build_graph, turn_input
 
 
 @pytest.fixture(scope="module")
@@ -316,7 +316,7 @@ def test_copy_cleanup_for_customer_facing_text(data):
 
 
 def test_unverified_figures_are_marked_or_dropped():
-    from copilot.graph import mark_or_drop, set_audience
+    from assistant.graph import mark_or_drop, set_audience
     text = "**Offer:** 10% off (proposed) now. Body: get 10% off today. It has 37 fans. Thanks."
     assert mark_or_drop(text, ["10%", "37"]) == "**Offer:** 10% off (proposed) now. Body: get 10% (proposed) off today. Thanks."
     campaign = "#### Audience\n- Days since last order: 15\n#### Goal\nSell."
@@ -379,10 +379,10 @@ def test_router_falls_back_to_keywords(data):
 def test_app_runs_offline(monkeypatch):
     from streamlit.testing.v1 import AppTest
 
-    from copilot import llm as llm_factory
+    from assistant import llm as llm_factory
 
     st.cache_resource.clear()  # the app caches its model; each test brings its own
-    monkeypatch.setenv("COPILOT_MODE", "local")
+    monkeypatch.setenv("ASSISTANT_MODE", "local")
     monkeypatch.setattr(llm_factory, "make_llm", lambda session=None: FakeListChatModel(responses=[
         "analytical", plan(tool="value", groups=["all"], metrics=["customers"])]))
     at = AppTest.from_file("../app.py", default_timeout=60).run()
@@ -397,10 +397,10 @@ def test_app_runs_offline(monkeypatch):
 def test_app_chip_starts_conversation(monkeypatch):
     from streamlit.testing.v1 import AppTest
 
-    from copilot import llm as llm_factory
+    from assistant import llm as llm_factory
 
     st.cache_resource.clear()
-    monkeypatch.setenv("COPILOT_MODE", "local")
+    monkeypatch.setenv("ASSISTANT_MODE", "local")
     monkeypatch.setattr(llm_factory, "make_llm", lambda session=None: FakeListChatModel(responses=[
         "generative", "### Top spenders / Holiday buyers (C1-B2)\n..."]))
     at = AppTest.from_file("../app.py", default_timeout=60).run()

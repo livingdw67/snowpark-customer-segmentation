@@ -1,4 +1,4 @@
-"""The copilot's semantic layer: what each metric means and how it may be calculated.
+"""The assistant's semantic layer: what each metric means and how it may be calculated.
 
 The language model never writes SQL or arithmetic. It picks one of the calculations below and
 names its inputs; this module resolves names to segments, applies each metric's definition

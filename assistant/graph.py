@@ -6,7 +6,7 @@
                     -> out_of_scope -> END   a fixed, polite refusal
 
 The analytical agent never writes SQL or arithmetic. The model returns a JSON plan naming one
-calculation from copilot/semantics.py and its inputs; the plan is validated, cross-checked
+calculation from assistant/semantics.py and its inputs; the plan is validated, cross-checked
 against the question's wording (metric, direction, groups), and executed in code, and the
 answer is written from the computed facts. Conversation state (messages, the last plan)
 persists per thread, so follow-ups like "what about holiday buyers?" edit the previous plan.
@@ -124,7 +124,7 @@ OUT_OF_SCOPE_REPLY = (
     "*Write a persona card for Core / Holiday buyers.*")
 
 
-class CopilotState(TypedDict, total=False):
+class AssistantState(TypedDict, total=False):
     messages: Annotated[list[AnyMessage], add_messages]
     question: str          # the latest question with injected instructions removed
     intent: str
@@ -171,7 +171,7 @@ def extract_json(text: str) -> dict:
 # Prompts
 # --------------------------------------------------------------------------------------
 
-ROUTER_PROMPT = """You route requests for a customer-segmentation copilot.
+ROUTER_PROMPT = """You route requests for a customer-segmentation assistant.
 analytical: a question answered with numbers from the segment data or backtests (sizes, \
 rankings, comparisons, shares, which segment is most/least ..., which k was chosen, cleaning counts).
 methodology: a question about how or why the method works, or what a term means.
@@ -1328,7 +1328,7 @@ def build_graph(llm, data, checkpointer=None):
                                      schemes=", ".join(SCHEME_NAMES))
     names = dict(zip(sem.seg.SEGMENT, sem.seg.SEGMENT_NAME))
 
-    def router(state: CopilotState) -> dict:
+    def router(state: AssistantState) -> dict:
         raw = _text(state["messages"][-1])
         question = INJECTION.sub(" ", raw).strip()
         trace = []
@@ -1373,7 +1373,7 @@ def build_graph(llm, data, checkpointer=None):
         return {"plan": plan, "last_plan": plan, "rows": records, "trace": trace,
                 "check": _check_state(check), "messages": [AIMessage(answer)]}
 
-    def analytical(state: CopilotState) -> dict:
+    def analytical(state: AssistantState) -> dict:
         trace = list(state["trace"])
         question = state["question"]
         if FOLD_DATES.search(question):
@@ -1498,7 +1498,7 @@ def build_graph(llm, data, checkpointer=None):
         return {"plan": plan, "last_plan": plan, "rows": records, "trace": trace,
                 "check": _check_state(check), "messages": [AIMessage(answer)]}
 
-    def methodology(state: CopilotState) -> dict:
+    def methodology(state: AssistantState) -> dict:
         trace = list(state["trace"])
         question = state["question"]
         query = question
@@ -1530,7 +1530,7 @@ def build_graph(llm, data, checkpointer=None):
         answer += "\n\n*Source: README, " + " and ".join(f"'{t}'" for t in titles) + ".*"
         return {"trace": trace, "check": _check_state(check), "messages": [AIMessage(answer)]}
 
-    def generative(state: CopilotState) -> dict:
+    def generative(state: AssistantState) -> dict:
         trace = list(state["trace"])
         question = state["question"]
         seg = sem.seg.reset_index(drop=True)
@@ -1835,10 +1835,10 @@ def build_graph(llm, data, checkpointer=None):
             answer += "\n\n" + "\n".join(f"*{n}*" for n in notes)
         return {"context": records, "trace": trace, "check": state_check, "messages": [AIMessage(answer)]}
 
-    def out_of_scope(state: CopilotState) -> dict:
+    def out_of_scope(state: AssistantState) -> dict:
         return {"declined": True, "check": None, "messages": [AIMessage(OUT_OF_SCOPE_REPLY)]}
 
-    graph = StateGraph(CopilotState)
+    graph = StateGraph(AssistantState)
     graph.add_node("router", router)
     graph.add_node("analytical", analytical)
     graph.add_node("methodology", methodology)

@@ -1,13 +1,13 @@
-"""Segment Copilot: ask questions about the segments or have it draft persona cards and campaigns.
+"""Segment Assistant: ask questions about the segments or have it draft persona cards and campaigns.
 
     streamlit run app.py
 
 Offline by default: DuckDB over results/*.csv and a local Ollama model (qwen2.5:7b). With
 Snowflake credentials in .env it queries the ML schema live and uses Snowflake Cortex.
-See copilot/data.py and copilot/llm.py for the environment variables. Colors and fonts are in
+See assistant/data.py and assistant/llm.py for the environment variables. Colors and fonts are in
 .streamlit/config.toml.
 
-Two pages: Ask (the copilot, chat box pinned to the bottom) and Segments (charts and table).
+Two pages: Ask (the assistant, chat box pinned to the bottom) and Segments (charts and table).
 """
 import time
 import uuid
@@ -17,9 +17,9 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-from copilot import llm as llm_factory
-from copilot.data import open_data
-from copilot.graph import build_graph, turn_input
+from assistant import llm as llm_factory
+from assistant.data import open_data
+from assistant.graph import build_graph, turn_input
 from segmentation.naming import BEHAVIOR_NAMES, TIER_NAMES
 
 REPO_URL = "https://github.com/livingdw67/snowpark-customer-segmentation"
@@ -28,7 +28,7 @@ HEADLINE = "Segments tied to what a customer is worth next quarter."
 AUTHOR = "Daniel Livingston"
 ROLE = "Senior Data Scientist · Finance & Energy"
 
-# Grouped by agent, so the chips also show what the copilot can do.
+# Grouped by agent, so the chips also show what the assistant can do.
 ASK_THE_DATA = {
     "Most valuable segment": "Which segment holds the most expected revenue next quarter?",
     "Hybrid vs. RFM": "How does the hybrid compare with the RFM baseline in the backtests?",
@@ -48,7 +48,7 @@ CHIP_KEYS = ("chips_ask", "chips_create")
 NAVY, RAISED, LINE, TEAL, AMBER, SLATE, MUTED, WHITE = (
     "#0e1a2b", "#16283f", "#2b3f58", "#5fc4c0", "#f0a742", "#9fb1c7", "#6f86a3", "#f2f5f9")
 
-st.set_page_config(page_title="Segment Copilot", page_icon=":material/insights:",
+st.set_page_config(page_title="Segment Assistant", page_icon=":material/insights:",
                    layout="centered", initial_sidebar_state="collapsed")
 
 
@@ -75,7 +75,7 @@ def step_label(s: dict) -> str:
     if s["title"] == "Intent":
         intent = s["detail"].split(":")[0]
         return {"analytical": "Routed to the calculation agent", "methodology": "Routed to the documentation agent",
-                "generative": "Routed to the writing agent"}.get(intent, "Outside what this copilot covers")
+                "generative": "Routed to the writing agent"}.get(intent, "Outside what this assistant covers")
     return s["title"] + (f" · {s['detail']}" if s["detail"] and s["kind"] == "table" else "")
 
 
@@ -224,7 +224,7 @@ def ask_page() -> None:
 
     if not history:
         st.title(HEADLINE)
-        st.markdown(":orange[━━━━]  \n:gray[Segment Copilot · ask the data or create from it · UCI Online Retail II]")
+        st.markdown(":orange[━━━━]  \n:gray[Segment Assistant · ask the data or create from it · UCI Online Retail II]")
         seg = data.segments()
         key_numbers(seg)
         question = chips()
@@ -311,7 +311,7 @@ with st.spinner("Loading the model. The first start can take a minute while it m
     try:
         data, llm, graph = load()
     except Exception as exc:
-        st.error(f"Couldn't start the copilot: {exc}. If you're offline, check that Ollama is running "
+        st.error(f"Couldn't start the assistant: {exc}. If you're offline, check that Ollama is running "
                  "and the model is pulled (`ollama pull qwen2.5:7b`).")
         st.stop()
 

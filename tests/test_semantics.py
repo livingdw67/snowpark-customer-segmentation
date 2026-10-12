@@ -1,12 +1,12 @@
-"""The copilot's calculations, checked against pandas computed independently from the CSVs.
+"""The assistant's calculations, checked against pandas computed independently from the CSVs.
 
-Each case is a question the copilot used to get wrong when the model wrote its own SQL.
+Each case is a question the assistant used to get wrong when the model wrote its own SQL.
 """
 import pandas as pd
 import pytest
 
-from copilot.data import LocalData
-from copilot.semantics import (SCHEME_METRICS as S, SEGMENT_METRICS as M, Semantics, asked_direction,
+from assistant.data import LocalData
+from assistant.semantics import (SCHEME_METRICS as S, SEGMENT_METRICS as M, Semantics, asked_direction,
                                metrics_named_in, resolve, resolve_one)
 
 

@@ -1,16 +1,16 @@
-"""Accuracy of the copilot's analytical agent on questions with known answers.
+"""Accuracy of the assistant's analytical agent on questions with known answers.
 
 Every expected answer is computed directly from the result tables with pandas, never typed in
 by hand, so the evaluation can't drift from the data. Each question is scored on:
 
     correct   - every expected figure (and segment code) appears in the answer
-    grounded  - every figure in the answer traces back to the query result (copilot.verify)
-    declined  - for questions the tables can't answer, the copilot says so instead of guessing
+    grounded  - every figure in the answer traces back to the query result (assistant.verify)
+    declined  - for questions the tables can't answer, the assistant says so instead of guessing
 
-    python -m copilot.evaluate            # offline: DuckDB + Ollama
-    python -m copilot.evaluate --runs 3   # repeat each question to measure consistency
+    python -m assistant.evaluate            # offline: DuckDB + Ollama
+    python -m assistant.evaluate --runs 3   # repeat each question to measure consistency
 
-Writes results/copilot_eval.csv (one row per question and run).
+Writes results/assistant_eval.csv (one row per question and run).
 """
 from __future__ import annotations
 
@@ -43,7 +43,7 @@ class Case:
 
 def heldout_cases(data: LocalData) -> list[Case]:
     """Written after the dev set had been used for tuning, and never tuned against. Report
-    these separately: they show how the copilot does on questions nobody optimised for."""
+    these separately: they show how the assistant does on questions nobody optimised for."""
     seg = data.frames["SEGMENTS"].set_index("SEGMENT")
     bt = data.frames["BACKTEST"].groupby("SCHEME")["NEXT_ACTIVE_AUC"].mean()
     clean = data.frames["CLEANING"].set_index("STAGE")
@@ -121,7 +121,7 @@ def cases(data: LocalData) -> list[Case]:
 
 
 def redteam_cases(data: LocalData) -> list[Case]:
-    """Cases from the red-team report (questions the SQL-writing copilot got wrong)."""
+    """Cases from the red-team report (questions the SQL-writing assistant got wrong)."""
     seg = data.frames["SEGMENTS"].set_index("SEGMENT")
     tier = seg.groupby(seg.index.str[:2])[["CUSTOMERS", "EXPECTED_REVENUE"]].sum()
     style = seg.groupby(seg.index.str[3:])[["CUSTOMERS", "EXPECTED_REVENUE"]].sum()
@@ -247,7 +247,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--split", choices=["all", "dev", "heldout", "redteam", "round5"], default="all")
-    parser.add_argument("--out", type=Path, default=RESULTS / "copilot_eval.csv")
+    parser.add_argument("--out", type=Path, default=RESULTS / "assistant_eval.csv")
     args = parser.parse_args()
 
     data = LocalData()

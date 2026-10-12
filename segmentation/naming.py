@@ -1,4 +1,4 @@
-"""Persona names for the hybrid segments, shared by the published view and the copilot.
+"""Persona names for the hybrid segments, shared by the published view and the assistant.
 
 Codes are ordered by meaning (C1 = highest predicted value, B1 = largest baskets), and
 07_run_production.check_behavior_names() confirms each behavior group still matches its

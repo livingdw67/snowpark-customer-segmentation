@@ -1,4 +1,4 @@
-# Copilot (app.py + copilot/). Separate from requirements.txt so the app installs without
+# Assistant (app.py + assistant/). Separate from requirements.txt so the app installs without
 # scikit-learn: it only reads result tables and calls an LLM.
 streamlit==1.65.0
 langgraph==1.2.14

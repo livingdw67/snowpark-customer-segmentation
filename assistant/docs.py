@@ -132,7 +132,7 @@ def _glossary() -> list[Section]:
         "using segments for individual customers, emails and targeting": "Yes, segments can be used to target "
             "individual customers, from Snowflake: the ML.CUSTOMER_SEGMENTS_CURRENT view has one row per customer "
             "with that customer's current segment (refreshed by the monthly re-scoring Task), so pull the email "
-            "list for a segment from that view. The copilot itself only sees segment-level summaries (sizes, "
+            "list for a segment from that view. The assistant itself only sees segment-level summaries (sizes, "
             "medians, averages), so it can't list or email customers itself.",
         "why 4 value tiers and 3 buying styles (number of segments, k)": "The number of value tiers and buying "
             "styles is the k chosen for each axis. Candidates are eligible only if bootstrap stability ARI is at "

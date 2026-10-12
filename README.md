@@ -11,7 +11,7 @@ Segments 4,261 active wholesale-gift customers (UCI Online Retail II, 1.07M tran
 - in-warehouse ML on Snowflake (Snowpark stored procedures and Tasks)
 - honest evaluation (out-of-time backtests against an RFM baseline)
 - turning model output into business decisions
-- an LLM copilot (LangGraph) checked against an evaluation set
+- an LLM assistant (LangGraph) checked against an evaluation set
 
 Three approaches were compared on two out-of-time backtests, scored against what customers actually did over the next 91 days:
 
@@ -69,7 +69,7 @@ All numbers are the mean of two folds: fit in March and scored in June, and fit 
 
 ![Segment map](docs/img/segment_map.png)
 
-## Segment Copilot
+## Segment Assistant
 
 A chat app over the results, for the people who'd use the segments. A LangGraph router sends each request to one of four agents:
 
@@ -90,7 +90,7 @@ The first version let the model write SQL. An adversarial test of 137 questions 
 
 Checking that each figure came from the query caught almost none of these, because the error was in the meaning, not the digits.
 
-The rebuild moves every definition into code ([copilot/semantics.py](copilot/semantics.py)):
+The rebuild moves every definition into code ([assistant/semantics.py](assistant/semantics.py)):
 - **A metric catalogue** says what each measure means, which direction is "better", and how it combines: customers and predicted revenue add up, probabilities are customer-weighted, medians are never combined.
 - **About a dozen tested calculations:**
   - value (including revenue per customer and combined groups), profile and share;
@@ -108,7 +108,7 @@ The rebuild moves every definition into code ([copilot/semantics.py](copilot/sem
 
 **Why an LLM at all?** The calculation agent is a natural-language front end to parameterised queries. A dashboard with dropdowns would answer those questions with no model, no inference cost and no risk of a wrong pick. The model earns its place where a dashboard can't help: follow-ups ("what about holiday buyers?"), explanations grounded in this README, and drafting persona cards and campaigns from the segment profiles. Its job in the calculation agent is narrow on purpose: choosing what to compute, never computing it.
 
-Every answer shows how it was produced: the routing decision, the plan and any adjustment code made to it, the rows computed, and a figure check ([copilot/verify.py](copilot/verify.py)). Follow-ups like "what about holiday buyers?" edit the previous plan.
+Every answer shows how it was produced: the routing decision, the plan and any adjustment code made to it, the rows computed, and a figure check ([assistant/verify.py](assistant/verify.py)). Follow-ups like "what about holiday buyers?" edit the previous plan.
 
 **Accuracy on fresh questions.** Each round, a tester agent writes new adversarial questions, checked against every earlier round's so none repeat, in formal, casual, terse and typo-laden wording. Every answer is graded against truths computed with pandas from the result CSVs:
 
@@ -146,7 +146,7 @@ No answer in round 5 was unsafe. The most common failure is an unhelpful answer 
 
 Still open from round 5: a terse "why?" follow-up that misstates the k rule, a "2-sentence idea" that reads recency as frequency, and two campaigns that the clean-up leaves thin (no offer or an empty body).
 
-**Regression check.** [copilot/evaluate.py](copilot/evaluate.py) re-asks 67 questions from development and earlier rounds, scoring words ("No", "lower") as well as figures against pandas. On the last full run with `qwen2.5:7b`:
+**Regression check.** [assistant/evaluate.py](assistant/evaluate.py) re-asks 67 questions from development and earlier rounds, scoring words ("No", "lower") as well as figures against pandas. On the last full run with `qwen2.5:7b`:
 
 | Set | Correct |
 |---|---|
@@ -155,7 +155,7 @@ Still open from round 5: a terse "why?" follow-up that misstates the k rule, a "
 | Earlier red-team failures (20) | 20 (100%) |
 | Round 5 failures (15) | 15 (100%) |
 
-Every figure in every answer traced back to the data. Most of these questions were tuned against, so 100% means past fixes still hold, not that new questions will be answered correctly; the rounds above measure that. Results are in `results/copilot_eval.csv`; rerun with `python -m copilot.evaluate`.
+Every figure in every answer traced back to the data. Most of these questions were tuned against, so 100% means past fixes still hold, not that new questions will be answered correctly; the rounds above measure that. Results are in `results/assistant_eval.csv`; rerun with `python -m assistant.evaluate`.
 
 | | Offline (default) | Live |
 |---|---|---|
@@ -166,16 +166,16 @@ Every figure in every answer traced back to the data. Most of these questions we
 Offline mode exists so anyone can try the app without a Snowflake account. It reads the segment-level result tables exported to `results/` (no customer rows), and DuckDB runs the same fixed queries over them. Live mode is untested. The calculations work on segment-level tables, so customer-level questions are declined in both modes.
 
 ```bash
-pip install -r requirements-copilot.txt   # no scikit-learn needed
+pip install -r requirements-assistant.txt   # no scikit-learn needed
 ollama pull qwen2.5:7b
 streamlit run app.py
 ```
 
-`COPILOT_MODE` (`auto`/`local`/`live`), `COPILOT_LLM` (`auto`/`ollama`/`cortex`), `OLLAMA_MODEL`, `CORTEX_MODEL` and `LLM_TIMEOUT` override the defaults. The app only runs fixed, read-only queries, and offline DuckDB has file and network access switched off. In live mode, also run the app under a read-only role.
+`ASSISTANT_MODE` (`auto`/`local`/`live`), `ASSISTANT_LLM` (`auto`/`ollama`/`cortex`), `OLLAMA_MODEL`, `CORTEX_MODEL` and `LLM_TIMEOUT` override the defaults. The app only runs fixed, read-only queries, and offline DuckDB has file and network access switched off. In live mode, also run the app under a read-only role.
 
 ## How it works
 
-The segmentation needs only Snowflake and scikit-learn. The Segment Copilot (LangGraph, Streamlit, DuckDB and an LLM) is an optional app that reads the results; nothing in the pipeline depends on it.
+The segmentation needs only Snowflake and scikit-learn. The Segment Assistant (LangGraph, Streamlit, DuckDB and an LLM) is an optional app that reads the results; nothing in the pipeline depends on it.
 
 ```mermaid
 flowchart LR
@@ -188,10 +188,10 @@ flowchart LR
     ML --> V[ML.CUSTOMER_SEGMENTS_CURRENT<br/>view for BI]
     T[Monthly Task] -->|CALL| R[RESCORE_CUSTOMERS]
     R -->|new snapshot + frozen models| V
-    V --> C[Segment Copilot<br/>LangGraph + Streamlit]
+    V --> C[Segment Assistant<br/>LangGraph + Streamlit]
 ```
 
-**Customer data never leaves Snowflake.** Steps 01–04 are SQL. All fitting, scoring and evaluation runs in permanent Python stored procedures, created by [05_deploy_procedures.py](05_deploy_procedures.py) from the [segmentation/](segmentation/) package zipped on a stage. The local machine only issues `CALL` statements. The exceptions are [08_make_charts.py](08_make_charts.py), which reads *aggregated* result tables to draw the charts above, and the copilot in live mode, which returns query results (at most 200 rows) to the app.
+**Customer data never leaves Snowflake.** Steps 01–04 are SQL. All fitting, scoring and evaluation runs in permanent Python stored procedures, created by [05_deploy_procedures.py](05_deploy_procedures.py) from the [segmentation/](segmentation/) package zipped on a stage. The local machine only issues `CALL` statements. The exceptions are [08_make_charts.py](08_make_charts.py), which reads *aggregated* result tables to draw the charts above, and the assistant in live mode, which returns query results (at most 200 rows) to the app.
 
 ### Data and cleaning ([03_build_staging.py](03_build_staging.py))
 
@@ -264,7 +264,7 @@ The code is pinned to **1.9.1, the latest stable release**, which is also in Sno
 
 The experimental callbacks API (new in 1.9) isn't used: none of the clustering or gradient-boosting estimators support it yet.
 
-**On Windows, Smart App Control may block scikit-learn 1.9.1.** On some machines it refuses to load one of the wheel's DLLs (`_libsvm_sparse`). The pipeline itself isn't affected because it runs in Snowflake. To run the tests there, use GitHub Actions or `python tests/run_in_snowflake.py`. The copilot doesn't use scikit-learn.
+**On Windows, Smart App Control may block scikit-learn 1.9.1.** On some machines it refuses to load one of the wheel's DLLs (`_libsvm_sparse`). The pipeline itself isn't affected because it runs in Snowflake. To run the tests there, use GitHub Actions or `python tests/run_in_snowflake.py`. The assistant doesn't use scikit-learn.
 
 ## Reproduce
 
@@ -299,7 +299,7 @@ Then, optionally, create the monthly re-scoring Task. Run [sql/rescore_task.sql]
 
 Everything runs on an X-Small warehouse. Developing the whole project, including every rerun, used under 2.5 credits.
 
-**Tests:** 27 pipeline tests on synthetic customers with planted structure. They check that the methods recover it, that segment codes are ordered by meaning, that every generated rule is true for the customers it describes, that re-scoring builds the same cells as the hybrid, and the metric edge cases. 118 copilot tests:
+**Tests:** 27 pipeline tests on synthetic customers with planted structure. They check that the methods recover it, that segment codes are ordered by meaning, that every generated rule is true for the customers it describes, that re-scoring builds the same cells as the hybrid, and the metric edge cases. 118 assistant tests:
 - every calculation, checked against pandas on the cases the SQL version got wrong;
 - the figure checker;
 - the agents with a scripted chat model: plan repair, direction and metric corrections, declines, follow-ups, documentation answers, the writing guards;
@@ -313,8 +313,8 @@ None need Ollama or Snowflake. They run on GitHub Actions (`pytest tests`), or i
 01–08_*.py            pipeline steps, in run order
 segmentation/         code that runs inside the stored procedures
 sql/                  monthly re-scoring Task
-app.py                Segment Copilot UI (Streamlit)
-copilot/              graph.py (LangGraph agents), semantics.py (metrics + calculations),
+app.py                Segment Assistant UI (Streamlit)
+assistant/              graph.py (LangGraph agents), semantics.py (metrics + calculations),
                       docs.py (README retrieval), verify.py (figure check), evaluate.py
 tests/                pytest suite + Snowflake runner
 exploration/          the initial 109-configuration method bake-off

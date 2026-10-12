@@ -1,7 +1,7 @@
-"""The figure checker that runs on every copilot answer (copilot/verify.py)."""
+"""The figure checker that runs on every assistant answer (assistant/verify.py)."""
 import pytest
 
-from copilot.verify import check, figures
+from assistant.verify import check, figures
 
 NAMES = {"C2-B1": "Core / Bulk buyers", "C2-B2": "Core / Holiday buyers"}
 BULK = {"SEGMENT": "C2-B1", "SEGMENT_NAME": "Core / Bulk buyers", "MEDIAN_AVG_ORDER_VALUE": 410.66}

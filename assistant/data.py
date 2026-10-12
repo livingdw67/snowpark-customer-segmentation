@@ -1,4 +1,4 @@
-"""Read-only data access for the copilot, with the same logical tables in both modes.
+"""Read-only data access for the assistant, with the same logical tables in both modes.
 
 local - DuckDB over the committed results/*.csv. No account needed and no customer-level
         data: the repo only publishes aggregated results.
@@ -222,8 +222,8 @@ def schema_text(data) -> str:
 
 
 def open_data(mode: str | None = None):
-    """COPILOT_MODE=local|live|auto (auto = live when Snowflake credentials are configured)."""
-    mode = (mode or os.getenv("COPILOT_MODE", "auto")).lower()
+    """ASSISTANT_MODE=local|live|auto (auto = live when Snowflake credentials are configured)."""
+    mode = (mode or os.getenv("ASSISTANT_MODE", "auto")).lower()
     if mode == "auto":
         from dotenv import load_dotenv
 
@@ -235,4 +235,4 @@ def open_data(mode: str | None = None):
         from common import get_session
 
         return SnowflakeData(get_session())
-    raise ValueError(f"COPILOT_MODE must be local, live or auto, not {mode!r}")
+    raise ValueError(f"ASSISTANT_MODE must be local, live or auto, not {mode!r}")

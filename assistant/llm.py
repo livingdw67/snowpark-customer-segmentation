@@ -1,6 +1,6 @@
 """Pick the chat model: Snowflake Cortex when live, a local Ollama model otherwise.
 
-COPILOT_LLM   auto (default) | cortex | ollama   auto = cortex with a live session, else ollama
+ASSISTANT_LLM   auto (default) | cortex | ollama   auto = cortex with a live session, else ollama
 CORTEX_MODEL  Cortex model name (default llama3.1-70b, available in most regions)
 OLLAMA_MODEL  Ollama model tag (default qwen2.5:7b: reliable text-to-SQL, fits in 8 GB of VRAM)
 OLLAMA_HOST   Ollama server URL (default http://localhost:11434)
@@ -12,13 +12,13 @@ import os
 
 
 def make_llm(session=None):
-    backend = os.getenv("COPILOT_LLM", "auto").lower()
+    backend = os.getenv("ASSISTANT_LLM", "auto").lower()
     if backend == "auto":
         backend = "cortex" if session is not None else "ollama"
 
     if backend == "cortex":
         if session is None:
-            raise RuntimeError("COPILOT_LLM=cortex needs a live Snowflake session (COPILOT_MODE=live).")
+            raise RuntimeError("ASSISTANT_LLM=cortex needs a live Snowflake session (ASSISTANT_MODE=live).")
         from langchain_snowflake import ChatSnowflake
 
         return ChatSnowflake(session=session, model=os.getenv("CORTEX_MODEL", "llama3.1-70b"),
@@ -31,7 +31,7 @@ def make_llm(session=None):
         return ChatOllama(model=os.getenv("OLLAMA_MODEL", "qwen2.5:7b"), temperature=0,
                           base_url=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
                           keep_alive="30m", client_kwargs={"timeout": float(os.getenv("LLM_TIMEOUT", 120))})
-    raise ValueError(f"COPILOT_LLM must be auto, cortex or ollama, not {backend!r}")
+    raise ValueError(f"ASSISTANT_LLM must be auto, cortex or ollama, not {backend!r}")
 
 
 def warm_up(llm) -> None:
