@@ -2,6 +2,13 @@
 
 Segments 4,261 active wholesale-gift customers (UCI Online Retail II, 1.07M transactions) by **what they're worth next quarter** and **how they buy**, with every model trained and scored inside Snowflake on scikit-learn 1.9.1.
 
+**Why I built this.** Most segmentation projects stop at clusters that look tidy. I wanted segments a business could act on, so every scheme is scored by what customers actually did over the next quarter. It showcases the skills I bring to a senior data science role:
+
+- in-warehouse ML on Snowflake (Snowpark stored procedures and Tasks)
+- honest evaluation (out-of-time backtests against an RFM baseline)
+- turning model output into business decisions
+- an LLM copilot (LangGraph) checked against an evaluation set
+
 Three approaches were compared on two out-of-time backtests, scored against what customers actually did over the next 91 days:
 
 - **Option B, two-axis clustering:** a value axis crossed with a buying-behavior axis.
