@@ -502,7 +502,7 @@ def test_rewrite_chatter_keeps_the_previous_draft(data):
 
 def test_replay_regressions_stay_fixed(data):
     # "small-basket" is a buying style, not the basket-size metric
-    from copilot.semantics import metrics_named_in
+    from assistant.semantics import metrics_named_in
     assert metrics_named_in("how many small basket customers r there") == ["customers"]
     assert metrics_named_in("Does C2-B1 have a bigger median basket than C1-B3?") == ["units_per_order"]
     # a proportion asked of the lookup tool is a share of the total

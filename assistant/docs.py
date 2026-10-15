@@ -60,7 +60,7 @@ SYNONYMS = {
     "date": ["snapshot", "snapshots", "today", "latest", "2011"], "when": ["snapshot", "2011", "date"],
     "registry": ["joblib", "stage", "versioned", "anaconda"], "poisson": ["skewed", "negative", "spend"],
     "lookback": ["365", "lookback"], "window": ["lookback", "365", "days"],
-    "copilot": ["offline", "live", "segment", "level"], "privacy": ["never", "leaves", "aggregated"],
+    "assistant": ["offline", "live", "segment", "level"], "privacy": ["never", "leaves", "aggregated"],
 }
 MAX_CHUNK = 900  # characters per chunk of a long README section
 ADVICE = re.compile(r"\b(should (i|we)|can (i|we)|trust|rely|reliable|safe to|ok to|okay to)\b", re.IGNORECASE)

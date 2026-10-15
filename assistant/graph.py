@@ -117,7 +117,7 @@ SCHEME_AVERAGE = re.compile(r"\b(average|mean)\b.*\b(across|over|of)\s+(?:all\s+
 SQL = re.compile(r"^\s*(select\s+(\*|distinct\b|count\s*\(|[\w.]+\s*(,|\bfrom\b))|with\s+\w+\s+as\s*\(|"
                  r"insert\s+into\b|update\s+\w+\s+set\b|delete\s+from\b|drop\s+(table|view|schema|database)\b)",
                  re.IGNORECASE)
-# A request to write SQL, as opposed to SQL itself: the copilot runs fixed calculations only.
+# A request to write SQL, as opposed to SQL itself: the assistant runs fixed calculations only.
 SQL_REQUEST = re.compile(r"\b(write|give|generate|show|create|run|build)\b(\s+\w+){0,3}\s+(sql|queries|query)\b|\bsql\b",
                          re.IGNORECASE)
 PAST = re.compile(r"\blast (christmas|year|month|quarter|season)\b|\bhistorical (revenue|sales)\b|"
