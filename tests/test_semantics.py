@@ -202,3 +202,55 @@ def test_crosstab(sem, seg):
     assert len(revenue.table) == 5  # four tiers and a total
     medians = sem.crosstab(M["net_revenue_12m"])
     assert "All styles" not in medians.table.columns and "Medians don't add up" in medians.notes[0]
+
+
+# ---- round 6: shapes of question the fixed calculations couldn't answer -------------------
+
+def test_crosstab_within_each_tier_and_transposed(sem, seg):
+    t = sem.crosstab(M["customers"], within="tier").table
+    c1 = seg[seg.SEGMENT.str.startswith("C1")].set_index("SEGMENT").CUSTOMERS
+    assert t.iloc[0]["Bulk buyers (B1)"] == f"{c1['C1-B1'] / c1.sum():.1%}" and t.iloc[0]["All styles"] == "100.0%"
+    flipped = sem.crosstab(M["order_value"], transpose=True).table
+    assert flipped.columns[0] == "Buying style" and list(flipped["Buying style"])[0] == "Bulk buyers (B1)"
+
+
+def test_schemes_compared_in_each_backtest(sem, frames):
+    bt = frames["BACKTEST"].set_index(["SCHEME", "RUN_ID"]).PERSISTENCE
+    out = first_fact(sem.compare_schemes_by_fold("hybrid", "outcome_guided", [S["persistence"]], asked=1))
+    assert out.startswith("No.") and "both backtests" in out
+    assert f"{bt['hybrid', 'backtest_q2']:.1%}" in out and f"{bt['outcome_guided', 'backtest_q3']:.1%}" in out
+
+
+def test_biggest_drop_between_backtests(sem, frames):
+    bt = frames["BACKTEST"].pivot(index="SCHEME", columns="RUN_ID", values="TOP20_REVENUE_CAPTURE").dropna()
+    drop = (bt.backtest_q3 - bt.backtest_q2).sort_values()
+    out = first_fact(sem.scheme_change(S["top20_revenue_capture"], -1))
+    assert out.startswith("Unsegmented outcome model") and drop.index[0] == "outcome_model_continuous"
+    assert "C: outcome tiers (9-12 segments)" in out  # the biggest drop among the segmentations
+
+
+def test_measure_not_recorded_for_a_scheme(sem):
+    out = first_fact(sem.schemes([S["revenue_forecast_bias"]], ["hybrid"]))
+    assert "isn't recorded for Hybrid" in out and "-16.6% in q2" in out
+
+
+def test_why_not_this_k(sem, frames):
+    k = frames["K_CHOICES"].set_index(["AXIS", "K"]).SILHOUETTE
+    out = first_fact(sem.k_detail("behavior", "why not 4?"))
+    assert f"{k['behavior', 4]:.4f}" in out and f"{k['behavior', 3]:.4f}" in out and "best silhouette" in out
+    two = sem.k_detail("value", "Compare value k=4 and value k=7 on stability").facts
+    assert len(two) == 2 and "k=7" in two[1]
+
+
+def test_cleaning_steps_added_together(sem, frames):
+    c = frames["CLEANING"].set_index("STEP").CHANGE
+    out = first_fact(sem.cleaning(None, False, "How many rows did the duplicate and write-off steps take out between them?"))
+    assert f"{int(-(c[3] + c[4])):,}" in out
+
+
+def test_ranked_list_and_breakdown_with_shares(sem, seg):
+    total = seg.EXPECTED_REVENUE.sum()
+    top = sem.rank(M["expected_revenue"], "segment", 1, 12, with_share=True).table
+    assert len(top) == 12 and top.iloc[0]["Share of total"] == f"{seg.EXPECTED_REVENUE.max() / total:.1%}"
+    tiers = sem.breakdown("tier", M["customers"], [M["expected_revenue"]], shares=True).table
+    assert "Share of all customers" in tiers.columns and "Share of all predicted revenue next quarter" in tiers.columns

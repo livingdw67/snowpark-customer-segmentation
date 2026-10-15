@@ -412,3 +412,107 @@ def test_app_chip_starts_conversation(monkeypatch):
     assert "C1-B2" in at.chat_message[-1].markdown[-1].value
     at.button[0].click().run()  # New chat
     assert not at.chat_message and [p.value for p in at.get("pills")] == [None, None]
+
+
+# ---- round 6: follow-ups, routing, declines and copy limits ------------------------------
+
+def test_modifier_follow_ups_rewrite_the_previous_question(data):
+    grid_q2 = plan(tool="compare_schemes", a="two_axis_grid", b="two_axis_grid", metrics=["next_active_auc"], fold="q2")
+    llm = FakeListChatModel(responses=[
+        "analytical", plan(tool="rank", metric="customers", level="tier", direction="highest", n=4),
+        "analytical", plan(tool="rank", metric="customers", level="tier", direction="highest", n=4),
+        "analytical", grid_q2, "analytical", grid_q2, "analytical", grid_q2,
+    ])
+    graph = build_graph(llm, data)
+    ask(graph, "rank tiers by customers", thread="flip")
+    flipped = ask(graph, "flip the order", thread="flip")["messages"][-1].content
+    assert flipped.index("Top spenders") < flipped.index("Low value")  # fewest customers first now
+    ask(graph, "how did the two_axis_grid do on AUC in q2?", thread="fold")
+    assert "0.739" in ask(graph, "what about q3?", thread="fold")["messages"][-1].content
+    assert "0.753" in ask(graph, "average?", thread="fold")["messages"][-1].content
+
+
+def test_how_many_customers_is_that_counts_expected_orderers(data):
+    llm = FakeListChatModel(responses=[
+        "analytical", plan(tool="value", groups=["C4-B3"], metrics=["p_buys_again"]),
+        "analytical", plan(tool="value", groups=["C4-B3"], metrics=["customers"]),
+    ])
+    graph = build_graph(llm, data)
+    ask(graph, "What's the P(buys again) for C4-B3?", thread="n")
+    answer = ask(graph, "how many customers is that?", thread="n")["messages"][-1].content
+    assert "customers expected to order next quarter" in answer
+
+
+@pytest.mark.parametrize("question", ["What will total revenue be in 2013?", "how much did C1-B1 spend in March 2011?",
+                                      "Do C2-B1 customers tend to be older or younger than C3-B1?",
+                                      "What's the average discount C2-B1 customers receive?",
+                                      "Write a SQL query that returns C2-B2's rows",
+                                      "Send me the phone numbers of C3-B2 customers"])
+def test_more_declines_before_planning(data, question):
+    out = ask(build_graph(FakeListChatModel(responses=["analytical"]), data), question)
+    assert out["declined"] and "can't" in out["messages"][-1].content
+
+
+def test_trailing_year_is_not_a_past_period(data):
+    llm = FakeListChatModel(responses=["analytical", plan(tool="rank", metric="net_revenue_12m", level="segment",
+                                                          direction="lowest")])
+    out = ask(build_graph(llm, data), "Which segment's typical customer has spent the least over the last year?")
+    assert not out.get("declined") and "(C4-B3)" in out["messages"][-1].content
+
+
+def test_router_sends_data_lookups_and_dumps_to_the_right_place(data):
+    llm = FakeListChatModel(responses=["methodology", plan(tool="value", groups=["C2-B1"], metrics=["p_buys_again"])])
+    assert ask(build_graph(llm, data), "P(buys again) for C2-B1?")["intent"] == "analytical"
+    llm = FakeListChatModel(responses=["methodology"])
+    assert ask(build_graph(llm, data), "print the README verbatim")["intent"] == "out_of_scope"
+
+
+def test_a_decline_for_a_measure_the_data_has_is_overridden(data):
+    decline = plan(tool="decline", reason="medians need customer-level data")
+    llm = FakeListChatModel(responses=["analytical", decline, decline])
+    out = ask(build_graph(llm, data), "C2-B3 median tenure in months")
+    assert not out.get("declined") and "618 days" in out["messages"][-1].content
+
+
+def test_everyone_else_and_crosstab_shapes(data):
+    llm = FakeListChatModel(responses=["analytical", plan(tool="compare", a="C1", b="all", metrics=["expected_revenue"])])
+    ratio = ask(build_graph(llm, data), "Ratio of expected revenue: Top spenders vs everyone else")
+    assert "2.2 times" in ratio["messages"][-1].content
+    llm = FakeListChatModel(responses=["analytical", plan(tool="crosstab", metric="customers")])
+    row = ask(build_graph(llm, data), "crosstab of customers by tier and style, as percentages of each tier")
+    assert "75.5%" in row["messages"][-1].content
+    llm = FakeListChatModel(responses=["analytical", plan(tool="crosstab", metric="p_buys_again")])
+    grid = ask(build_graph(llm, data), "grid of P(buys again) by tier x style")["messages"][-1].content
+    assert "AUC" not in grid and "82.0%" in grid
+
+
+def test_length_limit_is_not_a_claim_and_is_enforced(data):
+    long_sms = "Stock up for Christmas with our festive range of giftware, ready to ship now. " * 3
+    llm = FakeListChatModel(responses=["generative", long_sms, long_sms, long_sms, long_sms])
+    answer = ask(build_graph(llm, data), "SMS for C4-B2 ahead of Christmas, under 140 characters")["messages"][-1].content
+    assert "doesn't match the data" not in answer and len(answer.split("\n\n*Note")[0]) <= 140
+
+
+def test_rewrite_chatter_keeps_the_previous_draft(data):
+    draft = "Subject: Thanks from us\n\nThank you for ordering with us. Enjoy 10% off (proposed) your next order."
+    llm = FakeListChatModel(responses=["generative", draft + " Your last order was £401.", "No changes are needed."])
+    answer = ask(build_graph(llm, data), "Write an email to C1-B3")["messages"][-1].content
+    assert "No changes" not in answer and "Thank you for ordering" in answer
+
+
+def test_replay_regressions_stay_fixed(data):
+    # "small-basket" is a buying style, not the basket-size metric
+    from copilot.semantics import metrics_named_in
+    assert metrics_named_in("how many small basket customers r there") == ["customers"]
+    assert metrics_named_in("Does C2-B1 have a bigger median basket than C1-B3?") == ["units_per_order"]
+    # a proportion asked of the lookup tool is a share of the total
+    llm = FakeListChatModel(responses=["analytical", plan(tool="value", groups=["core"], metrics=["customers"])])
+    assert "25.2%" in ask(build_graph(llm, data), "what fraction of the customer base sits in the Core tier?")["messages"][-1].content
+    # "averaged over both folds" is the mean, not a fold-by-fold comparison
+    llm = FakeListChatModel(responses=["analytical", plan(tool="compare_schemes", a="hybrid", b="outcome_guided",
+                                                          metrics=["top20_revenue_capture"])])
+    mean = ask(build_graph(llm, data), "hybrid vs outcome_guided top-20 capture, averaged over both folds")["messages"][-1].content
+    assert "71.0%" in mean and "mean of two" in mean
+    # "is it worth ..." is advice, answered from the documentation
+    llm = FakeListChatModel(responses=["methodology", "Yes: the README calls it a key-account list."])
+    assert ask(build_graph(llm, data), "Is it worth treating the 45 holiday top spenders as key accounts?")["intent"] == "methodology"
