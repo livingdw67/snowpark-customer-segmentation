@@ -1,8 +1,8 @@
 """Answers to "how" and "why" questions come from the project's own documentation.
 
-README.md is split into its sections, plus a glossary generated from the metric catalogue, and
-the sections that best match the question (keyword overlap with a few domain synonyms) are
-handed to the methodology agent as its only source.
+README.md is split into its sections, and long sections into paragraph-sized chunks, plus a
+glossary generated from the metric catalogue. The chunks that best match the question (BM25
+over words, with a few domain synonyms) are handed to the methodology agent as its only source.
 """
 from __future__ import annotations
 
@@ -57,7 +57,12 @@ SYNONYMS = {
     "active": ["buys", "again", "classifier", "calibrated", "probability"],
     "algorithms": ["scikit", "learn", "bisectingkmeans", "histgradientboostingclassifier", "used"],
     "models": ["scikit", "learn", "histgradientboostingregressor", "classifier", "used"],
+    "date": ["snapshot", "snapshots", "today", "latest", "2011"], "when": ["snapshot", "2011", "date"],
+    "registry": ["joblib", "stage", "versioned", "anaconda"], "poisson": ["skewed", "negative", "spend"],
+    "lookback": ["365", "lookback"], "window": ["lookback", "365", "days"],
+    "assistant": ["offline", "live", "segment", "level"], "privacy": ["never", "leaves", "aggregated"],
 }
+MAX_CHUNK = 900  # characters per chunk of a long README section
 ADVICE = re.compile(r"\b(should (i|we)|can (i|we)|trust|rely|reliable|safe to|ok to|okay to)\b", re.IGNORECASE)
 DEFINITION = re.compile(r"\b(mean|means|meaning|definition|define|stand for|what is|what's)\b", re.IGNORECASE)
 
@@ -174,38 +179,63 @@ def sections(readme: Path = README) -> list[Section]:
         m = re.match(r"^#{1,4}\s+(.*)", line)
         if m:
             if "".join(buf).strip():
-                parts.append(Section(title, "\n".join(buf).strip()))
+                parts += _chunks(title, "\n".join(buf).strip())
             title, buf = m.group(1).strip(), []
         else:
             buf.append(line)
     if "".join(buf).strip():
-        parts.append(Section(title, "\n".join(buf).strip()))
+        parts += _chunks(title, "\n".join(buf).strip())
     return parts + _glossary()
 
 
+def _chunks(title: str, text: str) -> list[Section]:
+    """A long section as paragraph-sized pieces, each keeping the section's title, so a paragraph
+    deep in a long section ("Why not the Snowflake Model Registry?") can be found on its own."""
+    out, buf = [], ""
+    for para in (p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()):
+        if buf and len(buf) + len(para) > MAX_CHUNK:
+            out.append(Section(title, buf))
+            buf = para
+        else:
+            buf = f"{buf}\n\n{para}" if buf else para
+    if buf:
+        out.append(Section(title, buf))
+    return out
+
+
+def _tokens(text: str) -> list[str]:
+    return re.findall(r"[a-z0-9_²£]+", text.lower())
+
+
 def _terms(text: str) -> list[str]:
-    words = [w for w in re.findall(r"[a-z0-9_²]+", text.lower()) if w not in STOP and len(w) > 1 or w == "k"]
+    words = [w for w in _tokens(text) if w not in STOP and len(w) > 1 or w == "k"]
     expanded = list(words)
     for w in words:
         expanded += SYNONYMS.get(w, [])
     return expanded
 
 
-def retrieve(question: str, k: int = 2, corpus: list[Section] | None = None) -> list[Section]:
+def retrieve(question: str, k: int = 3, corpus: list[Section] | None = None) -> list[Section]:
     corpus = corpus or sections()
-    terms = _terms(question)
-    docs = [set(re.findall(r"[a-z0-9_²]+", (s.title + " " + s.text).lower())) for s in corpus]
+    terms = set(_terms(question))
+    docs = [_tokens(s.title + " " + s.text) for s in corpus]
+    sets = [set(d) for d in docs]
     n = len(corpus)
+    avg = sum(len(d) for d in docs) / n
+    df = {t: sum(t in s for s in sets) for t in terms}
+    k1, b = 1.2, 0.75
     scores = []
-    for s, words in zip(corpus, docs):
+    for s, words, bag in zip(corpus, docs, sets):
         title = s.title.lower()
         score = 0.0
-        for t in set(terms):
-            df = sum(t in d for d in docs)
-            if t in words:
-                score += math.log(1 + n / (1 + df))
+        for t in terms:
+            if t not in bag:
+                continue
+            idf = math.log(1 + (n - df[t] + 0.5) / (df[t] + 0.5))
+            tf = words.count(t)
+            score += idf * tf * (k1 + 1) / (tf + k1 * (1 - b + b * len(words) / avg))
             if t in title:
-                score += 1.5 * math.log(1 + n / (1 + df))
+                score += 0.5 * idf
         if s.title.startswith("Glossary") and DEFINITION.search(question):
             score *= 1.5  # "what does X mean" is usually a definition
         if ADVICE.search(question) and (s.title.startswith("Findings") or "trust" in title or "small segments" in title):
@@ -220,11 +250,13 @@ def retrieve(question: str, k: int = 2, corpus: list[Section] | None = None) -> 
         entry = next((s for s in corpus if s.title.startswith(title)), None)
         if entry:
             return [entry] + [s for s in found if s is not entry][: k - 1]
-    if DEFINITION.search(question):
-        # A definition of a known metric comes straight from its glossary entry.
-        named = metrics_named_in(question)
-        if named:
-            entry = next((s for s in corpus if s.title == f"Glossary: {SEGMENT_METRICS[named[0]].label}"), None)
-            if entry:
-                found = [entry] + [s for s in found if s is not entry][: k - 1]
+    named = [m for m in metrics_named_in(question) if m != "customers"]
+    if named:
+        # A known metric's glossary entry says what it is and how it's made: always include it,
+        # first for a definition, otherwise in place of the weakest match.
+        entry = next((s for s in corpus if s.title == f"Glossary: {SEGMENT_METRICS[named[0]].label}"), None)
+        if entry and entry not in found:
+            found = [entry] + found[: k - 1] if DEFINITION.search(question) else found[: k - 1] + [entry]
+        elif entry and DEFINITION.search(question):
+            found = [entry] + [s for s in found if s is not entry][: k - 1]
     return found

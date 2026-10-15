@@ -73,7 +73,7 @@ SEGMENT_METRICS = {m.key: m for m in [
             "pricier orders", "larger orders", "largest orders", "smaller orders", "smallest orders")),
     Metric("units_per_order", "MEDIAN_AVG_UNITS_PER_ORDER", "units per order", "number", "median",
            "bigger baskets", "smaller baskets", (), (),
-           ("units", "basket size", "units per order", "baskets", "items per order")),
+           ("units", "basket size", "units per order", "baskets", "basket", "items per order")),
     Metric("unit_price", "MEDIAN_AVG_UNIT_PRICE", "unit price", "money", "median",
            "pay more per unit", "pay less per unit", ("premium", "expensive", "pricier"), ("cheap", "cheapest", "cheaper"),
            ("unit price", "price", "per unit", "premium", "expensive", "cheap", "cheapest", "per item",
@@ -180,6 +180,8 @@ def metric(key: str, level: str = "segment") -> Metric:
 
 GROUP_WORDS = {"bulk", "holiday", "small-basket", "small basket", "core", "occasional", "top spenders",
                "low value"}
+# A buying style's name holds a metric word ("small-basket" has "basket"): it never names the metric.
+GROUP_NAMES = re.compile(r"\bsmall[- ]baskets?\b", re.IGNORECASE)
 
 
 def metrics_named_in(text: str, level: str = "segment") -> list[str]:
@@ -188,7 +190,7 @@ def metrics_named_in(text: str, level: str = "segment") -> list[str]:
     Whole words only ("engaged" doesn't contain "age"), and tier or buying-style words never
     count as naming a metric ("bulk buyers" is a group, not units per order).
     """
-    lower = text.lower().replace("’", "'")
+    lower = GROUP_NAMES.sub(" ", text.lower().replace("’", "'"))
     table = SCHEME_METRICS if level == "scheme" else SEGMENT_METRICS
     hits = []
     for m in table.values():
@@ -249,14 +251,17 @@ def convert_days(text: str, unit: str) -> str:
 
 def convert_money(text: str, unit: str) -> str:
     """'£1,290,485' -> '£1,290,485 (about £1,290k)' for each £ amount in the text; unit is
-    pence, thousands or millions."""
-    if "(about" in text or " pence)" in text:
+    pence, thousands, millions, or 'nearest <n>' to round to the nearest n pounds."""
+    if "(about" in text or " pence)" in text or "(to the nearest" in text:
         return text
 
     def one(mm):
         v = float(mm.group(1).replace(",", ""))
+        if unit.startswith("nearest"):
+            step = float(unit.split()[1])
+            return f"{mm.group(0)} (£{round(v / step) * step:,.0f} to the nearest £{step:,.0f})"
         if unit == "pence":
-            return f"{mm.group(0)} ({v * 100:,.0f} pence)"
+            return f"{mm.group(0)} ({v * 100:,.1f} pence)".replace(".0 pence", " pence")
         if unit == "thousands":
             return f"{mm.group(0)} (about £{v / 1e3:,.1f}k)" if v < 1e5 else f"{mm.group(0)} (about £{v / 1e3:,.0f}k)"
         return f"{mm.group(0)} (about £{v / 1e6:,.2f} million)"
@@ -407,7 +412,7 @@ def strip_group_words(text: str) -> str:
 
 def metric_match_lengths(text: str, level: str = "segment") -> dict[str, int]:
     """For each metric named in `text`, the length of its longest matching synonym."""
-    lower = text.lower().replace("’", "'")
+    lower = GROUP_NAMES.sub(" ", text.lower().replace("’", "'"))
     table = SCHEME_METRICS if level == "scheme" else SEGMENT_METRICS
     out = {}
     for m in table.values():
@@ -583,9 +588,25 @@ class Semantics:
                                              "Whole total": fmt(m, w), "Share": pct(p / w)}]))
 
     def rank(self, m: Metric, level: str, direction: int, n: int = 1, within: list[Group] | None = None,
-             nth: int = 1) -> Result:
+             nth: int = 1, with_share: bool = False) -> Result:
         """Rank segments, tiers or buying styles. direction +1 = highest first. Ties are kept.
-        `nth` > 1 asks for the second, third ... in that order."""
+        `nth` > 1 asks for the second, third ... in that order. `with_share` adds each one's share
+        of the total for a measure that adds up."""
+        result = self._rank(m, level, direction, n, within, nth)
+        if with_share and m.agg == "sum" and "Rank" in result.table.columns:
+            total = float(self.seg[m.column].sum())
+            label_col = result.table.columns[1]
+            shares = []
+            for label in result.table[label_col]:
+                codes = re.findall(r"\b(C\d-B\d)\b", label) or [c for c in self.seg.SEGMENT
+                                                                  if re.search(rf"\(({c[:2]}|{c[3:]})[,)]", label)
+                                                                  and (c[:2] in label or c[3:] in label)]
+                shares.append(pct(float(self.seg.loc[codes, m.column].sum()) / total) if codes else "")
+            result.table["Share of total"] = shares
+        return result
+
+    def _rank(self, m: Metric, level: str, direction: int, n: int = 1, within: list[Group] | None = None,
+              nth: int = 1) -> Result:
         codes = list(self.seg.SEGMENT)
         if within:
             codes = [c for c in codes if any(c in g.codes for g in within)]
@@ -726,11 +747,43 @@ class Semantics:
             return Result(["These measures can't be compared for these groups."], pd.DataFrame(), list(dict.fromkeys(notes)))
         return Result(facts, pd.DataFrame(rows), list(dict.fromkeys(notes)))
 
-    def crosstab(self, m: Metric, as_share: bool = False) -> Result:
+    def crosstab(self, m: Metric, as_share: bool = False, within: str | None = None, transpose: bool = False) -> Result:
         """Value tier (rows) x buying style (columns). Every cell is one segment; totals are
         shown only for measures that add up (or average, weighted by customers). `as_share`
-        shows each cell of an additive measure as a share of the grand total."""
+        shows each cell of an additive measure as a share of the grand total; `within` ("tier" or
+        "style") as a share of its own tier or style instead. `transpose` puts styles in the rows."""
+        result = self._crosstab(m, as_share, within)
+        if transpose and not result.table.empty:
+            t = result.table.set_index(result.table.columns[0]).T.reset_index()
+            t = t.rename(columns={"index": "Buying style"})
+            t.columns.name = None
+            result.table = t
+            result.facts[0] += " Buying styles are in the rows and value tiers in the columns."
+        return result
+
+    def _crosstab(self, m: Metric, as_share: bool = False, within: str | None = None) -> Result:
         tiers, styles = list(TIER_NAMES), list(BEHAVIOR_NAMES)
+        if within in ("tier", "style") and m.agg == "sum":
+            rows = []
+            for t in tiers:
+                row = {"Value tier": f"{TIER_NAMES[t]} ({t})"}
+                for s in styles:
+                    whole = [f"{t}-{x}" for x in styles] if within == "tier" else [f"{y}-{s}" for y in tiers]
+                    row[f"{BEHAVIOR_NAMES[s]} ({s})"] = pct(self.seg.loc[f"{t}-{s}", m.column] /
+                                                            self.seg.loc[whole, m.column].sum())
+                if within == "tier":
+                    row["All styles"] = pct(1.0)
+                rows.append(row)
+            if within == "style":
+                rows.append({"Value tier": "All tiers", **{f"{BEHAVIOR_NAMES[s]} ({s})": pct(1.0) for s in styles}})
+            word = "value tier" if within == "tier" else "buying style"
+            fact = (f"{cap(m.label)} by value tier and buying style, as a share of each {word} "
+                    f"({'each row adds to 100%' if within == 'tier' else 'each column adds to 100%'}).")
+            biggest = max(((t, s) for t in tiers for s in styles), key=lambda ts: self.seg.loc[
+                f"{ts[0]}-{ts[1]}", m.column] / self.seg.loc[[f"{ts[0]}-{x}" for x in styles] if within == "tier"
+                                                             else [f"{y}-{ts[1]}" for y in tiers], m.column].sum())
+            return Result([fact + f" The largest share is {segment_name('-'.join(biggest))} ({'-'.join(biggest)})."],
+                          pd.DataFrame(rows))
         if as_share and m.agg == "sum":
             total = float(self.seg[m.column].sum())
             rows = []
@@ -837,9 +890,11 @@ class Semantics:
                  if any(m.agg == "median" for m in metrics) and len(codes) > 1 else [])
         return Result(facts, table, notes)
 
-    def breakdown(self, level: str, m: Metric, more: list[Metric] | None = None) -> Result:
-        """Totals per value tier or buying style, with each one's share of the whole."""
-        if more:
+    def breakdown(self, level: str, m: Metric, more: list[Metric] | None = None, shares: bool = False) -> Result:
+        """Totals per value tier or buying style, with each one's share of the whole. `shares` adds a
+        share-of-total column for every measure that adds up."""
+        if more or shares:
+            more = more or []
             keys = list(TIER_NAMES) if level == "tier" else list(BEHAVIOR_NAMES)
             base = self.seg.reset_index(drop=True)
             rows, notes = [], []
@@ -849,6 +904,8 @@ class Semantics:
                 for mm in [m, *more]:
                     v, note = self.group_value(g, mm)
                     row[cap(mm.label)] = fmt(mm, v) if v is not None else "per segment only"
+                    if shares and mm.agg == "sum":
+                        row[f"Share of all {mm.label}"] = pct(v / float(self.seg[mm.column].sum()))
                     if note:
                         notes.append(note)
                 rows.append(row)
@@ -937,17 +994,51 @@ class Semantics:
     def k_detail(self, axis: str | None, question: str) -> Result:
         """Questions about the k-selection table itself: one k, a ranking of k, or the candidates."""
         q = question.lower()
-        cols = {"stability": "STABILITY_ARI", "ari": "STABILITY_ARI", "silhouette": "SILHOUETTE",
-                "r2": "NEXT_REVENUE_R2", "r²": "NEXT_REVENUE_R2", "r-squared": "NEXT_REVENUE_R2",
+        cols = {"stability": "STABILITY_ARI", "stable": "STABILITY_ARI", "ari": "STABILITY_ARI",
+                "silhouette": "SILHOUETTE", "r2": "NEXT_REVENUE_R2", "r²": "NEXT_REVENUE_R2", "r-squared": "NEXT_REVENUE_R2",
                 "smallest segment": "MIN_SHARE", "min share": "MIN_SHARE", "minimum share": "MIN_SHARE"}
-        wanted = list(dict.fromkeys(c for w, c in cols.items() if w in q))
+        wanted = list(dict.fromkeys(c for w, c in cols.items() if re.search(rf"(?<![\w]){re.escape(w)}", q)))
         col = wanted[0] if wanted else None
         k = self.k if not axis else self.k[self.k.AXIS == axis]
         m = re.search(r"\bk\s*=?\s*(\d)\b", q)
+        ks = [int(a or b) for a, b in re.findall(r"\bk\s*=?\s*(\d)\b|\band\s+(?:k\s*=?\s*)?(\d)\b", q)]  # "k=4 and 7"
         label = {"STABILITY_ARI": "stability ARI", "SILHOUETTE": "silhouette", "NEXT_REVENUE_R2": "next-revenue R²",
                  "MIN_SHARE": "smallest segment share"}
         def val(c, v):
             return pct(v) if c == "MIN_SHARE" else f"{v:.4f}"
+        why_not = re.search(r"\bwhy (?:not|wasn'?t|isn'?t|was it not)\s+(?:k\s*=?\s*)?(\d)\b|\bwhy not (?:k\s*=?\s*)?(\d)\b", q)
+        if why_not:
+            n_k = int(why_not.group(1) or why_not.group(2))
+            facts, rows = [], []
+            for ax, part in k.groupby("AXIS", sort=False):
+                chosen = part[part.CHOSEN.astype(bool)].iloc[0]
+                other = part[part.K == n_k]
+                if other.empty:
+                    continue
+                o = other.iloc[0]
+                crit = "NEXT_REVENUE_R2" if chosen.CRITERION == "next_revenue_r2" else "SILHOUETTE"
+                if not bool(o.ELIGIBLE):
+                    why = f"it wasn't eligible (stability ARI {o.STABILITY_ARI:.4f}, smallest segment {pct(o.MIN_SHARE)})"
+                elif o[crit] < chosen[crit]:
+                    why = (f"its {label[crit]} ({o[crit]:.4f}) is below k={int(chosen.K)}'s ({chosen[crit]:.4f}), "
+                           f"and the {ax} axis picks the eligible k with the best {label[crit]}")
+                else:
+                    why = (f"its {label[crit]} ({o[crit]:.4f}) beats k={int(chosen.K)}'s ({chosen[crit]:.4f}) by "
+                           f"no more than 0.01, and the rule then prefers fewer segments")
+                facts.append(f"{cap(ax)} axis: k={n_k} wasn't chosen because {why}.")
+                rows += [{"Axis": ax, "k": int(r.K), label[crit]: f"{r[crit]:.4f}", "Eligible": "yes" if r.ELIGIBLE else "no",
+                          "Chosen": "yes" if r.CHOSEN else ""} for r in (chosen, o)]
+            if facts:
+                return Result(facts, pd.DataFrame(rows))
+        if col and re.search(r"\b(chosen|selected|picked|final)\b", q):
+            facts = [f"{ax.capitalize()} axis: the chosen k={int(r.K)} has {label[col]} {val(col, r[col])}."
+                     for ax, part in k.groupby("AXIS", sort=False) for _, r in part[part.CHOSEN.astype(bool)].iterrows()]
+            return Result(facts, k[["AXIS", "K", col, "CHOSEN"]].rename(columns={col: label[col]}))
+        if len(set(ks)) > 1 and col:
+            part = k[k.K.isin(ks)]
+            facts = [f"{r.AXIS.capitalize()} axis, k={int(r.K)}: {label[col]} {val(col, r[col])}." for _, r in part.iterrows()]
+            return Result(facts or [f"Those k values weren't evaluated."],
+                          part[["AXIS", "K", col]].rename(columns={col: label[col]}))
         if len(wanted) > 1 or (col and re.search(r"\btable\b", q)):
             part = k[["AXIS", "K", *wanted, "CHOSEN"]].rename(columns=label)
             return Result([f"k candidates with {', '.join(label[c] for c in wanted)}."], part)
@@ -992,13 +1083,33 @@ class Semantics:
                  fold: str | None = None) -> Result:
         keys = schemes or list(SCHEME_NAMES)
         bt, basis = self._bt(fold)
+        missing = [k for k in (schemes or []) if bt[bt.SCHEME == k][metrics[0].column].isna().all()]
+        if missing:
+            # "hybrid revenue forecast bias?": say it isn't recorded, and which schemes do have it.
+            m0 = metrics[0]
+            have = bt.dropna(subset=[m0.column])
+            per = "; ".join(SCHEME_NAMES[k] + " " + ", ".join(f"{fmt(m0, v)} in {run.replace('backtest_', '')}"
+                                                            for run, v in zip(p.RUN_ID, p[m0.column]))
+                            for k, p in have.groupby("SCHEME"))
+            fact = (f"{cap(m0.label)} isn't recorded for {', '.join(SCHEME_NAMES[k] for k in missing)}: "
+                    + (f"only {per}." if per else "no scheme has it."))
+            rest = [k for k in schemes if k not in missing]
+            if not rest:
+                return Result([fact], have[["SCHEME", "RUN_ID", m0.column]].rename(columns={
+                    "SCHEME": "Scheme", "RUN_ID": "Backtest", m0.column: cap(m0.label)}))
+            out = self._schemes(metrics, rest, direction, fold)
+            out.facts.insert(0, fact)
+            return out
         if any(m.key == "n_segments" for m in metrics):
             part = bt[bt.SCHEME.isin(keys)].dropna(subset=["N_SEGMENTS"])
             counts = part.groupby("SCHEME").N_SEGMENTS.apply(lambda s: " and ".join(str(int(v)) for v in s))
             facts = [f"{SCHEME_NAMES[k]}: {v} segments ({basis})." for k, v in counts.items()]
-            return Result(facts, pd.DataFrame({"Scheme": [SCHEME_NAMES[k] for k in counts.index],
-                                               "Segments": list(counts)}),
-                          ["Segment counts differ by backtest because k is chosen afresh each time."])
+            table = pd.DataFrame({"Scheme": [SCHEME_NAMES[k] for k in counts.index], "Segments": list(counts)})
+            for m in metrics:  # other measures asked alongside the segment count
+                if m.key != "n_segments":
+                    vals = part.groupby("SCHEME")[m.column].mean()
+                    table[cap(m.label)] = [fmt(m, vals.get(k)) for k in counts.index]
+            return Result(facts, table, ["Segment counts differ by backtest because k is chosen afresh each time."])
         g = bt[bt.SCHEME.isin(keys)].groupby("SCHEME")
         rows, facts = [], []
         m0 = metrics[0]
@@ -1035,6 +1146,57 @@ class Semantics:
         if len(metrics) > 1:
             table = table.pivot_table(index="Scheme", columns="Measure", values="Mean of 2 backtests", aggfunc="first").reset_index()
         return Result(facts, table, notes)
+
+    def compare_schemes_by_fold(self, a: str, b: str, metrics: list[Metric], asked: int = 0) -> Result:
+        """Two schemes compared in each backtest separately ("higher in both folds?")."""
+        m = metrics[0]
+        rows, wins = [], []
+        for run in ("backtest_q2", "backtest_q3"):
+            part = self.bt[self.bt.RUN_ID == run]
+            va, vb = part[part.SCHEME == a][m.column].mean(), part[part.SCHEME == b][m.column].mean()
+            if pd.isna(va) or pd.isna(vb):
+                continue
+            wins.append(va > vb)
+            rows.append({"Backtest": run.replace("backtest_", ""), SCHEME_NAMES[a]: fmt(m, va), SCHEME_NAMES[b]: fmt(m, vb)})
+        if not rows:
+            return Result(["Those schemes don't both have that measure."])
+        per = "; ".join(f"{r['Backtest']} {r[SCHEME_NAMES[a]]} vs {r[SCHEME_NAMES[b]]}" for r in rows)
+        both = "higher" if all(wins) else "lower" if not any(wins) else None
+        verdict = ""
+        if asked:
+            verdict = ("Yes. " if (both == "higher") == (asked > 0) and both else "No. ")
+        fact = (f"{verdict}{SCHEME_NAMES[a]} is {both} than {SCHEME_NAMES[b]} on {m.label} in "
+                f"{'both backtests' if len(rows) == 2 else 'the one backtest with values'} ({per})." if both else
+                f"{verdict}It depends on the backtest: {SCHEME_NAMES[a]} vs {SCHEME_NAMES[b]} on {m.label}: {per}.")
+        return Result([fact], pd.DataFrame(rows))
+
+    def scheme_change(self, m: Metric, direction: int = -1, schemes: list[str] | None = None) -> Result:
+        """How each scheme's measure moved from the q2 to the q3 backtest. direction -1 ranks the
+        biggest drop first, +1 the biggest rise, 0 the biggest change either way."""
+        rows = []
+        for key in schemes or list(SCHEME_NAMES):
+            part = self.bt[self.bt.SCHEME == key].set_index("RUN_ID")[m.column]
+            q2, q3 = part.get("backtest_q2"), part.get("backtest_q3")
+            if q2 is None or q3 is None or pd.isna(q2) or pd.isna(q3):
+                continue
+            rows.append((key, float(q2), float(q3), float(q3 - q2)))
+        if not rows:
+            return Result([f"No scheme has {m.label} in both backtests."])
+        key = (lambda r: r[3]) if direction < 0 else (lambda r: -r[3]) if direction > 0 else (lambda r: -abs(r[3]))
+        rows.sort(key=key)
+        delta = lambda d: f"{d * 100:+.1f} points" if m.unit == "percent" else f"{d:+.3f}"  # noqa: E731
+        top = rows[0]
+        word = "drop" if direction < 0 else "rise" if direction > 0 else "change"
+        fact = (f"{SCHEME_NAMES[top[0]]} had the biggest {word} in {m.label} from the q2 to the q3 backtest: "
+                f"{fmt(m, top[1])} to {fmt(m, top[2])} ({delta(top[3])}).")
+        segmented = [r for r in rows if r[0] != "outcome_model_continuous"]
+        if top[0] == "outcome_model_continuous" and segmented:
+            s = segmented[0]
+            fact += (f" Among the segmentation schemes it was {SCHEME_NAMES[s[0]]}: {fmt(m, s[1])} to "
+                     f"{fmt(m, s[2])} ({delta(s[3])}).")
+        table = pd.DataFrame([{"Scheme": SCHEME_NAMES[k], "q2 backtest": fmt(m, a), "q3 backtest": fmt(m, b),
+                               "Change": delta(d)} for k, a, b, d in rows])
+        return Result([fact], table)
 
     def compare_schemes(self, a: str, b: str, metrics: list[Metric], asked: int = 0, fold: str | None = None) -> Result:
         facts, rows = [], []
@@ -1077,11 +1239,23 @@ class Semantics:
         return Result(facts, pd.DataFrame(rows),
                       ["Eligible means bootstrap stability ARI ≥ 0.85 and every segment holding ≥ 5% of customers."])
 
-    def cleaning(self, step: str | None = None, from_raw: bool = False) -> Result:
+    STEP_WORDS = {"overlap": r"\boverlap", "duplicates": r"\bduplicat", "write-offs": r"\bwrite[- ]?offs?\b",
+                  "customer id": r"\bcustomer[- ]?ids?\b|\bproduct lines\b"}
+
+    def cleaning(self, step: str | None = None, from_raw: bool = False, question: str = "") -> Result:
         c = self.clean
         raw, final = int(c.ROWS_REMAINING.iloc[0]), int(c.ROWS_REMAINING.iloc[-1])
         rows = [{"Step": r.STAGE, "Rows left": f"{int(r.ROWS_REMAINING):,}",
                  "Rows removed": "" if pd.isna(r.CHANGE) else f"{int(-r.CHANGE):,}"} for r in c.itertuples()]
+        named = [w for w, pat in self.STEP_WORDS.items() if re.search(pat, question, re.IGNORECASE)]
+        if len(named) > 1 and not from_raw:
+            # "the duplicate and write-off steps between them": the named steps added together
+            hit = c[c.STAGE.str.lower().str.replace("-", " ").apply(
+                lambda s: any(w.replace("-", " ").rstrip("s") in s for w in named))]
+            gone = int(-hit.CHANGE.fillna(0).sum())
+            parts = " + ".join(f"{int(-r.CHANGE):,} ('{r.STAGE}')" for r in hit.itertuples())
+            return Result([f"Together those steps removed {gone:,} rows: {parts}, {pct(gone / raw)} of the "
+                           f"{raw:,} raw rows."], pd.DataFrame(rows))
         if step:
             hit = c[c.STAGE.str.contains(step, case=False, regex=False)]
             if hit.empty:  # "customer-id step": match on words, ignoring hyphens and "step"
@@ -1093,7 +1267,8 @@ class Semantics:
                 if from_raw:
                     gone = raw - int(r.ROWS_REMAINING)
                     return Result([f"From the raw data to '{r.STAGE}', {gone:,} rows were removed "
-                                   f"({pct(gone / raw)} of {raw:,}); {int(r.ROWS_REMAINING):,} rows were left."],
+                                   f"({pct(gone / raw)} of {raw:,}); {int(r.ROWS_REMAINING):,} rows were left, "
+                                   f"{pct(int(r.ROWS_REMAINING) / raw)} of the raw rows."],
                                   pd.DataFrame(rows))
                 removed = ""
                 if not pd.isna(r.CHANGE):

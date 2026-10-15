@@ -44,10 +44,14 @@ GENERATIVE_WORDS = re.compile(
 COPY_FORMAT = re.compile(r"\b(\d+|two|three|four|five) bullets?\b|\bbullet points?\b|\btweet\b|\blinkedin\b|"
                          r"\bpush notification\b|\bthank[- ]you note\b|\bsubject lines?\b|\bsms\b|\bemail\b", re.IGNORECASE)
 ADVICE = re.compile(r"^\s*(should (i|we)|can (i|we) (use|trust|compare|combine|add|sum|average|rely|merge|email|target)|"
-                    r"is it (ok|okay|safe|wise|fair|valid|sensible|reasonable)|does it make sense|how much can (i|we) trust)\b",
-                    re.IGNORECASE)
+                    r"is it (ok|okay|safe|wise|fair|valid|sensible|reasonable|worth)|does it make sense|"
+                    r"how much can (i|we) trust)\b", re.IGNORECASE)
 DOMAIN = re.compile(r"\b(segments?|tiers?|buying styles?|cleaning|clean|rows|backtests?|schemes?|customers?|k|"
-                    r"clusters?|revenue|forecasts?)\b", re.IGNORECASE)
+                    r"clusters?|revenue|forecasts?|sheets?|excel|overlap|duplicates?|write-?offs?|dataset|data)\b",
+                    re.IGNORECASE)
+# Requests to dump the documentation or the prompt are refused like other off-topic requests.
+REVEAL = re.compile(r"\b(print|dump|reveal|show|output|repeat|paste|recite)\b.{0,40}\b(readme|system prompt|your prompt|"
+                    r"your instructions|instructions verbatim|source code)\b|\bverbatim\b", re.IGNORECASE)
 OFF_TOPIC = re.compile(r"\b(python|javascript|code|function|linked list|weather|poem|recipe|joke|capital of|football)\b",
                        re.IGNORECASE)
 METHOD_WORDS = re.compile(
@@ -63,13 +67,15 @@ GEOGRAPHY = re.compile(
     r"australia|scotland|wales|london|region|regions|country|countries|city|cities)\b", re.IGNORECASE)
 NO_DATA = re.compile(
     r"\b(products?|items?|skus?|categor(y|ies)|margins?|profit\w*|costs?|cogs|"
-    r"age|gender|income|demographics?)\b", re.IGNORECASE)
+    r"age|gender|income|demographics?|older|younger|how old|discounts?|coupons?|promo codes?)\b", re.IGNORECASE)
 SAME = re.compile(r"^\s*(same|and|now|ok|okay)?\s*(same for|what about|how about|and for|now for|and)\b", re.IGNORECASE)
 CUSTOMER_LEVEL = re.compile(
     r"\b(histograms?|distributions?|spread of|customer ids?|list (the |all |of )?(individual )?customers|"
     r"individual customers|which customers|who are the customers|which customer|what customer|"
     r"names of (the )?customers|(top|best|biggest|largest) \d+ customers|customer with the|"
-    r"(each|every|a single|one) customer's|list (the )?(top|best|biggest) customers)\b", re.IGNORECASE)
+    r"(each|every|a single|one) customer's|list (the )?(top|best|biggest) customers|phone numbers?|"
+    r"email addresses|e-mail addresses|contact (details|information|info)|postcodes?|postal codes?|addresses)\b",
+    re.IGNORECASE)
 # Words a question needs before a specialised calculation makes sense.
 TOOL_WORDS = {
     "cleaning": re.compile(r"\b(clean|cleaning|rows?|duplicates?|raw|overlap|write-offs?|staging|step)\b", re.I),
@@ -103,19 +109,88 @@ PER_SEGMENT = re.compile(r"\b(average|mean|typical)\s+(segment\s+size|size\s+of\
                          r"(?:number of\s+)?customers\s+per\s+segment|size)\b|\bper segment\b", re.IGNORECASE)
 ORDINAL = re.compile(r"\b(second|third|fourth|fifth|2nd|3rd|4th|5th)\b", re.IGNORECASE)
 ORDINALS = {"second": 2, "2nd": 2, "third": 3, "3rd": 3, "fourth": 4, "4th": 4, "fifth": 5, "5th": 5}
-CROSSTAB = re.compile(r"cross-?tab|\btiers?\s*(?:x|×|by|and)\s*(?:buying\s+)?styles?\b|\bstyles?\s*(?:x|×|by)\s*tiers?\b|"
-                      r"\bgrid\b", re.IGNORECASE)
+CROSSTAB = re.compile(r"cross-?tab|\btiers?\s*(?:x|×|by|and)\s*(?:buying\s+)?styles?\b|\bstyles?\s*(?:x|×|by)\s*(?:value\s+)?tiers?\b|"
+                      r"\bgrid\b|\bmatrix\b|\bpivot\b|\bby (?:value )?tier and (?:buying )?style\b", re.IGNORECASE)
 SCHEME_AVERAGE = re.compile(r"\b(average|mean)\b.*\b(across|over|of)\s+(?:all\s+|the\s+|every\s+)*schemes\b|"
                             r"\bacross (?:all |every )?(?:the )?schemes\b.*\b(average|mean)\b", re.IGNORECASE)
 # SQL syntax, not English that happens to start with "with", "select" or "update".
 SQL = re.compile(r"^\s*(select\s+(\*|distinct\b|count\s*\(|[\w.]+\s*(,|\bfrom\b))|with\s+\w+\s+as\s*\(|"
                  r"insert\s+into\b|update\s+\w+\s+set\b|delete\s+from\b|drop\s+(table|view|schema|database)\b)",
                  re.IGNORECASE)
-PAST = re.compile(r"\blast (christmas|year|month|quarter|season)\b|\bhistorical (revenue|sales)\b", re.IGNORECASE)
-FUTURE = re.compile(r"\b20(2[6-9]|[3-9]\d)\b|\bnext year\b|\bin (two|three|four|2|3|4) quarters\b", re.IGNORECASE)
+# A request to write SQL, as opposed to SQL itself: the assistant runs fixed calculations only.
+SQL_REQUEST = re.compile(r"\b(write|give|generate|show|create|run|build)\b(\s+\w+){0,3}\s+(sql|queries|query)\b|\bsql\b",
+                         re.IGNORECASE)
+PAST = re.compile(r"\blast (christmas|year|month|quarter|season)\b|\bhistorical (revenue|sales)\b|"
+                  r"\b(in|during|for|since|throughout)\s+(the\s+)?((jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)"
+                  r"[a-z]*\.?\s+)?20(0\d|1[01])\b", re.IGNORECASE)
+# "over the last year" is the trailing 12 months the medians describe, not a past calendar period.
+TRAILING_YEAR = re.compile(r"\b(over|in|during|within|across)\s+the\s+(last|past)\s+(year|12 months|twelve months)\b",
+                           re.IGNORECASE)
+FUTURE = re.compile(r"\b20(1[2-9]|[2-9]\d)\b|\bnext year\b|\bin (two|three|four|2|3|4) quarters\b", re.IGNORECASE)
 DIRECTION_FOLLOW_UP = re.compile(
     r"^\s*(and|what about|how about|ok,?)?\s*(the\s+)?(shortest|lowest|highest|longest|least|most|smallest|biggest|"
     r"largest|worst|best|cheapest|newest|oldest|fewest)\b[^?]{0,20}\??\s*$", re.IGNORECASE)
+
+DEFINITION = re.compile(r"\bwhat (does|do|is meant by)\b.*\bmean\b|\bmeaning\b|\bdefin\w+\b|\bstand for\b", re.IGNORECASE)
+# Questions answered from the k-selection table's figures, not its documentation.
+K_DATA = re.compile(r"\b(which|what) k\b|\bk[- ]selection\b|\bk (table|candidates?)\b|\b(least|most|less|more) stable\b|"
+                    r"\b(silhouette|stability|ari)\s+(of|for|at)\b|\bk\s*=?\s*\d\b", re.IGNORECASE)
+
+# Follow-ups that only modify the previous question; each is answered by rewriting that question.
+MODIFIERS = [
+    ("share", re.compile(r"^\s*(and |now |ok,? |so )?(as|in) (a |the )?(shares?|percentages?|percent|%|proportions?|"
+                         r"fractions?)\b", re.IGNORECASE)),
+    ("flip", re.compile(r"^\s*(and |now |ok,? |so |can you )?(flip|reverse|invert)\b|\bthe other way( round)?\b|"
+                        r"\b(opposite|reverse|reversed) order\b|^\s*(and |now )?(in )?(ascending|descending)( order)?\??\s*$|"
+                        r"^\s*(and |now )?(lowest|highest|smallest|largest|biggest) first\??\s*$", re.IGNORECASE)),
+    ("average", re.compile(r"^\s*(and |so |ok,? )?(the |what'?s the |what is the )?(average|mean)( of (both|the two|the|"
+                           r"those|them)( folds?| backtests?)?)?( across (both )?(folds?|backtests?))?\??\s*$|"
+                           r"^\s*(and )?(on average|averaged)\??\s*$", re.IGNORECASE)),
+    ("fold", re.compile(r"^\s*(and |what about |how about |same for |now |and for |and in )?(the |in )?"
+                        r"(backtest_)?(q2|q3)( fold| backtest)?\??\s*$", re.IGNORECASE)),
+    ("unit", re.compile(r"^\s*(and |now )?(in|as) (weeks|months|years|pence|thousands|millions|days)\??\s*$", re.IGNORECASE)),
+    ("why_not", re.compile(r"^\s*(and |so |but )?why not\s+(k\s*=?\s*)?\d\s*\??\s*$", re.IGNORECASE)),
+    ("count", re.compile(r"^\s*(and |so |ok,? )?how many (customers|people|accounts)?\s*(is that|are those|are they|"
+                         r"does that come to|would that be|is it)\b", re.IGNORECASE)),
+]
+
+
+def modifier_follow_up(question: str) -> str | None:
+    return next((kind for kind, pattern in MODIFIERS if pattern.search(question)), None)
+
+
+def previous_order(answer: str) -> int:
+    """+1 if the previous answer ranked highest first, -1 if lowest first, 0 if it didn't rank."""
+    if re.search(r"\bhighest first\b|\bhas the highest\b|\bhighest\b", answer.split("\n\n")[0], re.IGNORECASE):
+        return 1
+    if re.search(r"\blowest first\b|\bhas the lowest\b|\blowest\b", answer.split("\n\n")[0], re.IGNORECASE):
+        return -1
+    return 0
+
+
+def rewrite_follow_up(kind: str, question: str, base: str) -> str:
+    """The previous question, changed the way the follow-up asks."""
+    base = base.strip().rstrip("?").strip()
+    if kind == "share":
+        return f"{base} as a share of the total"
+    if kind == "average":
+        no_fold = re.sub(r"\s*\b(?:in|for|during)?\s*(?:the\s+)?(?:backtest_)?q[23](?:\s+(?:fold|backtest))?\b", "", base,
+                         flags=re.IGNORECASE)
+        return f"{no_fold}, averaged over both backtests"
+    if kind == "fold":
+        new = FOLD.search(question).group(1).lower()
+        if FOLD.search(base):
+            return FOLD.sub(lambda m: m.group(0).lower().replace(m.group(1).lower(), new), base)
+        return f"{base} in {new}"
+    if kind == "unit":
+        return f"{base} {question.strip().rstrip('?')}"
+    if kind == "why_not":
+        n = re.search(r"\d", question).group(0)
+        return f"{base}: why not k={n}?"
+    if kind == "count":
+        return f"{base}: how many customers is that?"
+    return base
+
 
 OUT_OF_SCOPE_REPLY = (
     "I can only help with this customer segmentation: questions about the segments, tiers, "
@@ -130,6 +205,7 @@ class AssistantState(TypedDict, total=False):
     intent: str
     plan: dict | None      # this turn's analytical plan
     last_plan: dict | None  # kept across turns for follow-ups
+    last_question: str | None  # the last analytical question, with any follow-up spelled out in full
     rows: list[dict] | None
     context: list[dict] | None
     declined: bool
@@ -240,7 +316,8 @@ Calculations (pick exactly one):
 {{"tool": "cleaning", "step": "" or a word from the step}}  data-cleaning row counts
 {{"tool": "decline", "reason": "...", "closest": "..."}}  only if no calculation fits: the data has no \
 customer-level rows (no lists of customers, histograms or distributions) and no age, gender, \
-country or profit columns.
+country or profit columns. The segment metrics above are already each segment's median or \
+average, so "the median X of a segment" is that metric: look it up, don't decline.
 
 Examples:
 Q: How many customers are in Occasional / Bulk buyers?
@@ -584,9 +661,6 @@ def framing_conflicts(question: str, stats: pd.DataFrame, everyone: pd.DataFrame
             shown = ", ".join(f"{r.SEGMENT} {_profile_value(col, r[col])}" for _, r in stats.iterrows())
             notes.append(f"the request calls them '{hit.group(0)}', but the data doesn't support it "
                          f"({label}: {shown})")
-    if m := UNSUPPORTED.search(question):
-        notes.append(f"the request mentions '{m.group(0)}', but the data only says what share of revenue "
-                     "falls in October-December, nothing about other seasons")
     return notes
 
 
@@ -599,9 +673,73 @@ def claimed_figures(question: str, stats: list[dict]) -> list[str]:
     for fig in result.unverified:
         at = question.find(fig.text)
         window = question[max(0, at - 40): at + len(fig.text) + 10].lower()
-        if any(w in window for w in words) and not re.search(r"\b(off|discount|ideas?|emails?|days?)\b", window):
+        if any(w in window for w in words) and not re.search(
+                r"\b(off|discount|ideas?|emails?|days?|weeks?|months?|years?|char\w*|words?|lines?|sentences?|bullets?|"
+                r"max\w*|under|limit|subject|taglines?|variants?|options?|versions?|points?)\b", window):
+            # (A time span like "about 6 months" is checked as a framing, against days since the last order.)
             claims.append(fig.text)
     return claims
+
+
+# A length limit on the copy: "under 140 characters", "max 80 chars", "max 8 words".
+LENGTH_LIMIT = re.compile(r"(?:under|below|max(?:imum)?|up to|no more than|at most|within|less than|fewer than)\s+(\d+)\s*"
+                          r"(characters|chars|words)\b|\b(\d+)\s*(characters|chars|words)\s*(?:max(?:imum)?|or (?:less|fewer))\b",
+                          re.IGNORECASE)
+USER_OFFER = re.compile(r"(\d+(?:\.\d+)?\s?%|£\s?\d[\d,]*(?:\.\d+)?)\s*(?:off|discount)\b", re.IGNORECASE)
+# Chatter from a rewrite instead of the copy itself.
+META = re.compile(r"^\s*(?:here'?s|here is|below is)\s+(?:a |the |your )?(?:rewritten|revised|updated|corrected|new)\b[^\n]*$|"
+                  r"^\s*\*?\(?note:?\s+i\s+(?:removed|have removed|kept|changed|replaced|dropped)\b[^\n]*$|"
+                  r"^\s*the (?:email|copy|sms|post|message|campaign|draft|text|brief)\s+(?:already\s+)?(?:follows|meets|complies)\b[^\n]*$|"
+                  r"^\s*no changes (?:are|were) (?:needed|required|necessary)\.?\s*$", re.IGNORECASE | re.MULTILINE)
+PER_GROUP = re.compile(r"\b(?:per|each|every|for all|for every|for each)\s+(?:of the\s+)?(?:(?:buying|value)\s+)?(styles?|tiers?)\b",
+                       re.IGNORECASE)
+
+
+def length_of(text: str, unit: str) -> int:
+    body = re.sub(r"(?m)^\s*\*Note:.*$", "", text).strip()
+    return len(body.split()) if unit.startswith("word") else len(body)
+
+
+def trim_to(text: str, n: int, unit: str) -> str:
+    """Cut copy to a hard length limit at a sentence, then a word, boundary."""
+    if length_of(text, unit) <= n:
+        return text
+    if unit.startswith("word"):
+        return " ".join(text.split()[:n]).rstrip(",;:-") + ("" if text.split()[n - 1][-1:] in ".!?" else ".")
+    sentences = re.split(r"(?<=[.!?])\s+", text.strip())
+    out = ""
+    for s in sentences:
+        if len((out + " " + s).strip()) > n:
+            break
+        out = (out + " " + s).strip()
+    return out or text[:n].rsplit(" ", 1)[0].rstrip(",;:-")
+
+
+def season_note(question: str, stats: pd.DataFrame) -> str | None:
+    """A month outside October-December named for segments that buy mostly in those months."""
+    month = UNSUPPORTED.search(question)
+    if not month:
+        return None
+    q4 = stats.MEDIAN_Q4_REVENUE_SHARE
+    shown = ", ".join(f"{r.SEGMENT} {r.MEDIAN_Q4_REVENUE_SHARE:.1%}" for r in stats.itertuples())
+    if (q4 >= 0.5).all():
+        return (f"these customers buy mostly in October-December (Revenue bought in Oct-Dec: {shown}), so "
+                f"{month.group(0).capitalize()} is their off-season")
+    return None
+
+
+def conversation_subject(questions: list[str]) -> list[str]:
+    """The segment a conversation is about: the latest one named in a question that isn't only
+    there as a comparison ("compared with C3-B3")."""
+    for q in reversed(questions):
+        codes = []
+        for m in re.finditer(r"\bC\d-B\d\b", q, re.IGNORECASE):
+            before = q[max(0, m.start() - 20):m.start()].lower()
+            if not re.search(r"\b(compared (with|to)|than|vs\.?|versus|against|with)\s*$", before):
+                codes.append(m.group(0).upper())
+        if codes:
+            return list(dict.fromkeys(codes))
+    return []
 
 
 def claim_pattern(claim: str) -> re.Pattern:
@@ -740,10 +878,13 @@ def _level(question: str, default: str = "segment") -> str:
 
 
 def schemes_named_in(text: str) -> list[str]:
-    """Backtest schemes named in the text, in order, by key or alias (whole words)."""
+    """Backtest schemes named in the text, in order, by key or alias (whole words). A bare "grid"
+    next to tiers or styles is a crosstab layout, not the two-axis grid scheme."""
     lower = text.lower()
     found = []
     names = {**{k: k for k in SCHEME_NAMES}, **SCHEME_ALIASES}
+    if re.search(r"\b(tiers?|styles?)\b", lower):
+        names.pop("grid", None)
     for alias in sorted(names, key=len, reverse=True):
         for m in re.finditer(rf"(?<![\w]){re.escape(alias)}(?![\w])", lower):
             found.append((m.start(), names[alias]))
@@ -752,6 +893,7 @@ def schemes_named_in(text: str) -> list[str]:
 
 
 K_WORDS = re.compile(r"\bk\s*=?\s*\d\b|\bk candidates\b|\bwhich k\b|\b(value|behaviou?r)[ -]axis\b|\bsilhouette\b|\bari\b|"
+                     r"\bwhy not\s+(k\s*=?\s*)?\d\b|"
                      r"\b(chosen|selected|picked|final)\s+(value\s+|behaviou?r\s+)?k\b|\b(value|behaviou?r)\s+k\b|"
                      r"\bk[- ]selection\b|\bnext[- ]revenue r(2|²|-squared)\b", re.IGNORECASE)
 ZERO = re.compile(r"\bzero\b|(?<![\d.])0(\.0+)?\s?%", re.IGNORECASE)
@@ -847,15 +989,23 @@ def parse_filter(question: str) -> tuple[str | None, str, float, str] | None:
     return key, op, value, question[:m.start()]
 
 
-def execute(plan: dict, question: str, sem: Semantics, context: str = "", group_text: str | None = None
-            ) -> tuple[Result, list[str]]:
-    result, adjust = _execute(plan, question, sem, context, group_text)
+NEAREST = re.compile(r"\bnearest\s+(?:£\s?)?(hundred|thousand|million|100|1,?000|1k|10,?000|10k)\b", re.IGNORECASE)
+NEAREST_STEP = {"hundred": 100, "100": 100, "thousand": 1000, "1000": 1000, "1,000": 1000, "1k": 1000,
+                "10000": 10000, "10,000": 10000, "10k": 10000, "million": 1_000_000}
+
+
+def execute(plan: dict, question: str, sem: Semantics, context: str = "", group_text: str | None = None,
+            force_direction: int | None = None) -> tuple[Result, list[str]]:
+    result, adjust = _execute(plan, question, sem, context, group_text, force_direction)
     unit = UNIT.search(question)
     if unit and "days" in " ".join(result.facts):
         word = (unit.group(1) or unit.group(2)).lower()
         result.facts = [convert_days(f, word) for f in result.facts]
     money = MONEY_UNIT.search(question)
-    if money and "£" in " ".join(result.facts):
+    nearest = NEAREST.search(question)
+    if nearest and "£" in " ".join(result.facts):
+        result.facts = [convert_money(f, f"nearest {NEAREST_STEP[nearest.group(1).lower()]}") for f in result.facts]
+    elif money and "£" in " ".join(result.facts):
         word = "pence" if money.group(1) else "thousands" if money.group(2) else "millions"
         result.facts = [convert_money(f, word) for f in result.facts]
     if CURRENCY.search(question) and "£" in " ".join(result.facts + [result.markdown()]):
@@ -864,14 +1014,35 @@ def execute(plan: dict, question: str, sem: Semantics, context: str = "", group_
     return result, adjust
 
 
-def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group_text: str | None = None
-             ) -> tuple[Result, list[str]]:
+NOT_SHARE = re.compile(r"\b(?:not|rather than|instead of)\s+(?:a\s+|as\s+a\s+|in\s+)?(?:%|percent\w*|percentages?|shares?|"
+                       r"proportions?|fractions?)(?=\W|$)|\bnot\s+%", re.IGNORECASE)
+EVERYONE_ELSE = re.compile(r"\b(?:everyone|everybody|everything) else\b|\bthe rest\b|\ball (?:the )?others?\b|"
+                           r"\b(?:all )?other (?:segments|customers|tiers|groups)\b|\bremaining (?:segments|customers)\b",
+                           re.IGNORECASE)
+BOTH_FOLDS = re.compile(r"(?<!over )(?<!across )(?<!of )\b(?:both|each|either|every|per) (?:folds?|backtests?)\b|"
+                        r"\bin both\b|\bfold by fold\b", re.IGNORECASE)  # "averaged over both folds" is a mean
+CHANGE = re.compile(r"\b(drop|dropped|drops|fall|fell|falls|decline[ds]?|decrease[ds]?|lost|worsen\w*|"
+                    r"rise|rose|rises|increase[ds]?|improve\w*|gain(?:ed|s)?|change[ds]?|shift(?:ed)?|moved?)\b", re.IGNORECASE)
+WITHIN_TIER = re.compile(r"\b(?:of|within|in|per|for)\s+(?:each|every|its|their|the|a)\s+(?:value\s+)?tier\b|"
+                         r"\brow (?:shares?|%|percent\w*)\b|\beach row\b", re.IGNORECASE)
+WITHIN_STYLE = re.compile(r"\b(?:of|within|in|per|for)\s+(?:each|every|its|their|the|a)\s+(?:buying\s+)?style\b|"
+                          r"\bcolumn (?:shares?|%|percent\w*)\b|\beach column\b", re.IGNORECASE)
+STYLES_AS_ROWS = re.compile(r"\bstyles? (?:as|in|on|down) (?:the )?rows\b|\btiers? (?:as|in|across|on) (?:the )?columns\b|"
+                            r"\bstyles?\s*(?:x|×|by)\s*(?:value\s+)?tiers?\b|\bstyle by tier\b", re.IGNORECASE)
+SORTED_LIST = re.compile(r"\b(sorted|ranked|ordered|sort|rank|order)\b", re.IGNORECASE)
+
+
+def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group_text: str | None = None,
+             force_direction: int | None = None) -> tuple[Result, list[str]]:
     """Run a plan after cross-checking it against the question. Returns the result and notes
     about anything the cross-checks changed. `context` is the previous answer, used to resolve
     "that one" or "the two" in follow-ups."""
     seg = sem.seg.reset_index(drop=True)
     tool = plan.get("tool")
     adjust = []
+    if NOT_SHARE.search(question):
+        # "(a count, not a %)": the share words are what NOT to give
+        question = NOT_SHARE.sub(" ", question) + (" how many" if re.search(r"\bcount\b", question, re.I) else "")
     if tool not in TOOLS:
         # A measure or a table named as the tool ("expected_orderers", "backtest"): map it to a calculation.
         if str(tool) in SEGMENT_METRICS:
@@ -915,6 +1086,29 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
             named_groups = []  # a previous breakdown over every tier isn't one group to carry on
         if named_groups:
             adjust.append("Used the groups from the previous answer: " + ", ".join(g.label for g in named_groups) + ".")
+    # The level the previous answer ranked or listed at: "which one is smallest?" stays at that level.
+    prev_level = None
+    if context:
+        first = context.split("\n\n")[0] + "\n" + context
+        prev_level = "style" if "all value tiers" in first else "tier" if "all buying styles" in first else None
+    one_back = re.search(r"\bthe (largest|biggest|smallest|top|first|last|bottom|lowest|highest) one\b", question, re.I)
+    if one_back and context and not named_groups:
+        # "what share is the largest one?": the group at that end of the previous answer
+        labels = re.findall(r"\(((?:C\d-B\d)|(?:C\d|B\d)(?=, all))", context)
+        labels = list(dict.fromkeys(labels))
+        if labels:
+            word, order = one_back.group(1).lower(), previous_order(context)
+            if word in ("first", "last", "bottom"):
+                pick = labels[0] if word == "first" else labels[-1]
+            elif word in ("largest", "biggest", "highest", "top"):
+                pick = labels[-1] if order < 0 else labels[0]
+            else:  # smallest, lowest
+                pick = labels[-1] if order > 0 else labels[0]
+            grp = resolve_one(pick, seg)
+            if grp:
+                named_groups = [grp]
+                adjust.append(f"Took '{one_back.group(0)}' to mean {grp.label}, from the previous answer.")
+                question = question.replace(one_back.group(0), grp.label.split(" (")[0])
     superlative = is_superlative(question)
     fold_hits = sorted(set(m.lower() for m in FOLD.findall(question)))
     fold = fold_hits[0] if len(fold_hits) == 1 else None  # a fold only when the question names one
@@ -937,7 +1131,7 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
             # "how many are in the UK / will order": a count of customers, not the share
             ms = [SEGMENT_METRICS[COUNT_OF.get(m.key, m.key)] for m in ms]
             adjust.append(f"Counted customers ({ms[0].label}), since the question asks how many.")
-        elif share and not how_many and tool != "share" and any(m.key in SHARE_OF for m in ms):
+        elif share and not how_many and (tool != "share" or is_superlative(question)) and any(m.key in SHARE_OF for m in ms):
             # "highest proportion of non-UK customers": the share, not the head count
             ms = [SEGMENT_METRICS[SHARE_OF.get(m.key, m.key)] for m in ms]
             adjust.append(f"Used {ms[0].label}, since the question asks for a proportion.")
@@ -957,8 +1151,11 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
             except ValueError:
                 unknown.append(str(v))
         lengths = metric_match_lengths(question, level)
-        if level == "segment" and (ms or len(lengths) > 1) and not SIZE_WORDS.search(question):
-            lengths.pop("customers", None)  # "customers" names who, not what: it never overrides a measure
+        if level == "segment" and (ms or len(lengths) > 1) and not SIZE_WORDS.search(question) \
+                and not (HOW_MANY.search(question) and set(lengths) == {"customers"}):
+            # "customers" names who, not what: it never overrides a measure, unless "how many customers"
+            # is all the question asks
+            lengths.pop("customers", None)
         named = sorted(lengths, key=lambda k: -lengths[k])
         if not ms:
             if named:
@@ -972,16 +1169,27 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
         if any(m.key == best for m in ms) or lengths.get(ms[0].key, 0) >= lengths[best]:
             return ms  # the plan's metric is the one the question names most specifically
         if level == "segment" and ({ms[0].key, best} in [{a, b} for a, b in COUNT_OF.items()]):
-            # A count and its share: "what share of customers in C1-B2 are outside the UK" names the
+            # A count and its share: "what share ... are outside the UK" or "more UK-heavy" names the
             # share; otherwise the plan stands and plan_metrics settles it from the wording.
-            if best in COUNT_OF and SHARE_WORDS.search(question) and not HOW_MANY.search(question):
+            if best in COUNT_OF and not HOW_MANY.search(question) and (SHARE_WORDS.search(question) or re.search(
+                    r"\b[\w]+-heavy\b|\bheav(y|ier|iest)\b|\bmore (international|domestic|uk-based)\b", question, re.I)):
                 return [metric(best, level)] + ms[1:]
             return ms
         adjust.append(f"Used {metric(best, level).label} because the question names it "
                       f"(the plan said {ms[0].label}).")
         return [metric(best, level)] + [m for m in ms[1:] if m.key != best and m.key in lengths]
 
+    def share_asked(groups, ms) -> bool:
+        """'What fraction of the customer base sits in the Core tier?': a share of the total, not the count."""
+        if SHARE_WORDS.search(question) and len(ms) == 1 and ms[0].agg == "sum" and not PER_CUSTOMER.search(question) \
+                and not all(g.kind == "all" for g in groups):
+            adjust.append(f"Reported the share of all {ms[0].label}, since the question asks for a proportion.")
+            return True
+        return False
+
     def check_direction(m, planned: int) -> int:
+        if force_direction:
+            return force_direction
         asked = asked_direction(question, m)
         if not asked:
             if re.search(r"\b(ascending|increasing|smallest first|lowest first|bottom up)\b", question, re.I):
@@ -1002,12 +1210,18 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
         planned_level = str(plan.get("level") or "segment").lower().replace("buying ", "").replace("value ", "")
         if planned_level in ("tier", "style") and not re.search(r"\b(them|those|these|tiers?|styles?)\b", question, re.I):
             planned_level = "segment"  # "who pays the least per item?" names no tier or style: rank segments
+        if prev_level and re.search(r"\bwhich one\b|\bof (them|those|these)\b|\bthe (largest|smallest|biggest|top) one\b",
+                                    question, re.I) and not re.search(r"\bsegments?\b", question, re.I):
+            planned_level = prev_level  # "which one is smallest?" after a list of buying styles
         level = level or _level(question, planned_level)
         named_within = [g for g in named_groups if g.kind in ("tier", "style", "segment", "combined")]
         if named_within:
             within = named_within  # the groups the question names beat the plan's filter
         if within and level != "segment" and all(g.kind == level for g in within):
-            level = "segment"  # "which Top spender segment": rank the segments inside that tier
+            if len({c for g in within for c in g.codes}) == len(sem.seg):
+                within = None  # "rank all four value tiers": every tier is no filter at all
+            else:
+                level = "segment"  # "which Top spender segment": rank the segments inside that tier
         n = int(plan.get("n") or 1) if str(plan.get("n") or "1").isdigit() else 1
         if RANK_WORDS.search(question) or re.search(r"\ball\b", question, re.IGNORECASE):
             n = max(n, 12 if level == "segment" else 4)
@@ -1016,11 +1230,20 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
         return sem.rank(m, level, direction, n, within, nth)
 
     # ---- questions about the k table or the backtest schemes --------------------------
+    if scheme_metrics and CHANGE.search(question) and (len(fold_hits) == 2 or re.search(
+            r"\b(between|across) (the )?(two )?(folds|backtests)\b|\bfrom (the )?(q2|first)\b", question, re.I)):
+        # "which scheme had the biggest drop in top-20 capture from q2 to q3?"
+        word = CHANGE.search(question).group(1).lower()
+        direction = 0 if re.match(r"chang|shift|move", word) else 1 if re.match(r"ris|rose|increas|improv|gain", word) else -1
+        adjust.append("Ranked schemes by how much the measure moved between the two backtests.")
+        return sem.scheme_change(SCHEME_METRICS[scheme_metrics[0]], direction,
+                                 schemes_q if len(schemes_q) > 1 else None), adjust
     if K_WORDS.search(question) and tool not in ("k_choice",):
         adjust.append("Answered from the k-selection table: the question is about k on an axis.")
         tool = "k_choice"
     elif scheme_metrics and (schemes_q or re.search(r"\b(schemes?|folds?|backtests?|q2|q3)\b", question, re.I)) \
-            and tool not in ("schemes", "compare_schemes"):
+            and tool not in ("schemes", "compare_schemes") \
+            and not (CROSSTAB.search(question) and re.search(r"\b(tiers?|styles?)\b", question, re.I)):
         adjust.append("Answered from the backtest table: the question is about segmentation schemes.")
         tool = "compare_schemes" if len(schemes_q) >= 2 and not ALL_SCHEMES.search(question) else "schemes"
     if re.search(r"\b(predicted|forecast)\b.*\bactual\b|\bactual\b.*\bpredicted\b", question, re.I) \
@@ -1077,11 +1300,25 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
                 "expected_revenue" if re.search(r"revenue|value", question, re.I) else "customers"])
             adjust.append(f"Divided by {whole.label}, the group the question asks about.")
             return sem.share_within(part, whole, m), adjust
-    if segment_tool and CROSSTAB.search(question) and (SHARE_WORDS.search(question) or tool == "crosstab"):
+    if segment_tool and CROSSTAB.search(question) and (SHARE_WORDS.search(question) or tool == "crosstab"
+                                                        or re.search(r"\b(tiers?|styles?)\b", question, re.I)):
         m = plan_metrics(default="customers")[0]
-        if m.agg != "sum" and m.key in SHARE_OF:
+        if m.agg != "sum" and m.key in SHARE_OF and not WITHIN_TIER.search(question) and not WITHIN_STYLE.search(question):
             m = SEGMENT_METRICS[SHARE_OF[m.key]]
-        return sem.crosstab(m, as_share=bool(SHARE_WORDS.search(question)) and m.agg == "sum"), adjust
+        within = "tier" if WITHIN_TIER.search(question) else "style" if WITHIN_STYLE.search(question) else None
+        if within and m.agg != "sum":
+            m = SEGMENT_METRICS["customers"] if m.key not in COUNT_OF.values() else m
+        if tool != "crosstab":
+            adjust.append("Made a value tier by buying style table: the question asks for one.")
+        return sem.crosstab(m, as_share=bool(SHARE_WORDS.search(question)) and m.agg == "sum", within=within,
+                            transpose=bool(STYLES_AS_ROWS.search(question))), adjust
+    if segment_tool and SORTED_LIST.search(question) and re.search(r"\b(all|every|each)\s+(?:the\s+|of\s+the\s+)?segments\b",
+                                                                    question, re.I) and not named_groups:
+        # "table of all segments sorted by expected revenue with their share of the total"
+        m = plan_metrics(default="expected_revenue")[0]
+        direction = check_direction(m, {"highest": 1, "lowest": -1}.get(str(plan.get("direction", "")).lower(), 0))
+        adjust.append("Listed every segment in order.")
+        return sem.rank(m, "segment", direction, 12, with_share=bool(SHARE_WORDS.search(question))), adjust
     if segment_tool and PER_SEGMENT.search(question) and not superlative:
         m = plan_metrics(default="customers")[0]
         if m.agg == "sum":
@@ -1106,7 +1343,8 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
         if PER_CUSTOMER.search(question) and SEGMENT_METRICS["revenue_per_customer"] not in ms + extra:
             extra.append(SEGMENT_METRICS["revenue_per_customer"])
         allm = list(dict.fromkeys(ms + extra))
-        return sem.breakdown("tier" if tier_q else "style", allm[0], allm[1:] or None), adjust
+        return sem.breakdown("tier" if tier_q else "style", allm[0], allm[1:] or None,
+                             shares=bool(SHARE_WORDS.search(question))), adjust
     if ZERO.search(question) and tool in ("rank", "traits", "value", "count_where") and metrics_named_in(question) \
             and re.search(r"\b(segments?|which|how many|any)\b", question, re.IGNORECASE):
         m = SEGMENT_METRICS[metrics_named_in(question)[0]]
@@ -1157,6 +1395,8 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
         ms = plan_metrics()
         if COMBINE.search(question) and len(groups) > 1:
             groups = [combine(groups)]
+        if share_asked(groups, ms):
+            return sem.share(groups, ms[0]), adjust
         multi = any(not g.single for g in groups)
         if multi and (len(ms) > 1 or (any(m.agg == "median" for m in ms) and not COMBINE.search(question))):
             codes = list(dict.fromkeys(c for g in groups for c in g.codes))
@@ -1210,7 +1450,12 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
         if trust_named and len(named_groups) == 1:
             adjust.append("Reported the group left after the exclusion.")
             return sem.value(named_groups, plan_metrics(default="customers")), adjust
-        if len(named_groups) >= 2:
+        if len(named_groups) == 1 and EVERYONE_ELSE.search(question) and named_groups[0].kind != "all":
+            # "Top spenders vs everyone else": the named group against all the other segments
+            rest = [c for c in sem.seg.SEGMENT if c not in named_groups[0].codes]
+            groups = [named_groups[0], Group("combined", rest, "everyone else")]
+            adjust.append(f"Compared {named_groups[0].label} with all the other segments.")
+        elif len(named_groups) >= 2:
             groups = named_groups
         else:
             groups = [_group_or_combined(v, seg) for v in [plan.get("a"), plan.get("b"), *extra] if v]
@@ -1233,8 +1478,10 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
         tier_q = re.search(r"\b(value )?tiers?\b", question, re.I)
         style_q = re.search(r"\b(buying )?styles?\b", question, re.I)
         if bool(tier_q) != bool(style_q) and not re.search(r"\bcrosstab|cross-tab|by .* and\b", question, re.I):
-            return sem.breakdown("tier" if tier_q else "style", m), adjust
-        return sem.crosstab(m), adjust
+            return sem.breakdown("tier" if tier_q else "style", m, shares=bool(SHARE_WORDS.search(question))), adjust
+        if not tier_q and not style_q and not CROSSTAB.search(question) and prev_level:
+            return sem.breakdown(prev_level, m), adjust  # a follow-up to a breakdown keeps its level
+        return sem.crosstab(m, transpose=bool(STYLES_AS_ROWS.search(question))), adjust
     if tool == "count_where":
         value_group = None
         if isinstance(plan.get("value"), str) and not re.fullmatch(r"\s*-?[\d.,]+\s*%?\s*", plan["value"]):
@@ -1246,7 +1493,10 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
                 _groups(plan.get("groups") or plan.get("within") or "all", seg)
             if COMBINE.search(question) and len(groups) > 1:
                 groups = [combine(groups)]
-            return sem.value(groups, plan_metrics(default="customers")), adjust
+            ms = plan_metrics(default="customers")
+            if share_asked(groups, ms):
+                return sem.share(groups, ms[0]), adjust
+            return sem.value(groups, ms), adjust
         m = plan_metrics()[0]
         value = plan.get("value")
         if isinstance(value, (list, dict)) or value is None:
@@ -1290,20 +1540,30 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
         a, b = schemes_q[:2] if len(schemes_q) >= 2 else (_scheme(plan.get("a")), _scheme(plan.get("b")))
         ms = plan_metrics("scheme")
         asked = asked_direction(question, ms[0]) if YES_NO.search(question) else 0
+        if BOTH_FOLDS.search(question) and not fold:
+            adjust.append("Compared the two schemes in each backtest, as the question asks.")
+            return sem.compare_schemes_by_fold(a, b, ms, asked or (1 if YES_NO.search(question) else 0)), adjust
         return sem.compare_schemes(a, b, ms, asked, fold), adjust
     if tool == "k_choice":
         axis_m = re.search(r"\b(value|behaviou?r)\b", question, re.IGNORECASE)
         axis = ("behavior" if axis_m.group(1).lower().startswith("behav") else "value") if axis_m else \
             (str(plan.get("axis") or "").lower() if str(plan.get("axis") or "").lower() in ("value", "behavior") else None)
+        if not axis_m and context:
+            # "which k was least stable?" after an answer about one axis: that axis
+            axes = set(re.findall(r"\b(value|behavior) axis\b", context, re.IGNORECASE))
+            if len(axes) == 1:
+                axis = axes.pop().lower()
         return sem.k_detail(axis, question), adjust
     if tool == "cleaning":
         step_word = str(plan.get("step") or "")
         if re.search(r"\b(total|in total|overall|altogether)\b", question, re.IGNORECASE):
             step_word = ""
-        from_raw = bool(re.search(r"\b(between|from) (the )?raw\b", question, re.IGNORECASE))
+        from_raw = bool(re.search(r"\b(between|from) (the )?raw\b", question, re.IGNORECASE)) or bool(
+            SHARE_WORDS.search(question) and re.search(r"\b(of|from) (the )?raw\b", question, re.I)
+            and re.search(r"\b(left|remain\w*|still|survived?|kept|there)\b", question, re.I))
         if from_raw and re.search(r"\bstaging|write-?offs?\b", question, re.IGNORECASE):
             step_word = "write-offs"
-        return sem.cleaning(step_word or None, from_raw), adjust
+        return sem.cleaning(step_word or None, from_raw, question), adjust
     raise PlanError(f"unknown tool '{tool}'")
 
 UP_OR_DOWN = (r"\b(most|highest|best|top|largest|biggest|longest|oldest|least|lowest|worst|bottom|smallest|"
@@ -1338,6 +1598,10 @@ def build_graph(llm, data, checkpointer=None):
         if len(re.sub(r"\W", "", question)) < 2:
             trace.append(step("Intent", "out_of_scope: nothing left to answer"))
             return {"question": question, "intent": "out_of_scope", "trace": trace}
+        if REVEAL.search(question):
+            trace.append(step("Intent", "out_of_scope: asks for the documentation or instructions verbatim"))
+            return {"question": question, "intent": "out_of_scope", "trace": trace}
+        previous_intent = state.get("intent") if len(state["messages"]) > 1 else None
         reply = _text(llm.invoke([SystemMessage(ROUTER_PROMPT), *_history(state), HumanMessage(question)])).lower()
         found = [i for i in INTENTS if i in reply.replace("out of scope", "out_of_scope")]
         if len(found) == 1:
@@ -1359,7 +1623,30 @@ def build_graph(llm, data, checkpointer=None):
                            "nothing to write: no copy was asked for")
         elif intent == "out_of_scope" and not OFF_TOPIC.search(question) and (
                 DOMAIN.search(question) or resolve(question, sem.seg.reset_index(drop=True))):
-            intent, how = "analytical", "about this segmentation's data"
+            intent, how = ("methodology", "how the project handled something") if METHOD_WORDS.search(question) \
+                else ("analytical", "about this segmentation's data")
+        why_not_k = re.search(r"\bwhy not\s+(k\s*=?\s*)?\d\b", question, re.IGNORECASE)
+        if intent != "analytical" and previous_intent == "analytical" and not GENERATIVE_WORDS.search(question) and (
+                why_not_k or modifier_follow_up(question) or (
+                    len(re.findall(r"\w+", question)) <= 6 and (SAME.search(question) or FOLD.search(question))
+                    and not METHOD_WORDS.search(question))):
+            # "what about q3?", "average?", "flip the order" after a data answer: more of the same data.
+            intent, how = "analytical", "follow-up to a data answer"
+        elif intent == "methodology" and (why_not_k or (
+                (K_DATA.search(question) or re.search(r"\b(stable|stability)\b", question, re.I) and K_WORDS.search(question))
+                and not METHOD_WORDS.search(question))):
+            intent, how = "analytical", "asks for figures from the k-selection table"
+        elif intent == "methodology" and not METHOD_WORDS.search(question) and not DEFINITION.search(question) \
+                and not ADVICE.search(question) and resolve(question, sem.seg.reset_index(drop=True)) \
+                and metrics_named_in(question):
+            intent, how = "analytical", "asks for a measure of a named group"
+        elif intent == "methodology" and not METHOD_WORDS.search(question) and not DEFINITION.search(question) \
+                and not ADVICE.search(question) and schemes_named_in(question) and metrics_named_in(question, "scheme"):
+            intent, how = "analytical", "asks for a backtest figure of a named scheme"
+        elif intent == "analytical" and DEFINITION.search(question) and re.match(r"^\s*(what does|what do|define|"
+                                                                                  r"what is meant)", question, re.I) \
+                and not resolve(question, sem.seg.reset_index(drop=True)):
+            intent, how = "methodology", "asks what a term means"
         trace.append(step("Intent", f"{intent}: {how}"))
         return {"question": question, "intent": intent, "trace": trace}
 
@@ -1370,21 +1657,42 @@ def build_graph(llm, data, checkpointer=None):
         check = verify.check(answer, records, segment_names=names,
                              allowed_text=" ".join([question, *result.facts, *result.notes]))
         trace.append(step("Checked figures", check.summary(), kind="check", data=check.ok))
-        return {"plan": plan, "last_plan": plan, "rows": records, "trace": trace,
+        return {"plan": plan, "last_plan": plan, "last_question": question, "rows": records, "trace": trace,
                 "check": _check_state(check), "messages": [AIMessage(answer)]}
 
     def analytical(state: AssistantState) -> dict:
         trace = list(state["trace"])
         question = state["question"]
+        last_plan = state.get("last_plan")
+        kind = modifier_follow_up(question) if last_plan else None
+        force_direction = None
+        if kind:
+            # "as a share of the total", "flip the order", "what about q3?": the previous question, changed.
+            earlier = [_text(m) for m in state["messages"][:-1] if isinstance(m, HumanMessage)]
+            base = state.get("last_question") or (earlier[-1] if earlier else "")
+            if base:
+                previous_answer = next((_text(m) for m in reversed(state["messages"][:-1]) if isinstance(m, AIMessage)), "")
+                if kind == "flip":
+                    force_direction = -(previous_order(previous_answer) or 1)
+                question = rewrite_follow_up(kind, question, base)
+                trace.append(step("Rewrote the follow-up", question))
+        elif last_plan and state.get("last_question") and re.search(r"\bc\d-b\d\b", question, re.IGNORECASE) \
+                and SAME.search(question) and len(re.findall(r"\w+", question)) <= 6 \
+                and re.search(r"\bc\d-b\d\b", state["last_question"], re.IGNORECASE):
+            # "and for C4-B1?": the previous question for another segment
+            new = re.search(r"\bc\d-b\d\b", question, re.IGNORECASE).group(0).upper()
+            question = re.sub(r"\bc\d-b\d\b", new, state["last_question"], flags=re.IGNORECASE)
+            trace.append(step("Rewrote the follow-up", question))
         if FOLD_DATES.search(question):
             return finish(sem.fold_dates(), {"tool": "fold_dates"}, trace, question)
-        if PAST.search(question) or FUTURE.search(question):
-            reason = ("the results hold no revenue by past period" if PAST.search(question) else
+        dated = TRAILING_YEAR.sub("in the last 12 months", question)
+        if PAST.search(dated) or FUTURE.search(question):
+            reason = ("the results hold no revenue by past period" if PAST.search(dated) else
                       "the only forecasts are for the next quarter (the 91 days after 10 December 2011)")
             trace.append(step("Not answerable from this data", reason))
             return {"plan": None, "rows": None, "declined": True, "trace": trace, "check": None,
                     "messages": [AIMessage(f"I can't answer that from this data: {reason}.")]}
-        if SQL.search(question):
+        if SQL.search(question) or SQL_REQUEST.search(question):
             reason = ("I don't run SQL, and the published results have no customer-level rows; they describe "
                       "each segment as a whole (sizes, medians, averages)")
             trace.append(step("Not answerable from this data", reason))
@@ -1400,7 +1708,9 @@ def build_graph(llm, data, checkpointer=None):
         if no_data or GEOGRAPHY.search(question) and (not re.search(r"\buk\b", question, re.I) or which_place):
             what = {"profitable": "profit", "profitability": "profit", "profits": "profit", "costs": "cost",
                     "margins": "margin", "items": "product", "products": "product", "skus": "product",
-                    "categories": "product category"}.get(no_data.group(0).lower(), no_data.group(0).lower()) \
+                    "categories": "product category", "older": "age", "younger": "age", "how old": "age",
+                    "discounts": "discount", "coupons": "coupon", "promo codes": "promo code"
+                    }.get(no_data.group(0).lower(), no_data.group(0).lower()) \
                 if no_data else "location"
             reason = (f"the published results have no {what} data. They describe each segment by size, spend, "
                       "order patterns, returns, seasonality, UK share and predicted next-quarter value")
@@ -1433,13 +1743,27 @@ def build_graph(llm, data, checkpointer=None):
             answers = [_text(m).split("\n\n")[0] for m in state["messages"][:-1] if isinstance(m, AIMessage)][-2:]
             if len(answers) == 2 and len(resolve(answers[-1], sem.seg.reset_index(drop=True))) < 2:
                 previous = " ".join(answers)
-        last_plan = state.get("last_plan")
+        named_measures = [k for k in metrics_named_in(question) if k != "customers"]
+        named_here = resolve(question, sem.seg.reset_index(drop=True))
         error = None
         for attempt in range(1, MAX_PLAN_ATTEMPTS + 1):
             reply = _text(llm.invoke(prompt))
             try:
                 plan = extract_json(reply)
                 fits = [t for t, words in TOOL_WORDS.items() if words.search(question)]
+                if plan.get("tool") == "decline" and named_here and named_measures:
+                    # A named group and a measure the data has ("median tenure of C2-B3"): not a decline.
+                    if attempt < MAX_PLAN_ATTEMPTS:
+                        trace.append(step(f"Plan (attempt {attempt}) declined", "retrying: the data has "
+                                          f"{SEGMENT_METRICS[named_measures[0]].label} for that group",
+                                          kind="plan", data=json.dumps(plan, indent=1)))
+                        prompt += [AIMessage(reply), HumanMessage(
+                            f"The data has {SEGMENT_METRICS[named_measures[0]].label} for that group: the segment "
+                            "measures are already per-segment medians or averages. Reply with a JSON plan that "
+                            "looks it up.")]
+                        continue
+                    plan = {"tool": "value", "groups": [question], "metrics": [named_measures[0]]}
+                    trace.append(step("Looked it up instead of declining", "the data has that measure for the group"))
                 if plan.get("tool") == "decline" and fits and attempt < MAX_PLAN_ATTEMPTS:
                     # The question uses words a calculation handles: one retry before accepting a decline.
                     trace.append(step(f"Plan (attempt {attempt}) declined", f"retrying: '{fits[0]}' may fit",
@@ -1476,7 +1800,10 @@ def build_graph(llm, data, checkpointer=None):
                     earlier = [m for m in state["messages"][:-1] if isinstance(m, HumanMessage)]
                     group_text = _text(earlier[-1]) if earlier else None
                     trace.append(step("Reused the previous calculation", "follow-up changes only the direction"))
-                result, adjust = execute(plan, question, sem, previous, group_text)
+                if kind in ("flip", "share", "fold", "average", "unit") and last_plan:
+                    plan = {**last_plan, **({"direction": "highest" if force_direction > 0 else "lowest"}
+                                            if force_direction else {})}
+                result, adjust = execute(plan, question, sem, previous, group_text, force_direction)
                 trace.append(step(f"Plan (attempt {attempt})", kind="plan", data=json.dumps(plan, indent=1)))
                 for note in adjust:
                     trace.append(step("Adjusted to match the question", note))
@@ -1495,7 +1822,7 @@ def build_graph(llm, data, checkpointer=None):
         check = verify.check(answer, records, segment_names=names,
                              allowed_text=" ".join([question, *result.facts, *result.notes]))
         trace.append(step("Checked figures", check.summary(), kind="check", data=check.ok))
-        return {"plan": plan, "last_plan": plan, "rows": records, "trace": trace,
+        return {"plan": plan, "last_plan": plan, "last_question": question, "rows": records, "trace": trace,
                 "check": _check_state(check), "messages": [AIMessage(answer)]}
 
     def methodology(state: AssistantState) -> dict:
@@ -1507,7 +1834,7 @@ def build_graph(llm, data, checkpointer=None):
             earlier = [_text(m) for m in state["messages"][:-1] if isinstance(m, HumanMessage)]
             if earlier:
                 query = f"{earlier[-1]} {question}"
-        found = docs.retrieve(query, k=2, corpus=corpus)
+        found = docs.retrieve(query, k=3, corpus=corpus)
         if not found:
             answer = ("The project documentation doesn't cover that. The README explains how the data was "
                       "cleaned, how the segments and forecasts are built, and how they were backtested.")
@@ -1527,7 +1854,7 @@ def build_graph(llm, data, checkpointer=None):
                 "Rewrite using only figures from the excerpts.")]))
             check = verify.check(answer, [], allowed_text=excerpts + "\n" + question)
         trace.append(step("Checked figures", check.summary(), kind="check", data=check.ok))
-        answer += "\n\n*Source: README, " + " and ".join(f"'{t}'" for t in titles) + ".*"
+        answer += "\n\n*Source: README, " + " and ".join(f"'{t}'" for t in dict.fromkeys(titles)) + ".*"
         return {"trace": trace, "check": _check_state(check), "messages": [AIMessage(answer)]}
 
     def generative(state: AssistantState) -> dict:
@@ -1559,11 +1886,17 @@ def build_graph(llm, data, checkpointer=None):
                     f"There's no '{pair.group(0)}' segment in this data. Which one did you mean? For example "
                     f"{options}.")]}
         groups, how = resolve(question, seg), "named in the request"
+        per_group = PER_GROUP.search(question)
+        if per_group and not groups:
+            # "one idea per buying style": every style (or tier), one item each
+            keys = list(BEHAVIOR_NAMES) if per_group.group(1).lower().startswith("style") else list(TIER_NAMES)
+            groups = [resolve_one(k, seg) for k in keys]
+            how = f"one per {'buying style' if keys[0].startswith('B') else 'value tier'}"
         if any(g.kind == "segment" for g in groups):
             # "C3-B3, who are our biggest bulk buyers": the code names the segment, the rest is framing.
             groups = [g for g in groups if g.kind == "segment"]
         if not groups:
-            named = metrics_named_in(question)
+            named = [k for k in metrics_named_in(question) if k != "customers"] or metrics_named_in(question)
             if named and re.search(UP_OR_DOWN, question, re.IGNORECASE):
                 m = SEGMENT_METRICS[named[0]]
                 ranked = sem.rank(m, "segment", asked_direction(question, m) or 1)
@@ -1577,6 +1910,11 @@ def build_graph(llm, data, checkpointer=None):
             # "for the top one" / "for that one": the segment the previous answer singled out
             previous = next((_text(m) for m in reversed(state["messages"][:-1]) if isinstance(m, AIMessage)), "")
             picked = pick_from_previous(question, previous)
+            if re.search(r"\b(them|they|their)\b", question, re.IGNORECASE) and not re.search(
+                    r"\b(both|those two|these two|the two|all of them)\b", question, re.IGNORECASE):
+                # "for them": the segment the conversation is about, not one it was compared with
+                subject = conversation_subject([_text(m) for m in state["messages"][:-1] if isinstance(m, HumanMessage)])
+                picked = subject or picked
             groups = [resolve_one(c, seg) for c in picked] or resolve(" ".join(_text(m) for m in _history(state)), seg)
             how = "named earlier in the conversation"
         if not groups:
@@ -1613,9 +1951,25 @@ def build_graph(llm, data, checkpointer=None):
             framings.append(f"the request places them in '{place.group(0)}', but the data records no countries, "
                             f"only the share of customers in the UK (UK customers: {uk})")
         prompt = GENERATIVE_PROMPT.format(stats=readable_profiles(stats))
-        if len(codes) > 1:
+        if per_group and len(groups) > 1:
+            names_list = ", ".join(g.label.split(" (")[0] for g in groups)
+            prompt += (f"\n\nWrite one item for each of these groups, labelled with its name: {names_list}. "
+                       "Describe each from the profiles of its segments.")
+        elif len(codes) > 1:
             prompt += (f"\n\nWrite for all {len(codes)} segments below together, as one audience; don't leave "
                        "any of them out.")
+        offers = [o.replace(" ", "") for o in USER_OFFER.findall(question)]
+        if offers:
+            prompt += (f"\n\nThe request's own offer ({', '.join(offers)} off) is fine to use: keep it and write "
+                       "'(proposed)' after it.")
+        season = season_note(question, stats)
+        if season:
+            prompt += f"\n\nNote: {season}. Say so in the copy rather than treating it as their usual buying time."
+        limit = LENGTH_LIMIT.search(question)
+        limit_n = int(limit.group(1) or limit.group(3)) if limit else None
+        limit_unit = (limit.group(2) or limit.group(4)).lower() if limit else None
+        if limit_n:
+            prompt += f"\n\nThe copy must be under {limit_n} {limit_unit}."
         if framings:
             prompt += ("\n\nThe request describes the segment in ways the data doesn't support: "
                        + "; ".join(framings) + ". Don't describe them that way; follow the profiles.")
@@ -1657,10 +2011,13 @@ def build_graph(llm, data, checkpointer=None):
             """Everything wrong with the copy, as instructions for a rewrite."""
             found = []
             check = verify.check(unnumbered(proposals_removed(text)), records, allowed_text=labels, segment_names=names)
-            if not check.ok:
-                bad = [f.text for f in check.unverified] + check.segments
+            bad = [f.text for f in check.unverified if f.text.replace(" ", "") not in offers
+                   and not (limit_n and f.text.strip("£%") == str(limit_n))] + check.segments
+            if bad:
                 found.append(f"these aren't in the segment profiles: {', '.join(bad)}. Use only figures and segments "
                              "from the profiles, and write '(proposed)' right after each number that is your own idea")
+            if limit_n and length_of(text, limit_unit) > limit_n:
+                found.append(f"keep it under {limit_n} {limit_unit} (it is {length_of(text, limit_unit)})")
             for phrase, keys in framing_keys:
                 if any(re.search(rf"(?<![\w]){re.escape(k)}", text, re.IGNORECASE) for k in keys):
                     found.append(f"don't describe them as '{phrase}': the data doesn't support it")
@@ -1714,8 +2071,13 @@ def build_graph(llm, data, checkpointer=None):
             if not issues:
                 break
             trace.append(step(f"Rewrite {attempt}", "; ".join(issues)[:400]))
-            answer = _text(llm.invoke(messages + [AIMessage(answer), HumanMessage(
-                "Rewrite it: " + "; ".join(issues) + ". Keep everything else.")]))
+            rewrite = _text(llm.invoke(messages + [AIMessage(answer), HumanMessage(
+                "Rewrite it: " + "; ".join(issues) + ". Keep everything else. Reply with the rewritten copy only.")]))
+            cleaned = META.sub("", rewrite).strip()
+            if len(re.findall(r"\w+", cleaned)) < 3:
+                trace.append(step(f"Rewrite {attempt} discarded", "the reply was a comment about the copy, not copy"))
+                break  # "No changes are needed.": keep the previous draft
+            answer = cleaned
 
         def enforce(answer):
             """Remove what is still wrong after the rewrites; returns the copy and what was removed."""
@@ -1795,18 +2157,32 @@ def build_graph(llm, data, checkpointer=None):
             answer = re.sub(r"(?im)^\s*(sure|certainly|of course|absolutely|here (are|is)|below (are|is))\b[^\n]*:\s*$\n?",
                             "", answer)
             answer = re.sub(r"(?im)^[\s*_]*\(proposed\)[\s*_.]*$\n?", "", answer)  # a stray marker on its own line
+            answer = META.sub("", answer)
+            if limit_n:
+                answer = trim_to(answer, limit_n, limit_unit)
             answer = re.sub(r"\n{3,}", "\n\n", answer).strip()
             return answer, removed
 
+        long_form = re.search(r"\b(email|e-mail|campaign|brief|post|letter|newsletter|persona|card)\b", question, re.I) \
+            and not (limit_n and limit_n < 40) and not count
+
+        def thin(text):
+            body = re.sub(r"(?m)^#.*$|^\s*\*{0,2}(subject|audience|goal|timing|channel|offer|success metric)\b.*$", "", text,
+                          flags=re.I)
+            return not body.strip() or (long_form and len(re.findall(r"[A-Za-z]{2,}", body)) < 25)
+
         answer, removed = enforce(answer)
-        if not re.sub(r"(?m)^#.*$", "", answer).strip():
-            # Everything was wrong: one more attempt with the issues spelled out, then the same clean-up.
-            trace.append(step("Rewrite 3", "nothing was left after removing unsupported wording"))
+        if thin(answer):
+            # Little or nothing was left: one more attempt with the rules spelled out, then the same clean-up.
+            trace.append(step("Rewrite 3", "little was left after removing unsupported wording"))
+            before, removed_before = answer, removed
             answer = _text(llm.invoke(messages + [HumanMessage(
-                "Write it again, following the rules strictly. Describe only what the profiles support: "
+                "Write it again in full, following the rules strictly. Describe only what the profiles support: "
                 "no lapsed or win-back wording for recent customers, no seasonal wording for year-round ones, "
-                "and no statistics in customer-facing copy.")]))
+                "and no statistics in customer-facing copy. Include a concrete offer marked '(proposed)'.")]))
             answer, removed = enforce(answer)
+            if len(answer) < len(before) and before.strip():
+                answer, removed = before, removed_before
         if not re.sub(r"(?m)^#.*$", "", answer).strip():
             answer = ("I couldn't write copy for this request that the data supports. Try asking without the "
                       "framing, for example *Write a short email for " + names[codes[0]] + "*.")
@@ -1820,6 +2196,8 @@ def build_graph(llm, data, checkpointer=None):
         for note in framings:
             (notes_first if re.search(r"\b(right|correct|true)\s*\?|\b(isn't it|aren't they|don't they)\b", question, re.I)
              else notes).append(f"Note: {note}.")
+        if season:
+            notes.append(f"Note: {season}.")
         conflict = seasonality_conflict(" ".join(removed), stats) if removed else None
         if conflict:
             notes.append(conflict)
