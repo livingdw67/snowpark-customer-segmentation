@@ -104,7 +104,7 @@ def test_gives_up_after_repeated_failures(data):
 def test_model_decline(data):
     llm = FakeListChatModel(responses=["analytical", plan(tool="decline", reason="there is no gender column",
                                                           closest="the size of each top-spender segment")])
-    out = ask(build_graph(llm, data), "Which marketing channel do top spenders come from?")
+    out = ask(build_graph(llm, data), "Which loyalty scheme do top spenders belong to?")
     assert out["declined"] and "size of each top-spender segment" in out["messages"][-1].content
 
 
@@ -516,3 +516,131 @@ def test_replay_regressions_stay_fixed(data):
     # "is it worth ..." is advice, answered from the documentation
     llm = FakeListChatModel(responses=["methodology", "Yes: the README calls it a key-account list."])
     assert ask(build_graph(llm, data), "Is it worth treating the 45 holiday top spenders as key accounts?")["intent"] == "methodology"
+
+
+# ---- practice-eval fixes (2026-10-16): each case is a question the assistant got wrong ----------------
+# The plans are the ones the model produced for those questions; the fixes stop code from overruling them
+# and stop unrecognised groups from becoming "all customers".
+
+def run(data, responses, *questions, thread="fix"):
+    graph = build_graph(FakeListChatModel(responses=responses), data)
+    out = None
+    for q in questions:
+        out = ask(graph, q, thread)
+    return out
+
+
+def test_a_specific_planned_measure_is_not_overruled_by_loose_words(data):
+    out = run(data, ["analytical", plan(tool="value", groups=["all"], metrics=["non_uk_customers"])],
+              "customers outside uk")
+    assert "409" in out["messages"][-1].content and "share of customers in the UK" not in out["messages"][-1].content
+    out = run(data, ["analytical", plan(tool="compare", a="C1-B2", b="C1-B1", metrics=["order_value"])],
+              "do top spender holiday buyers place biger orders than top spender bulk")
+    assert "£720" in out["messages"][-1].content and "orders in the last 12 months" not in out["messages"][-1].content
+
+
+def test_a_generic_count_still_gives_way_to_the_named_measure(data):
+    out = run(data, ["analytical", plan(tool="rank", metric="customers", direction="lowest")], "most recent segment")
+    assert out["messages"][-1].content.startswith("Top spenders / Small-basket buyers (C1-B3)")
+
+
+@pytest.mark.parametrize("question,bad_plan,phrase", [
+    ("how many top customers do we have?", plan(tool="count_where", metric="customers", op=">=", value=1000),
+     "top customers"),
+    ("how many customers are in the platinum tier?", plan(tool="count_where", metric="customers", op=">", value=0.01),
+     "platinum tier"),
+    ("big buyers count", plan(tool="count_where", metric="order_value", op=">=", value="high"), "big buyers"),
+])
+def test_an_unrecognised_group_is_asked_about_not_answered_for_everyone(data, question, bad_plan, phrase):
+    out = run(data, ["analytical", bad_plan], question)
+    assert out["messages"][-1].content.startswith(f"I don't have a group called '{phrase}'")
+    assert "4,261 customers?" in out["messages"][-1].content and "Asked which group" in titles(out)
+
+
+def test_everyone_is_still_answered_when_the_question_means_everyone(data):
+    out = run(data, ["analytical", plan(tool="count_where", metric="customers", op=">", value=0)],
+              "how many customers do we have overall?")
+    assert "4,261" in out["messages"][-1].content and not out["messages"][-1].content.startswith("I don't have")
+
+
+def test_a_misspelt_tier_keeps_the_plans_narrower_segment(data):
+    out = run(data, ["analytical", plan(tool="value", groups=["C3-B3"], metrics=["p_buys_again"])],
+              "whats the p(buy again) for occassional small basket")
+    assert "C3-B3" in out["messages"][-1].content and "35.1%" in out["messages"][-1].content
+
+
+@pytest.mark.parametrize("question,bad_plan,start", [
+    ("Are Core / Holiday buyers more likely to buy again than Core / Bulk buyers?",
+     plan(tool="compare", a="core", b="core", metrics=["p_buys_again"], within=["B2", "B1"]), "No."),
+    ("Are Low value / Holiday buyers more seasonal than Core / Holiday buyers?",
+     plan(tool="compare", a="C4-B2", b="C2-B2", metrics=["q4_share"]), "Yes."),
+])
+def test_yes_or_no_is_about_the_group_before_than(data, question, bad_plan, start):
+    assert run(data, ["analytical", bad_plan], question)["messages"][-1].content.startswith(start)
+
+
+def test_direction_follow_up_ranks_everything_again(data):
+    out = run(data, ["analytical", plan(tool="rank", metric="customers", direction="highest"),
+                     "analytical", plan(tool="rank", metric="customers", direction="lowest")],
+              "largest segment by customers", "and the fewest?")
+    assert out["messages"][-1].content.startswith("Top spenders / Holiday buyers (C1-B2)")
+
+
+def test_that_after_a_top_three_list_means_all_three(data):
+    out = run(data, ["analytical", plan(tool="rank", metric="expected_revenue", direction="highest", n=3),
+                     "analytical", plan(tool="share", groups=["C1-B1"], metric="expected_revenue")],
+              "top 3 segments by expected revenue", "what share of totl expected revenue is that")
+    assert "73.6%" in out["messages"][-1].content
+
+
+def test_a_bare_count_after_a_filter_counts_the_filtered_segments(data):
+    out = run(data, ["analytical", plan(tool="count_where", metric="p_buys_again", op=">", value=0.5),
+                     "analytical", plan(tool="count_where", metric="customers", op=">=", value=0)],
+              "How many segments have a probability of buying again above 50%?", "how many customers")
+    assert "1,456" in out["messages"][-1].content and "4,261 customers?" not in out["messages"][-1].content
+
+
+def test_a_follow_up_to_tiers_stays_with_tiers(data):
+    out = run(data, ["analytical", plan(tool="rank", metric="expected_revenue", level="tier", direction="highest", n=4),
+                     "analytical", plan(tool="rank", metric="customers", level="tier", direction="highest", n=4)],
+              "rank the value tiers by expected revenue", "and by customers?")
+    assert "Low value (C4, all buying styles) 1,571" in out["messages"][-1].content
+
+
+def test_customers_per_segment_lists_each_segment(data):
+    out = run(data, ["analytical", plan(tool="value", groups=["all"], metrics=["customers"])], "customers per segment")
+    assert "893" in out["messages"][-1].content and "averaging" not in out["messages"][-1].content
+
+
+@pytest.mark.parametrize("question", [
+    "which sales rep looks after the top spender bulk accounts?", "what's the NPS for core customers?",
+    "which marketing channel brought in the occasional customers?", "customer lifetime value by segment",
+    "How many customers are based in the United States?",
+    "how many customers moved from core to top spenders last quarter?",
+])
+def test_more_missing_data_is_declined_before_planning(data, question):
+    out = run(data, ["analytical"], question)
+    assert out["declined"] and out["messages"][-1].content.startswith("I can't answer that from this data")
+
+
+@pytest.mark.parametrize("question,reply,intent", [
+    ("top-20% revenue capture meaning", "Top-20% revenue capture is the share of revenue.", "methodology"),
+    ("how good is the model at predicting who buys again?", "The hybrid's AUC is 0.734.", "methodology"),
+    ("difference between bulk buyers and small-basket buyrs?", "Bulk buyers order larger baskets.", "methodology"),
+    ("how often should we email core bulk buyers?", "Email them monthly (proposed).", "generative"),
+    ("summarise the segments for my boss in 5 bullets", "- a\n- b\n- c\n- d\n- e", "generative"),
+])
+def test_routing_of_explanations_and_writing(data, question, reply, intent):
+    out = run(data, ["analytical"] + [reply] * 4, question)
+    assert out["intent"] == intent
+
+
+def test_a_whole_segmentation_writing_request_is_written_not_asked_about(data):
+    out = run(data, ["generative"] + ["The segmentation splits 4,261 customers into 12 segments."] * 4,
+              "Write an executive summary of the segmentation in about 150 words.")
+    assert not out["messages"][-1].content.startswith("Which segment should I write for")
+
+
+def test_thanks_gets_an_acknowledgement(data):
+    out = run(data, [], "great, thanks!")
+    assert out["messages"][-1].content.startswith("You're welcome")
