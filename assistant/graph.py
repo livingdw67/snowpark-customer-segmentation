@@ -106,6 +106,7 @@ COUNT_OF = {"uk_share": "uk_customers", "non_uk_share": "non_uk_customers", "p_b
 # question names (scheme measures have few, distinct names and keep the word match).
 GENERIC_METRICS = {"customers"}
 UK_FAMILY = {"uk_share", "uk_customers", "non_uk_share", "non_uk_customers"}
+SIZED_ORDERS = re.compile(r"\b(bigg?er|biggest|larger|largest|smaller|smallest|big|large|small)\s+orders?\b", re.IGNORECASE)
 NON_UK_WORDS = re.compile(r"\b(outside|non-?uk|international|abroad|overseas|foreign)\b", re.IGNORECASE)
 SHARE_OF = {v: k for k, v in COUNT_OF.items()}
 UNIT = re.compile(r"\b(?:in|as|into)\s+(weeks|months|years)\b|\b(weeks|months|years)\s*(?:please|\?|$)", re.IGNORECASE)
@@ -1268,10 +1269,12 @@ def _execute(plan: dict, question: str, sem: Semantics, context: str = "", group
             wants_non_uk = bool(NON_UK_WORDS.search(question))
             if best.startswith("non_uk") != wants_non_uk or ms[0].key.startswith("non_uk") == wants_non_uk:
                 return ms
-        elif level == "segment" and ms[0].key not in GENERIC_METRICS:
-            # The plan chose a specific measure. Loose word matches overruled such plans more often
-            # than they fixed them ("customers outside uk" became the UK share, "bigger orders" the
-            # order count), so they only replace a generic count the model fell back to.
+        elif level == "segment" and ms[0].key not in GENERIC_METRICS and (
+                lengths.get(ms[0].key, 0) or lengths[best] < 6
+                or (best == "orders" and SIZED_ORDERS.search(question))):
+            # The plan chose a specific measure. A loose word match only overrules it when the question
+            # never names the plan's measure and names the other one in full ("per order", "lapse"):
+            # "how long since they last ordered" is still recency, "biger orders" still order value.
             return ms
         adjust.append(f"Used {metric(best, level).label} because the question names it "
                       f"(the plan said {ms[0].label}).")
