@@ -1,0 +1,251 @@
+# id|verdict|note   (every answer read against the truth in questions.json)
+LK01|correct|
+LK02|correct|
+LK03|correct|
+LK04|correct|
+LK05|correct|
+LK06|correct|
+LK07|correct|
+LK08|correct|
+LK09|correct|
+LK10|correct|
+LK11|correct|
+LK12|correct|
+LK13|correct|
+LK14|correct|
+LK15|correct|
+LK16|correct|
+LK18|correct|
+LK19|correct|
+LK20|correct|
+LK21|correct|
+LK22|correct|
+LK23|correct|
+LK24|correct|
+LK26|correct|
+LK27|correct|
+LK28|correct|
+LK29|correct|
+LK30|correct|
+LK31|correct|
+LK32|correct|
+LK33|correct|
+LK34|correct|
+LK35|correct|
+LK36|correct|
+LK37|correct|
+LK38|correct|
+LK39|correct|
+LK40|correct|
+LK41|correct|
+LK42|correct|
+LK43|correct|
+LK17|correct|
+TS01|correct|
+TS02|correct|
+TS03|correct|
+TS04|correct|
+TS05|correct|
+TS06|correct|
+TS07|correct|
+LK25|correct|returned every column for C3-B2; customers 351 among them
+TS08|correct|
+TS09|correct|
+TS10|correct|
+TS11|correct|
+TS12|correct|
+TS13|unhelpful|"tier headcount": three segment rows, no total (1,234)
+TS14|unhelpful|per-segment revenue per customer only; the tier figure (£3,369) is missing
+TS15|correct|
+TS16|unhelpful|non-UK count per segment; interpretation promised a total (~410) but the table has none
+TS17|correct|
+TS18|correct|
+TS19|correct|
+TS20|unhelpful|interpretation says "total ... broken down by segment"; four rows, no total (£332,665)
+TS21|correct|
+TS22|correct|
+TS23|correct|
+TS24|correct|
+TS25|correct|
+TS26|correct|
+TS27|correct|
+TS28|correct|
+TS29|correct|
+TS30|correct|
+RK01|correct|
+RK02|error|(no rows): WHERE expected_revenue = (SELECT MAX(...)) matches nothing on full-precision FLOAT
+RK03|unhelpful|read "most recent segment" as "segments at the latest snapshot": every segment, no recency
+RK04|error|(no rows): same FLOAT equality-to-MIN bug on p_buys_again
+RK05|correct|
+RK06|correct|
+RK07|correct|
+RK08|correct|
+RK09|correct|
+RK10|error|(no rows): FLOAT equality-to-MIN bug on expected_revenue
+RK11|correct|
+RK12|correct|
+RK13|correct|sorted list, C2-B3 first
+RK14|correct|sorted list, C1-B2 first
+RK15|correct|
+RK16|correct|
+RK17|correct|
+RK18|correct|
+RK19|correct|
+RK20|correct|
+RK21|correct|
+RK22|correct|
+RK23|correct|
+RK24|correct|
+RK25|correct|
+RK26|correct|
+RK27|wrong number|"widest baskets" read as units per order (342.38); the model defines basket width as lines per order (32.13). Same segment by coincidence
+CP01|correct|table plainly shows C2-B1 0.5503 > C2-B2 0.5396
+CP02|correct|
+CP03|correct|
+FU01|correct|
+FU02|correct|
+FU03|correct|
+FU04|correct|
+FU05|correct|
+FU06|correct|
+FU08|error|(no rows): parent RK02's float-equality bug carried into the follow-up
+FU09|correct|
+FU10|correct|
+FU11|correct|
+FU12|error|(no rows): parent RK04's float-equality bug carried into the follow-up
+FU14|correct|
+FU15|correct|
+FU16|correct|
+FU17|correct|
+FU18|correct|
+FU20|wrong number|"in percent?" gave share = 1 (100%): filtered the total along with the part; answer 6.8%
+FU22|correct|
+FU23|correct|
+FU24|error|(no rows): equality-to-MAX on computed non_uk_customers (FLOAT)
+FU25|correct|
+FU28|correct|
+FU29|correct|
+FU30|correct|
+FU31|correct|
+FU32|correct|three-way tie returned in full
+FU33|correct|
+FU37|correct|
+FU38|correct|
+CP04|correct|every metric side by side; customers 893 vs 399 included
+CP05|correct|per-segment unit prices grouped by style; B3 above B1 in every tier is plain
+CP06|correct|
+CP07|correct|table shows C3-B2 351 > C2-B2 245
+CP08|correct|
+CP09|correct|
+CP10|correct|
+CP11|correct|
+CP12|correct|
+CP13|correct|
+CP14|correct|both units/order and order value, C1-B2 higher on both
+CP15|unhelpful|"core vs occasional customers": per-segment rows only, no tier totals (1,073 vs 1,234)
+CP16|correct|
+CP17|correct|
+CP18|correct|
+CP19|correct|
+CP20|correct|
+FU21|correct|
+CP21|correct|
+CP22|correct|table shows C3-B3 473 > C3-B1 447.5 days, so not newer (the interpretation says lower = newer)
+BD01|correct|
+BD02|correct|long-format table with tier and style names
+FU07|correct|
+FU34|correct|
+BD03|correct|
+BD04|correct|
+BD05|correct|
+BD06|correct|
+BD07|correct|
+BD08|correct|
+FU27|correct|
+BD09|correct|
+BD10|correct|
+FU35|correct|
+BD11|correct|long-format table
+FL01|correct|count 6 (the question asks how many, so not naming them is fine)
+FU19|correct|
+FL02|correct|
+FL03|correct|
+FL04|correct|lists the 7 segments
+FL05|correct|
+FL06|correct|
+FL07|correct|
+FL08|correct|
+ME01|correct|
+ME02|correct|
+ME03|wrong number|"duplicate rows removed" summed every removal step (273,206); duplicates are 11,812
+ME04|correct|
+ME05|correct|
+ME06|correct|
+ME07|correct|
+ME08|correct|
+ME09|correct|
+ME10|correct|
+ME11|correct|
+FU13|correct|
+FU26|correct|
+FU36|correct|
+AM01|correct|chose expected revenue, labelled
+AM02|correct|chose customers, labelled
+AM03|correct|Top spenders tier 383, labelled
+AM04|correct|read "small" as Low value tier 1,571, labelled
+AM05|correct|states it reads "best" as expected revenue
+AM06|correct|read as Bulk buyers 1,747, labelled
+AM07|correct|P, expected orderers and recency per segment
+AM08|unhelpful|interpretation promises tier totals; table is per segment only, so no value for the tier
+AM09|correct|every scheme
+AM10|correct|per-segment P(buys again); the weighted average it mentions isn't shown
+AM11|correct|
+AM12|correct|
+AM13|correct|
+AM14|correct|two_axis_grid, labelled
+AM15|correct|every scheme's accuracy metrics
+AM16|correct|
+AM17|wrong claim|maps "frequent buyers" to Bulk buyers ("frequent/bulk"); bulk is basket size, not frequency
+AM18|correct|expected revenue, labelled
+AM19|error|(no rows): the FLOAT equality-to-MAX bug again
+AM20|correct|expected non-orderers 2,649, labelled
+AM21|unhelpful|"C3 revenue": per-segment expected revenue, no tier total (£135,944)
+AM22|unhelpful|all 12 segments' order counts grouped by style; doesn't say which orders most (C1-B3, 18)
+AM23|correct|
+AM24|correct|every hybrid metric per fold and averaged
+AM25|unhelpful|"low value size": three segment rows, no tier total (1,571)
+AM26|correct|segments ranked by expected revenue, labelled
+UN01|correct|says age isn't held; offers tenure as the nearest figure, labelled
+UN02|correct|
+UN03|correct|says there's no "last Christmas" figure, offers next-quarter forecast as the nearest (calls it "roughly Q4", loosely)
+UN04|correct|
+UN05|correct|
+UN06|correct|
+UN07|correct|
+UN08|correct|
+UN09|correct|next quarter only, with the caveat
+UN10|correct|
+UN11|correct|
+UN12|correct|
+UN13|correct|
+UN14|correct|
+UN15|correct|
+UN16|answered-instead-of-declining|labels next-quarter revenue per customer as "customer lifetime value"
+UN17|correct|
+UN18|answered-instead-of-declining|"platinum tier" silently mapped to Top spenders (383); no such tier
+UN19|correct|
+UN20|correct|says the US can't be identified; gives non-UK 410 as the nearest
+UN21|correct|
+UN22|correct|
+DC01|correct|accurate definition from the model's descriptions
+DC02|correct|accurate, no model detail, nothing invented
+DC04|unhelpful|"how were the segments created" returned the segments table; no method and no scope note
+DC06|correct|right on holiday buyers; calls small-basket buyers "frequent" (not true in C4)
+DC10|correct|
+DC13|correct|right; same loose "frequent" for B3
+WR01|unhelpful|returned the profile table as if it were the persona card; no note that it can't write
+WR04|unhelpful|returned the profile table; no ideas and no scope note
+WR12|correct|says drafting isn't a data task and returns C3-B1's profile to support it
+OT01|correct|friendly welcome with example questions
+OT03|correct|
+OT08|correct|

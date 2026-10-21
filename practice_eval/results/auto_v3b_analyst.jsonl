@@ -1,0 +1,350 @@
+{"id": "YLK001", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK002", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK003", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU039", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK004", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU023", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK005", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK006", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK007", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK008", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK009", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK010", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK011", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK012", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU045", "auto": "fail", "detail": "values 0/1"}
+{"id": "YLK013", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK014", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK015", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK016", "auto": "pass", "detail": "values 1/1 decline-words"}
+{"id": "YFU002", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK017", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU011", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK018", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU052", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK019", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK020", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK021", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK022", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK023", "auto": "pass", "detail": "values 1/1 decline-words"}
+{"id": "YLK024", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK025", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK026", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU016", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK027", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK028", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK029", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK030", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK031", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK032", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK033", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU040", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK034", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK035", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK036", "auto": "fail", "detail": "values 0/1 NO SQL decline-words"}
+{"id": "YLK037", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK038", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK039", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK040", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK041", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU055", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK042", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK043", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK044", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU008", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK045", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU017", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK046", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK047", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU001", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK048", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU010", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK049", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK050", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU053", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK051", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU046", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK052", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK053", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU047", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK054", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK055", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK056", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK057", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK058", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK059", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK060", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK061", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK062", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU038", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK063", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU019", "auto": "pass", "detail": "values 1/1"}
+{"id": "YLK064", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS001", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS002", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS003", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS004", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS005", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS006", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS007", "auto": "pass", "detail": "values 1/1 decline-words"}
+{"id": "YTS008", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS009", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS010", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS011", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS012", "auto": "pass", "detail": "values 1/1 decline-words"}
+{"id": "YTS013", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS014", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS015", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS016", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS017", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS018", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS019", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS020", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS021", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU005", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS022", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS023", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS024", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS025", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS026", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU032", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS027", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU015", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS028", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS029", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS030", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS031", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS032", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS033", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU009", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS034", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS035", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS036", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU043", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS037", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS038", "auto": "fail", "detail": "values 0/1"}
+{"id": "YFU030", "auto": "fail", "detail": "values 0/1"}
+{"id": "YTS039", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS040", "auto": "fail", "detail": "values 0/1 decline-words"}
+{"id": "YTS041", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS042", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS043", "auto": "pass", "detail": "values 1/1"}
+{"id": "YTS044", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK001", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK002", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU003", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK003", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU029", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK004", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU027", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK005", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU013", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK006", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK007", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK008", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU024", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK009", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK010", "auto": "pass", "detail": "values 2/2"}
+{"id": "YFU033", "auto": "pass", "detail": "values 2/2"}
+{"id": "YRK011", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK012", "auto": "pass", "detail": "values 3/3"}
+{"id": "YRK013", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK014", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU051", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK015", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK016", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU056", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK017", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK018", "auto": "pass", "detail": "values 3/3"}
+{"id": "YRK019", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK020", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK021", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK022", "auto": "pass", "detail": "values 3/3"}
+{"id": "YRK023", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK024", "auto": "pass", "detail": "values 2/2"}
+{"id": "YRK025", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU028", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK026", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK027", "auto": "pass", "detail": "values 3/3"}
+{"id": "YRK028", "auto": "pass", "detail": "values 3/3"}
+{"id": "YRK029", "auto": "fail", "detail": "values 0/1 missing codes ['C2-B1']"}
+{"id": "YRK030", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU035", "auto": "fail", "detail": "values 0/1 missing codes ['C4-B1']"}
+{"id": "YRK031", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU031", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK032", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK033", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK034", "auto": "pass", "detail": "values 3/3"}
+{"id": "YRK035", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK036", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU004", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK037", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU020", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK038", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK039", "auto": "pass", "detail": "values 1/1"}
+{"id": "YRK040", "auto": "pass", "detail": "values 1/1"}
+{"id": "YCP001", "auto": "pass", "detail": "values 2/2"}
+{"id": "YFU021", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP002", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP003", "auto": "pass", "detail": "values 2/2"}
+{"id": "YFU048", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP004", "auto": "fail", "detail": "values 2/2 no word ['no']"}
+{"id": "YFU049", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP005", "auto": "fail", "detail": "values 2/2 no word ['yes']"}
+{"id": "YFU037", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP006", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP007", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP008", "auto": "fail", "detail": "values 2/2 no word ['no']"}
+{"id": "YCP009", "auto": "pass", "detail": "values 2/2"}
+{"id": "YFU014", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP010", "auto": "fail", "detail": "values 2/2 no word ['no']"}
+{"id": "YFU034", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP011", "auto": "fail", "detail": "values 2/2 no word ['yes']"}
+{"id": "YCP012", "auto": "fail", "detail": "values 2/2 no word ['no']"}
+{"id": "YFU042", "auto": "pass", "detail": "values 1/1"}
+{"id": "YCP013", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP014", "auto": "pass", "detail": "values 2/2"}
+{"id": "YFU007", "auto": "pass", "detail": "values 1/1"}
+{"id": "YCP015", "auto": "fail", "detail": "values 2/2 no word ['no']"}
+{"id": "YCP016", "auto": "fail", "detail": "values 2/2 no word ['no']"}
+{"id": "YCP017", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP018", "auto": "fail", "detail": "values 1/2"}
+{"id": "YCP019", "auto": "pass", "detail": "values 2/2"}
+{"id": "YFU018", "auto": "pass", "detail": "values 1/1"}
+{"id": "YCP020", "auto": "fail", "detail": "values 2/2 no word ['yes']"}
+{"id": "YCP021", "auto": "pass", "detail": "values 2/2"}
+{"id": "YFU006", "auto": "pass", "detail": "values 1/1"}
+{"id": "YCP022", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP023", "auto": "fail", "detail": "values 2/2 no word ['yes']"}
+{"id": "YFU054", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP024", "auto": "pass", "detail": "values 2/2 decline-words"}
+{"id": "YFU026", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP025", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP026", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP027", "auto": "fail", "detail": "values 2/2 no word ['yes']"}
+{"id": "YCP028", "auto": "fail", "detail": "values 2/2 no word ['no']"}
+{"id": "YCP029", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP030", "auto": "pass", "detail": "values 2/2"}
+{"id": "YFU012", "auto": "pass", "detail": "values 2/2"}
+{"id": "YCP031", "auto": "fail", "detail": "values 2/2 no word ['no']"}
+{"id": "YCP032", "auto": "fail", "detail": "values 2/2 no word ['no'] decline-words"}
+{"id": "YFU036", "auto": "pass", "detail": "values 1/1"}
+{"id": "YBD001", "auto": "pass", "detail": "values 3/3"}
+{"id": "YBD002", "auto": "pass", "detail": "values 3/3 decline-words"}
+{"id": "YBD003", "auto": "pass", "detail": "values 12/12"}
+{"id": "YBD004", "auto": "pass", "detail": "values 3/3 decline-words"}
+{"id": "YBD005", "auto": "pass", "detail": "values 3/3"}
+{"id": "YBD006", "auto": "pass", "detail": "values 3/3"}
+{"id": "YBD007", "auto": "pass", "detail": "values 4/4 decline-words"}
+{"id": "YBD008", "auto": "pass", "detail": "values 4/4"}
+{"id": "YBD009", "auto": "pass", "detail": "values 4/4 decline-words"}
+{"id": "YBD010", "auto": "fail", "detail": "values 4/4 missing codes ['C1-B1', 'C2-B1', 'C3-B1', 'C4-B1']"}
+{"id": "YBD011", "auto": "pass", "detail": "values 4/4"}
+{"id": "YBD012", "auto": "pass", "detail": "values 4/4"}
+{"id": "YBD013", "auto": "pass", "detail": "values 4/4 decline-words"}
+{"id": "YBD014", "auto": "pass", "detail": "values 3/3 decline-words"}
+{"id": "YBD015", "auto": "pass", "detail": "values 4/4"}
+{"id": "YBD016", "auto": "pass", "detail": "values 3/3"}
+{"id": "YFL001", "auto": "pass", "detail": "values 0/0"}
+{"id": "YFL002", "auto": "fail", "detail": "values 0/1"}
+{"id": "YFL003", "auto": "pass", "detail": "values 0/0"}
+{"id": "YFL004", "auto": "pass", "detail": "values 0/0"}
+{"id": "YFL005", "auto": "fail", "detail": "values 1/1 missing codes ['C4-B3']"}
+{"id": "YFL006", "auto": "fail", "detail": "values 1/1 missing codes ['C1-B3', 'C2-B3', 'C3-B3', 'C4-B3']"}
+{"id": "YFL007", "auto": "fail", "detail": "values 0/1"}
+{"id": "YFL008", "auto": "pass", "detail": "values 0/0"}
+{"id": "YFL009", "auto": "fail", "detail": "values 1/1 missing codes ['C1-B1', 'C1-B2', 'C2-B1', 'C2-B2', 'C3-B1', 'C3-B2', 'C4-B1', 'C4-B2']"}
+{"id": "YFL010", "auto": "fail", "detail": "values 1/1 missing codes ['C3-B1', 'C3-B2', 'C3-B3', 'C4-B1', 'C4-B2', 'C4-B3']"}
+{"id": "YFL011", "auto": "fail", "detail": "values 1/1 missing codes ['C1-B1', 'C1-B2', 'C1-B3', 'C2-B1', 'C2-B2', 'C2-B3', 'C3-B2', 'C3-B3', 'C4-B2']"}
+{"id": "YFL012", "auto": "fail", "detail": "values 1/1 missing codes ['C1-B1', 'C1-B2', 'C2-B1', 'C2-B2', 'C3-B1', 'C3-B2', 'C4-B1', 'C4-B2']"}
+{"id": "YFU050", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME001", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME002", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME003", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME004", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME005", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU041", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME006", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME007", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME008", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME009", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME010", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME011", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU022", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME012", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME013", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME014", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU025", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME015", "auto": "pass", "detail": "values 1/1"}
+{"id": "YFU044", "auto": "pass", "detail": "values 1/1"}
+{"id": "YME016", "auto": "pass", "detail": "values 1/1"}
+{"id": "YAM001", "auto": "pass", "detail": "readings ['median unit price per segment']"}
+{"id": "YAM002", "auto": "pass", "detail": "readings ['buys-again AUC', 'top-20 capture']"}
+{"id": "YAM003", "auto": "pass", "detail": "readings ['Top spenders tier']"}
+{"id": "YAM004", "auto": "pass", "detail": "readings ['expected revenue', 'P(buys again)']"}
+{"id": "YAM005", "auto": "pass", "detail": "readings ['P(buys again), customer-weighted', 'median recency per segment', 'median orders per segment']"}
+{"id": "YAM006", "auto": "pass", "detail": "readings ['median recency per segment', 'median orders per segment']"}
+{"id": "YAM007", "auto": "pass", "detail": "readings ['P(buys again), customer-weighted', 'median recency per segment', 'median orders per segment']"}
+{"id": "YAM008", "auto": "fail", "detail": "readings []"}
+{"id": "YAM009", "auto": "pass", "detail": "readings ['Top spenders tier']"}
+{"id": "YAM010", "auto": "pass", "detail": "readings ['lowest expected revenue']"}
+{"id": "YAM011", "auto": "fail", "detail": "readings []"}
+{"id": "YAM012", "auto": "pass", "detail": "readings ['expected revenue next quarter', 'median net revenue 12m']"}
+{"id": "YAM013", "auto": "pass", "detail": "readings ['expected revenue next quarter', 'median net revenue 12m', 'expected revenue per customer']"}
+{"id": "YAM014", "auto": "pass", "detail": "readings ['expected revenue next quarter', 'median net revenue 12m']"}
+{"id": "YAM015", "auto": "fail", "detail": "readings []"}
+{"id": "YAM016", "auto": "pass", "detail": "readings ['lowest expected revenue']"}
+{"id": "YAM017", "auto": "pass", "detail": "readings ['by customers']"}
+{"id": "YAM018", "auto": "fail", "detail": "readings []"}
+{"id": "YAM019", "auto": "pass", "detail": "readings ['expected revenue next quarter']"}
+{"id": "YAM020", "auto": "pass", "detail": "readings ['median net revenue 12m', 'median order value', 'expected revenue']"}
+{"id": "YAM021", "auto": "fail", "detail": "readings []"}
+{"id": "YAM022", "auto": "pass", "detail": "readings ['P(buys again), customer-weighted', 'P(buys again) per segment']"}
+{"id": "YAM023", "auto": "pass", "detail": "readings ['Top spenders tier']"}
+{"id": "YAM024", "auto": "pass", "detail": "readings ['buys-again AUC']"}
+{"id": "YAM025", "auto": "pass", "detail": "readings ['expected revenue next quarter']"}
+{"id": "YAM026", "auto": "pass", "detail": "readings ['median net revenue 12m']"}
+{"id": "YAM027", "auto": "pass", "detail": "readings ['expected revenue next quarter', 'median net revenue 12m', 'expected revenue per customer']"}
+{"id": "YAM028", "auto": "pass", "detail": "readings ['median unit price per segment']"}
+{"id": "YAM029", "auto": "pass", "detail": "readings ['expected revenue next quarter']"}
+{"id": "YAM030", "auto": "fail", "detail": "readings []"}
+{"id": "YAM031", "auto": "fail", "detail": "readings []"}
+{"id": "YAM032", "auto": "pass", "detail": "readings ['customers']"}
+{"id": "YAM033", "auto": "pass", "detail": "readings ['P(buys again) per segment']"}
+{"id": "YAM034", "auto": "pass", "detail": "readings ['median net revenue 12m']"}
+{"id": "YAM035", "auto": "pass", "detail": "readings ['buys-again AUC', 'top-20 capture']"}
+{"id": "YAM036", "auto": "pass", "detail": "readings ['expected revenue next quarter']"}
+{"id": "YAM037", "auto": "pass", "detail": "readings ['P(buys again) per segment']"}
+{"id": "YAM038", "auto": "fail", "detail": "readings []"}
+{"id": "YUN001", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN002", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN003", "auto": "fail", "detail": "no decline words has SQL"}
+{"id": "YUN004", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN005", "auto": "pass", "detail": "declines has SQL"}
+{"id": "YUN006", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN007", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN008", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN009", "auto": "fail", "detail": "no decline words has SQL"}
+{"id": "YUN010", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN011", "auto": "pass", "detail": "declines has SQL"}
+{"id": "YUN012", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN013", "auto": "pass", "detail": "declines has SQL"}
+{"id": "YUN014", "auto": "pass", "detail": "declines has SQL"}
+{"id": "YUN015", "auto": "pass", "detail": "declines has SQL"}
+{"id": "YUN016", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN017", "auto": "pass", "detail": "declines has SQL"}
+{"id": "YUN018", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN019", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN020", "auto": "pass", "detail": "declines has SQL"}
+{"id": "YUN021", "auto": "pass", "detail": "declines has SQL"}
+{"id": "YUN022", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN023", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN024", "auto": "pass", "detail": "declines has SQL"}
+{"id": "YUN025", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN026", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN027", "auto": "pass", "detail": "declines has SQL"}
+{"id": "YUN028", "auto": "pass", "detail": "declines has SQL"}
+{"id": "YUN029", "auto": "pass", "detail": "declines has SQL"}
+{"id": "YUN030", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN031", "auto": "pass", "detail": "declines no SQL"}
+{"id": "YUN032", "auto": "pass", "detail": "declines no SQL"}

@@ -1,0 +1,250 @@
+{"id": "LK01", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU01", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK02", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU02", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK03", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK04", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU06", "auto": "pass", "detail": "values 2/2"}
+{"id": "LK05", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK06", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK07", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU11", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK08", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK09", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK10", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU14", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK11", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK12", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK13", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK14", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK15", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU17", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK16", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK18", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK19", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK20", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK21", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU20", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK22", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK23", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK24", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK25", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK26", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK27", "auto": "fail", "detail": "values 0/1"}
+{"id": "LK28", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU23", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK29", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK30", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK31", "auto": "pass", "detail": "values 1/1"}
+{"id": "LK32", "auto": "fail", "detail": "values 0/1"}
+{"id": "LK17", "auto": "pass", "detail": "values 0/0"}
+{"id": "TS01", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU05", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS02", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS03", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU10", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS04", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU15", "auto": "fail", "detail": "values 0/1"}
+{"id": "TS05", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS06", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS07", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS08", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS09", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS10", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS11", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS12", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS13", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS14", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS15", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS16", "auto": "fail", "detail": "values 0/1"}
+{"id": "FU24", "auto": "fail", "detail": "values 0/1 missing codes ['C2-B1'] decline-words"}
+{"id": "TS17", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS18", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS19", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS20", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS21", "auto": "pass", "detail": "values 1/1"}
+{"id": "TS22", "auto": "pass", "detail": "values 1/1"}
+{"id": "RK01", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU03", "auto": "fail", "detail": "values 0/1 missing codes ['C1-B2']"}
+{"id": "RK02", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU08", "auto": "pass", "detail": "values 1/1"}
+{"id": "RK03", "auto": "pass", "detail": "values 1/1"}
+{"id": "RK04", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU12", "auto": "fail", "detail": "values 0/1"}
+{"id": "RK05", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU22", "auto": "pass", "detail": "values 1/1"}
+{"id": "RK06", "auto": "pass", "detail": "values 1/1"}
+{"id": "RK07", "auto": "pass", "detail": "values 3/3"}
+{"id": "FU04", "auto": "fail", "detail": "values 0/1"}
+{"id": "RK08", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU25", "auto": "pass", "detail": "values 1/1"}
+{"id": "RK09", "auto": "pass", "detail": "values 1/1"}
+{"id": "RK10", "auto": "pass", "detail": "values 1/1"}
+{"id": "RK11", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU18", "auto": "fail", "detail": "values 0/1"}
+{"id": "RK12", "auto": "pass", "detail": "values 4/4"}
+{"id": "FU16", "auto": "fail", "detail": "values 0/4"}
+{"id": "RK13", "auto": "pass", "detail": "values 1/1"}
+{"id": "RK14", "auto": "pass", "detail": "values 1/1"}
+{"id": "RK15", "auto": "pass", "detail": "values 1/1"}
+{"id": "RK16", "auto": "pass", "detail": "values 1/1"}
+{"id": "RK17", "auto": "pass", "detail": "values 1/1"}
+{"id": "RK18", "auto": "pass", "detail": "values 1/1"}
+{"id": "RK19", "auto": "pass", "detail": "values 3/3"}
+{"id": "RK20", "auto": "pass", "detail": "values 3/3"}
+{"id": "CP01", "auto": "fail", "detail": "values 2/2 no word ['no']"}
+{"id": "FU28", "auto": "pass", "detail": "values 2/2"}
+{"id": "CP02", "auto": "pass", "detail": "values 2/2"}
+{"id": "FU09", "auto": "pass", "detail": "values 2/2"}
+{"id": "CP03", "auto": "pass", "detail": "values 2/2"}
+{"id": "CP04", "auto": "pass", "detail": "values 2/2"}
+{"id": "CP05", "auto": "pass", "detail": "values 8/8"}
+{"id": "CP06", "auto": "pass", "detail": "values 1/1"}
+{"id": "CP07", "auto": "fail", "detail": "values 2/2 no word ['no']"}
+{"id": "CP08", "auto": "pass", "detail": "values 2/2"}
+{"id": "FU21", "auto": "pass", "detail": "values 1/1"}
+{"id": "CP09", "auto": "pass", "detail": "values 2/2"}
+{"id": "CP10", "auto": "pass", "detail": "values 1/1"}
+{"id": "CP11", "auto": "pass", "detail": "values 2/2"}
+{"id": "CP12", "auto": "pass", "detail": "values 2/2"}
+{"id": "CP13", "auto": "pass", "detail": "values 1/1"}
+{"id": "CP14", "auto": "fail", "detail": "values 0/2 no word ['yes']"}
+{"id": "CP15", "auto": "pass", "detail": "values 2/2 decline-words"}
+{"id": "CP16", "auto": "pass", "detail": "values 2/2"}
+{"id": "BD01", "auto": "pass", "detail": "values 4/4"}
+{"id": "FU07", "auto": "pass", "detail": "values 4/4"}
+{"id": "BD02", "auto": "fail", "detail": "values 12/12 missing codes ['C1-B2', 'C1-B3', 'C2-B1', 'C2-B2', 'C2-B3', 'C3-B1', 'C3-B2', 'C3-B3', 'C4-B1', 'C4-B2', 'C4-B3']"}
+{"id": "BD03", "auto": "pass", "detail": "values 24/24"}
+{"id": "BD04", "auto": "pass", "detail": "values 3/3"}
+{"id": "BD05", "auto": "pass", "detail": "values 3/3"}
+{"id": "FU27", "auto": "pass", "detail": "values 3/3"}
+{"id": "BD06", "auto": "fail", "detail": "values 12/12 missing codes ['C1-B1', 'C1-B2', 'C1-B3', 'C2-B1', 'C2-B2', 'C2-B3', 'C3-B1', 'C3-B2', 'C3-B3', 'C4-B2', 'C4-B3']"}
+{"id": "BD07", "auto": "pass", "detail": "values 4/4"}
+{"id": "BD08", "auto": "pass", "detail": "values 4/4"}
+{"id": "FL01", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU19", "auto": "fail", "detail": "values 0/1"}
+{"id": "FL02", "auto": "pass", "detail": "values 0/0"}
+{"id": "FL03", "auto": "pass", "detail": "values 1/1"}
+{"id": "FL04", "auto": "pass", "detail": "values 1/1"}
+{"id": "FL05", "auto": "pass", "detail": "values 0/0 decline-words"}
+{"id": "FL06", "auto": "pass", "detail": "values 1/1"}
+{"id": "ME01", "auto": "pass", "detail": "values 2/2"}
+{"id": "FU13", "auto": "pass", "detail": "values 2/2"}
+{"id": "ME02", "auto": "fail", "detail": "values 0/1 no word ['rfm']"}
+{"id": "ME03", "auto": "pass", "detail": "values 1/1"}
+{"id": "ME04", "auto": "fail", "detail": "values 0/2"}
+{"id": "ME05", "auto": "pass", "detail": "values 1/1"}
+{"id": "ME06", "auto": "pass", "detail": "values 1/1"}
+{"id": "FU26", "auto": "pass", "detail": "values 1/1"}
+{"id": "ME07", "auto": "pass", "detail": "values 1/1"}
+{"id": "ME08", "auto": "pass", "detail": "values 1/1"}
+{"id": "AM01", "auto": "pass", "detail": "readings ['expected revenue next quarter']"}
+{"id": "AM02", "auto": "pass", "detail": "readings ['by customers']"}
+{"id": "AM03", "auto": "fail", "detail": "readings []"}
+{"id": "AM04", "auto": "fail", "detail": "readings []"}
+{"id": "AM05", "auto": "fail", "detail": "readings []"}
+{"id": "AM06", "auto": "fail", "detail": "readings []"}
+{"id": "AM07", "auto": "fail", "detail": "readings []"}
+{"id": "AM08", "auto": "pass", "detail": "readings ['expected revenue next quarter', 'expected revenue per customer']"}
+{"id": "AM09", "auto": "pass", "detail": "readings ['hybrid, mean of folds', 'hybrid per fold', 'every scheme']"}
+{"id": "AM10", "auto": "pass", "detail": "readings ['P(buys again), customer-weighted']"}
+{"id": "AM11", "auto": "pass", "detail": "readings ['P(buys again)']"}
+{"id": "AM12", "auto": "pass", "detail": "readings ['median net revenue 12m']"}
+{"id": "AM13", "auto": "pass", "detail": "readings ['median orders per customer, 12m']"}
+{"id": "AM14", "auto": "pass", "detail": "readings ['two_axis_grid']"}
+{"id": "AM15", "auto": "pass", "detail": "readings ['outcome model AUC', 'hybrid AUC']"}
+{"id": "AM16", "auto": "pass", "detail": "readings ['median unit price per B2 segment']"}
+{"id": "AM17", "auto": "fail", "detail": "readings []"}
+{"id": "AM18", "auto": "pass", "detail": "readings ['expected revenue next quarter']"}
+{"id": "AM19", "auto": "pass", "detail": "readings ['expected revenue']"}
+{"id": "UN01", "auto": "pass", "detail": "declines has SQL"}
+{"id": "UN02", "auto": "pass", "detail": "declines has SQL"}
+{"id": "UN03", "auto": "pass", "detail": "declines has SQL"}
+{"id": "UN04", "auto": "pass", "detail": "declines has SQL"}
+{"id": "UN05", "auto": "pass", "detail": "declines has SQL"}
+{"id": "UN06", "auto": "pass", "detail": "declines has SQL"}
+{"id": "UN07", "auto": "pass", "detail": "declines has SQL"}
+{"id": "UN08", "auto": "pass", "detail": "declines has SQL"}
+{"id": "UN09", "auto": "pass", "detail": "declines has SQL"}
+{"id": "UN10", "auto": "pass", "detail": "declines has SQL"}
+{"id": "UN11", "auto": "pass", "detail": "declines has SQL"}
+{"id": "UN12", "auto": "pass", "detail": "declines has SQL"}
+{"id": "UN13", "auto": "fail", "detail": "no decline words has SQL"}
+{"id": "UN14", "auto": "fail", "detail": "no decline words has SQL"}
+{"id": "UN15", "auto": "pass", "detail": "declines has SQL"}
+{"id": "UN16", "auto": "fail", "detail": "no decline words has SQL"}
+{"id": "DC01", "auto": "check", "detail": ""}
+{"id": "DC02", "auto": "check", "detail": ""}
+{"id": "DC03", "auto": "check", "detail": "declines"}
+{"id": "DC04", "auto": "check", "detail": ""}
+{"id": "DC05", "auto": "check", "detail": ""}
+{"id": "DC06", "auto": "check", "detail": "declines"}
+{"id": "DC07", "auto": "check", "detail": ""}
+{"id": "DC08", "auto": "check", "detail": ""}
+{"id": "DC09", "auto": "check", "detail": ""}
+{"id": "DC10", "auto": "check", "detail": ""}
+{"id": "DC11", "auto": "check", "detail": ""}
+{"id": "DC12", "auto": "check", "detail": ""}
+{"id": "DC13", "auto": "check", "detail": ""}
+{"id": "DC14", "auto": "check", "detail": ""}
+{"id": "DC15", "auto": "check", "detail": ""}
+{"id": "DC16", "auto": "check", "detail": ""}
+{"id": "DC17", "auto": "check", "detail": ""}
+{"id": "DC18", "auto": "check", "detail": ""}
+{"id": "DC19", "auto": "check", "detail": ""}
+{"id": "DC20", "auto": "check", "detail": ""}
+{"id": "DC21", "auto": "check", "detail": ""}
+{"id": "DC22", "auto": "check", "detail": ""}
+{"id": "DC23", "auto": "check", "detail": "declines"}
+{"id": "DC24", "auto": "check", "detail": ""}
+{"id": "DC25", "auto": "check", "detail": ""}
+{"id": "DC26", "auto": "check", "detail": ""}
+{"id": "DC27", "auto": "check", "detail": ""}
+{"id": "DC28", "auto": "check", "detail": ""}
+{"id": "DC29", "auto": "check", "detail": ""}
+{"id": "DC30", "auto": "check", "detail": ""}
+{"id": "DC31", "auto": "check", "detail": ""}
+{"id": "DC32", "auto": "check", "detail": ""}
+{"id": "DC33", "auto": "check", "detail": ""}
+{"id": "DC34", "auto": "check", "detail": ""}
+{"id": "DC35", "auto": "check", "detail": ""}
+{"id": "WR01", "auto": "check", "detail": "129 words"}
+{"id": "WR02", "auto": "check", "detail": "89 words"}
+{"id": "WR03", "auto": "check", "detail": "26 words"}
+{"id": "WR04", "auto": "check", "detail": "135 words"}
+{"id": "WR05", "auto": "check", "detail": "262 words"}
+{"id": "WR06", "auto": "check", "detail": "69 words"}
+{"id": "WR07", "auto": "check", "detail": "12 words"}
+{"id": "WR08", "auto": "check", "detail": "53 words"}
+{"id": "WR09", "auto": "check", "detail": "81 words"}
+{"id": "WR10", "auto": "check", "detail": "30 words"}
+{"id": "WR11", "auto": "check", "detail": "41 words"}
+{"id": "WR12", "auto": "check", "detail": "43 words"}
+{"id": "WR13", "auto": "check", "detail": "138 words"}
+{"id": "WR14", "auto": "check", "detail": "89 words"}
+{"id": "WR15", "auto": "check", "detail": "106 words"}
+{"id": "WR16", "auto": "check", "detail": "64 words"}
+{"id": "WR17", "auto": "check", "detail": "41 words"}
+{"id": "WR18", "auto": "check", "detail": "12 words"}
+{"id": "WR19", "auto": "check", "detail": "38 words"}
+{"id": "WR20", "auto": "check", "detail": "323 words"}
+{"id": "WR21", "auto": "check", "detail": "12 words"}
+{"id": "WR22", "auto": "check", "detail": "23 words"}
+{"id": "WR23", "auto": "check", "detail": "41 words"}
+{"id": "WR24", "auto": "check", "detail": "78 words"}
+{"id": "WR25", "auto": "check", "detail": "39 words"}
+{"id": "OT01", "auto": "check", "detail": "declines"}
+{"id": "OT02", "auto": "check", "detail": "declines"}
+{"id": "OT03", "auto": "check", "detail": "declines"}
+{"id": "OT04", "auto": "check", "detail": "declines"}
+{"id": "OT05", "auto": "check", "detail": "declines"}
+{"id": "OT06", "auto": "check", "detail": "declines"}
+{"id": "OT07", "auto": "check", "detail": "declines"}
+{"id": "OT08", "auto": "check", "detail": "declines"}
+{"id": "OT09", "auto": "check", "detail": ""}
+{"id": "OT10", "auto": "check", "detail": ""}
+{"id": "OT11", "auto": "check", "detail": "declines"}
+{"id": "OT12", "auto": "check", "detail": "declines"}
+{"id": "OT13", "auto": "check", "detail": "declines"}
+{"id": "OT14", "auto": "check", "detail": "declines"}
+{"id": "OT15", "auto": "check", "detail": "declines"}

@@ -1,0 +1,251 @@
+# Fixed code on the original questions. Unchanged answers keep the old verdict; changed ones are read.
+LK01|correct|same answer as before
+FU01|correct|same answer as before
+LK02|correct|same answer as before
+FU02|correct|same answer as before
+LK03|correct|same answer as before
+LK04|correct|same answer as before
+FU06|correct|same answer as before
+LK05|correct|same answer as before
+LK06|correct|same answer as before
+LK07|correct|same answer as before: 12; framed oddly as a one-row ranking
+FU11|correct|same answer as before
+LK08|correct|same answer as before
+LK09|correct|same answer as before
+LK10|correct|same answer as before
+FU14|correct|same answer as before
+LK11|correct|same answer as before: 373 days, plus unrequested profile
+LK12|correct|same answer as before
+LK13|correct|same answer as before
+LK15|correct|same answer as before
+FU17|correct|same answer as before
+LK16|correct|same answer as before
+LK18|correct|same answer as before
+LK19|correct|same answer as before
+LK20|correct|same answer as before
+LK21|correct|same answer as before
+FU20|correct|same answer as before
+LK22|correct|same answer as before
+LK23|correct|same answer as before
+LK24|correct|same answer as before
+LK25|correct|same answer as before
+LK26|correct|same answer as before: 4 days right; "ranked highest first" framing is confusing
+LK27|wrong number|same answer as before: gave 19.3% of Core customers (C2-B3's UK customers / Core) instead of C2-B3's UK share 93.0%
+LK28|correct|same answer as before
+FU23|correct|same answer as before
+LK29|correct|same answer as before
+LK30|correct|same answer as before
+LK31|correct|same answer as before
+LK17|correct|same answer as before
+TS02|correct|same answer as before
+TS03|correct|same answer as before
+FU10|correct|same answer as before
+TS04|correct|same answer as before
+TS05|correct|same answer as before
+TS06|correct|same answer as before
+TS07|correct|same answer as before
+TS08|correct|same answer as before
+TS09|correct|same answer as before
+TS10|correct|same answer as before
+TS11|correct|same answer as before
+TS12|correct|same answer as before
+TS13|correct|same answer as before
+TS14|correct|same answer as before
+TS15|correct|same answer as before
+FU24|wrong number|same answer as before: carried TS16's wrong groups: answered C2-B2 (24); most non-UK customers is C2-B1 (~78)
+TS17|correct|same answer as before
+TS18|correct|same answer as before
+TS19|correct|same answer as before
+TS20|correct|same answer as before
+TS21|correct|same answer as before
+TS22|correct|same answer as before
+RK01|correct|same answer as before
+RK02|correct|same answer as before
+RK03|correct|same answer as before
+RK04|correct|same answer as before
+RK05|correct|same answer as before
+FU22|correct|same answer as before
+RK06|correct|same answer as before
+RK07|correct|same answer as before
+RK08|correct|same answer as before
+FU25|correct|same answer as before
+RK09|correct|same answer as before
+RK10|correct|same answer as before
+RK11|correct|same answer as before
+RK12|correct|same answer as before
+RK13|correct|same answer as before
+RK14|correct|same answer as before
+RK15|correct|same answer as before
+RK16|correct|same answer as before
+RK17|correct|same answer as before
+RK18|correct|same answer as before
+RK19|correct|same answer as before
+RK20|correct|same answer as before
+FU28|correct|same answer as before
+CP02|correct|same answer as before
+FU09|correct|same answer as before
+CP03|correct|same answer as before
+CP04|correct|same answer as before
+CP05|correct|same answer as before
+CP06|correct|same answer as before
+CP07|correct|same answer as before: no explicit "no", but says C3-B2 is higher (351 vs 245)
+CP08|correct|same answer as before
+FU21|correct|same answer as before
+CP09|correct|same answer as before: implicit: says C3-B1 is more lapsed (94 vs 27 days)
+CP10|correct|same answer as before
+CP11|correct|same answer as before
+CP12|correct|same answer as before: stray "Yes." on an either/or question, then the right answer
+CP13|correct|same answer as before
+CP15|correct|same answer as before: customers first, then ~6,000 chars of every other measure
+CP16|correct|same answer as before
+BD01|correct|same answer as before
+FU07|correct|same answer as before
+BD02|correct|same answer as before: crosstab with codes in the headers
+BD03|correct|same answer as before
+BD04|correct|same answer as before
+BD05|correct|same answer as before
+FU27|correct|same answer as before
+BD06|correct|same answer as before: crosstab of medians, no totals (right)
+BD07|correct|same answer as before: tier figures in the "All styles" column
+BD08|correct|same answer as before
+FL01|correct|same answer as before
+FL02|correct|same answer as before
+FL03|correct|same answer as before
+FL04|correct|same answer as before
+FL05|unhelpful|same answer as before: listed all 12 Q4 shares ("only available per segment") instead of picking the 4 above 50%
+FL06|correct|same answer as before
+ME01|correct|same answer as before
+FU13|correct|same answer as before
+ME02|wrong number|same answer as before: named the unsegmented model (0.781) though the question excluded it; answer is RFM 0.754
+ME03|correct|same answer as before: 11,812 is in the cleaning table row; text is a generic summary
+ME04|wrong number|same answer as before: answered the value axis's backtest persistence (69.7%); asked chosen k (4) and its ARI (0.932)
+ME05|correct|same answer as before
+ME06|correct|same answer as before
+FU26|correct|same answer as before
+ME07|correct|same answer as before
+ME08|correct|same answer as before
+AM01|correct|same answer as before: chose expected revenue next quarter, labelled
+AM02|correct|same answer as before: chose customers, labelled
+AM05|wrong claim|same answer as before: "best segment" answered with backtest schemes (unsegmented model AUC), not segments
+AM07|correct|same answer as before: read "active" as customers expected to order next quarter: 341, labelled (reasonable)
+AM08|correct|same answer as before: expected revenue £387,619, labelled
+AM09|correct|same answer as before: every scheme's AUC incl. hybrid 0.734
+AM10|correct|same answer as before
+AM11|correct|same answer as before: read loyalty as P(buys again) 35.1%, labelled
+AM12|correct|same answer as before: median net revenue, labelled
+AM13|correct|same answer as before
+AM14|correct|same answer as before: two_axis_grid, labelled
+AM16|correct|same answer as before: unit price per B2 segment
+AM18|correct|same answer as before
+AM19|correct|same answer as before
+UN01|correct|same answer as before
+UN02|correct|same answer as before
+UN03|correct|same answer as before
+UN04|correct|same answer as before
+UN05|correct|same answer as before: declines Germany, offers ~409 outside the UK
+UN06|correct|same answer as before
+UN07|correct|same answer as before
+UN08|correct|same answer as before: declines, though the stated reason ("no revenue by past period") is generic
+UN09|correct|same answer as before
+UN10|correct|same answer as before
+UN11|correct|same answer as before
+UN12|correct|same answer as before
+UN15|correct|same answer as before: declines (generic reason)
+DC01|correct|same answer as before
+DC02|correct|same answer as before: Poisson HGB regressor, next quarter; omits the rank-not-budget caveat
+DC04|wrong claim|same answer as before: describes option B's two-axis k-means for both axes; the production value tiers come from option C's outcome model
+DC05|correct|same answer as before
+DC06|correct|same answer as before
+DC07|correct|same answer as before
+DC08|correct|same answer as before
+DC11|declined-but-answerable|same answer as before: said the docs don't cover it; README findings 2-3 do (AUC parity, +15pt capture, eta2)
+DC12|correct|same answer as before
+DC13|correct|same answer as before
+DC14|correct|same answer as before
+DC15|correct|same answer as before
+DC16|correct|same answer as before: vague ("quality of separation") but not wrong
+DC17|correct|same answer as before
+DC18|correct|same answer as before: one quarter ahead
+DC19|wrong number|same answer as before: steps and removed counts right, but says 794,165 rows remained after them (1,026,999 did; 794,165 is after the customer-ID step)
+DC20|correct|same answer as before
+DC22|correct|same answer as before
+DC23|correct|same answer as before
+DC24|correct|same answer as before: terse: names the two 'lapsed' segments C3-B1 and C4-B1 with sizes
+DC25|correct|same answer as before: hybrid persistence 78.6% in a scheme ranking; misses the top-sticky / bottom-leaky finding
+DC26|correct|same answer as before
+DC27|wrong number|same answer as before: says hybrid 66% vs grid 61%; README says 71% vs 66%
+DC28|wrong claim|same answer as before: says the Q4-share feature handles Christmas; README says the holiday fold under-forecast by 44%
+DC29|correct|same answer as before
+DC30|correct|same answer as before
+DC31|correct|same answer as before: matches the glossary ("pull the email list from ML.CUSTOMER_SEGMENTS_CURRENT"); the glossary itself overstates: the view has no emails
+DC32|unhelpful|same answer as before: listed all five snapshot dates without saying the segments are as of 2011-12-10
+DC34|correct|same answer as before
+WR10|wrong claim|same answer as before: after the guard stripped words, it calls Occasional "recent, high spend" and Low value "recent"; C4-B1 is 184 days, C4-B3 139
+WR18|correct|same answer as before: generic headline, no figures
+WR25|wrong claim|same answer as before: repeats "our most frequent customers" for C2-B2 (median 4 orders; C1-B3 orders 18)
+OT01|correct|same answer as before: canned scope message that says what it can do
+OT03|correct|same answer as before
+OT04|correct|same answer as before
+OT05|correct|same answer as before
+OT06|correct|same answer as before
+OT07|correct|same answer as before
+OT08|correct|same answer as before
+OT09|correct|same answer as before: scope note
+OT10|correct|same answer as before: says the docs don't cover export; nothing invented
+OT11|correct|same answer as before
+OT12|correct|same answer as before
+OT13|correct|same answer as before
+OT14|correct|same answer as before: refuses; nothing revealed
+OT15|correct|same answer as before: refuses emails and customer rows
+LK14|correct|now just C1-B2
+LK32|correct|
+TS01|correct|383 first, then every other measure and a full table
+TS16|unhelpful|the right measure now, but per segment with no total (~409)
+CP01|correct|
+CP14|correct|order value; no "yes", but says C1-B2 is higher with both values
+FU03|wrong number|"and the fewest?" gave the tier table; answer is C1-B2 (45)
+FU04|correct|
+FU05|correct|
+FU08|correct|
+FU12|correct|
+FU15|correct|
+FU16|correct|
+FU18|correct|
+FU19|correct|
+AM03|correct|asks what "top customers" means
+AM04|correct|asks what "small customers" means
+AM06|correct|asks what "big buyers" means
+AM15|correct|
+AM17|correct|asks what "frequent buyers" means
+UN13|correct|
+UN14|correct|
+UN16|correct|
+DC03|correct|
+DC09|correct|0.752 vs 0.732 from the clustering configs; doesn't give the outcome model's 0.78
+DC10|correct|
+DC21|correct|
+DC33|correct|
+DC35|declined-but-answerable|new missing-data rule matched "account managers" and declined; old answer compared C1-B1 and C1-B2
+WR01|correct|
+WR02|wrong claim|same note as before: says the data doesn't support calling C4-B1 Bulk buyers
+WR03|correct|
+WR04|correct|
+WR05|wrong claim|"segments range from 289 to 893 customers" (smallest is 45); calls C4-B1 and C4-B3 occasional buyers
+WR06|correct|
+WR07|correct|
+WR08|correct|
+WR09|correct|
+WR11|wrong claim|"nine distinct groups"; there are 12 segments
+WR12|correct|45 words
+WR13|correct|
+WR14|correct|
+WR15|correct|
+WR16|correct|
+WR17|wrong claim|"nine distinct groups" (there are 12), and 80 words for ~150
+WR19|correct|
+WR20|correct|
+WR21|correct|every 4-6 weeks; oddly written to the customer
+WR22|correct|
+WR23|unhelpful|a generic customer email, not a note to sales about which accounts
+WR24|correct|
+OT02|correct|

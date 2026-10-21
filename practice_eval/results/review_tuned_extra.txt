@@ -1,0 +1,64 @@
+# Fixed code on the original questions. Unchanged answers keep the old verdict; changed ones are read.
+LK33|correct|same answer as before
+FU29|correct|same answer as before
+LK34|correct|same answer as before
+FU30|correct|same answer as before
+LK35|correct|same answer as before
+LK36|correct|same answer as before
+LK37|correct|same answer as before
+LK38|correct|same answer as before
+LK40|correct|same answer as before
+LK41|correct|same answer as before
+LK42|correct|same answer as before
+LK43|correct|same answer as before
+TS23|correct|same answer as before
+FU31|correct|same answer as before
+TS24|correct|same answer as before
+TS25|correct|same answer as before
+TS26|correct|same answer as before
+TS27|correct|same answer as before
+TS28|correct|same answer as before
+TS29|unhelpful|same answer as before: "core or occasional": both tiers' counts, no total (2,307)
+TS30|correct|same answer as before
+RK21|correct|same answer as before
+FU32|correct|same answer as before: three-way tie named
+RK22|correct|same answer as before
+FU33|correct|same answer as before
+RK23|correct|same answer as before
+RK24|correct|same answer as before
+RK25|correct|same answer as before
+FU38|correct|same answer as before
+RK26|correct|same answer as before
+CP18|correct|same answer as before
+CP19|correct|same answer as before
+CP20|correct|same answer as before
+FU34|correct|same answer as before: bulk 1,747 given (as a comparison with holiday)
+CP21|correct|same answer as before
+CP22|correct|same answer as before
+BD09|correct|same answer as before: full crosstab; Core row £411, £424, £260 present
+FU35|correct|same answer as before: full crosstab; Occasional row £346, £354, £221 present
+BD11|correct|same answer as before
+FL07|correct|same answer as before
+FL08|correct|same answer as before
+ME09|correct|same answer as before
+FU36|correct|same answer as before: k=4 silhouette 0.153 in the table; text restates k=3
+ME10|correct|same answer as before
+ME11|correct|same answer as before
+AM20|wrong number|same answer as before: "how many customers are we going to lose" compared all customers with C2-B2; readings are expected non-orderers (2,649) or a question back
+AM21|correct|same answer as before: C3 expected revenue £135,944, labelled
+AM22|correct|same answer as before: ranked by orders, C1-B3 (18) first
+AM25|wrong number|same answer as before: typo "vaule" dropped the tier: every segment's net revenue, no Low value size (1,571)
+AM26|correct|same answer as before: C1-B1 by expected revenue, labelled
+UN17|correct|same answer as before
+UN22|correct|same answer as before
+LK39|correct|93.7% first, then seven more measures
+RK27|correct|
+CP17|correct|
+BD10|correct|
+FU37|misrouted|"per customer?" went to the docs agent and repeated the tier total; answer £110
+AM23|correct|
+AM24|correct|
+UN18|correct|asks which real tier was meant
+UN19|correct|
+UN20|correct|
+UN21|correct|

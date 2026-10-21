@@ -1,0 +1,217 @@
+[
+ {
+  "k": 0,
+  "probability": 0.0,
+  "region": "as extreme"
+ },
+ {
+  "k": 1,
+  "probability": 0.0,
+  "region": "as extreme"
+ },
+ {
+  "k": 2,
+  "probability": 0.0,
+  "region": "as extreme"
+ },
+ {
+  "k": 3,
+  "probability": 0.0,
+  "region": "as extreme"
+ },
+ {
+  "k": 4,
+  "probability": 0.0,
+  "region": "as extreme"
+ },
+ {
+  "k": 5,
+  "probability": 0.0,
+  "region": "as extreme"
+ },
+ {
+  "k": 6,
+  "probability": 0.0,
+  "region": "as extreme"
+ },
+ {
+  "k": 7,
+  "probability": 1e-05,
+  "region": "as extreme"
+ },
+ {
+  "k": 8,
+  "probability": 3e-05,
+  "region": "as extreme"
+ },
+ {
+  "k": 9,
+  "probability": 0.0001,
+  "region": "as extreme"
+ },
+ {
+  "k": 10,
+  "probability": 0.00033,
+  "region": "as extreme"
+ },
+ {
+  "k": 11,
+  "probability": 0.00097,
+  "region": "as extreme"
+ },
+ {
+  "k": 12,
+  "probability": 0.00251,
+  "region": "as extreme"
+ },
+ {
+  "k": 13,
+  "probability": 0.0058,
+  "region": "as extreme"
+ },
+ {
+  "k": 14,
+  "probability": 0.01202,
+  "region": "as extreme"
+ },
+ {
+  "k": 15,
+  "probability": 0.02244,
+  "region": "as extreme"
+ },
+ {
+  "k": 16,
+  "probability": 0.03786,
+  "region": "less extreme"
+ },
+ {
+  "k": 17,
+  "probability": 0.0579,
+  "region": "less extreme"
+ },
+ {
+  "k": 18,
+  "probability": 0.08042,
+  "region": "less extreme"
+ },
+ {
+  "k": 19,
+  "probability": 0.10158,
+  "region": "less extreme"
+ },
+ {
+  "k": 20,
+  "probability": 0.11682,
+  "region": "less extreme"
+ },
+ {
+  "k": 21,
+  "probability": 0.12239,
+  "region": "less extreme"
+ },
+ {
+  "k": 22,
+  "probability": 0.11682,
+  "region": "less extreme"
+ },
+ {
+  "k": 23,
+  "probability": 0.10158,
+  "region": "less extreme"
+ },
+ {
+  "k": 24,
+  "probability": 0.08042,
+  "region": "less extreme"
+ },
+ {
+  "k": 25,
+  "probability": 0.0579,
+  "region": "less extreme"
+ },
+ {
+  "k": 26,
+  "probability": 0.03786,
+  "region": "less extreme"
+ },
+ {
+  "k": 27,
+  "probability": 0.02244,
+  "region": "observed"
+ },
+ {
+  "k": 28,
+  "probability": 0.01202,
+  "region": "as extreme"
+ },
+ {
+  "k": 29,
+  "probability": 0.0058,
+  "region": "as extreme"
+ },
+ {
+  "k": 30,
+  "probability": 0.00251,
+  "region": "as extreme"
+ },
+ {
+  "k": 31,
+  "probability": 0.00097,
+  "region": "as extreme"
+ },
+ {
+  "k": 32,
+  "probability": 0.00033,
+  "region": "as extreme"
+ },
+ {
+  "k": 33,
+  "probability": 0.0001,
+  "region": "as extreme"
+ },
+ {
+  "k": 34,
+  "probability": 3e-05,
+  "region": "as extreme"
+ },
+ {
+  "k": 35,
+  "probability": 1e-05,
+  "region": "as extreme"
+ },
+ {
+  "k": 36,
+  "probability": 0.0,
+  "region": "as extreme"
+ },
+ {
+  "k": 37,
+  "probability": 0.0,
+  "region": "as extreme"
+ },
+ {
+  "k": 38,
+  "probability": 0.0,
+  "region": "as extreme"
+ },
+ {
+  "k": 39,
+  "probability": 0.0,
+  "region": "as extreme"
+ },
+ {
+  "k": 40,
+  "probability": 0.0,
+  "region": "as extreme"
+ },
+ {
+  "k": 41,
+  "probability": 0.0,
+  "region": "as extreme"
+ },
+ {
+  "k": 42,
+  "probability": 0.0,
+  "region": "as extreme"
+ }
+]

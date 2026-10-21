@@ -1,0 +1,876 @@
+id,type,style,sets,parent,question,verdict,correct,auto,note
+XLK001,lookup,terse,both,,C3-B2 unit price,correct,1,pass,pass read in the full read
+XLK002,lookup,casual,both,,what share of c4-b2 are in the uk?,correct,1,pass,pass read in the full read
+XLK003,lookup,casual,both,,how many product lines are in a typical order from occasional small basket buyers?,correct,1,pass,pass read in the full read
+XLK004,lookup,typo,both,,orders last 12 months core holiday buyrs,correct,1,pass,pass read in the full read
+XLK005,lookup,formal,both,,What is the expected revenue per customer next quarter for Low value / Small-basket buyers?,correct,1,pass,pass read in the full read
+XLK006,lookup,terse,both,,C1-B2 predicted revenue,correct,1,pass,pass read in the full read
+XLK007,lookup,casual,both,,what's the typical unit price for core bulk buyers?,correct,1,pass,
+XLK008,lookup,casual,both,,how likely are c2-b3 to order again next quarter?,correct,1,pass,pass read in the full read
+XLK009,lookup,typo,both,,what's the baskket size for top spenders bulk buyers?,correct,1,pass,pass read in the full read
+XLK010,lookup,terse,both,,C1-B3 customers,correct,1,pass,pass read in the full read
+XLK011,lookup,casual,both,,what's the q4 share for top spenders small-basket buyers?,correct,1,pass,pass read in the full read
+XLK012,lookup,casual,both,,how long have occasional / bulk buyers been customers?,correct,1,pass,pass read in the full read
+XLK013,lookup,formal,both,,What is the median tenure of Low value / Small-basket buyers?,correct,1,pass,pass read in the full read
+XLK014,lookup,terse,both,,top spenders holiday q4 share,correct,1,pass,pass read in the full read
+XLK015,lookup,casual,both,,how big is c2-b1?,correct,1,pass,pass read in the full read
+XLK016,lookup,casual,both,,what's the chance top spenders / holiday buyers buy again?,correct,1,pass,
+XLK017,lookup,typo,both,,core holiday buers units per order,correct,1,pass,pass read in the full read
+XLK018,lookup,formal,both,,What is the median net revenue over the last 12 months for segment C1-B2?,correct,1,pass,pass read in the full read
+XLK019,lookup,casual,both,,what percent of c1-b2 are uk-based?,correct,1,pass,pass read in the full read
+XLK020,lookup,terse,both,,c2-b1 recency,correct,1,pass,pass read in the full read
+XLK021,lookup,formal,both,,What is the median number of units per order for segment C2-B3?,correct,1,pass,pass read in the full read
+XLK022,lookup,terse,both,,% of customers in C1-B2,correct,1,pass,pass read in the full read
+XLK023,lookup,casual,both,,how long have core / bulk buyers been customers?,correct,1,pass,
+XLK024,lookup,terse,both,,low-value small basket orders per year,correct,1,pass,pass read in the full read
+XLK025,lookup,casual,both,,what share of core small-basket buyers are in the uk?,correct,1,pass,pass read in the full read
+XLK026,lookup,casual,both,,what's the typical unit price for core / holiday buyers?,correct,1,pass,
+XLK027,lookup,terse,both,,tenure C4-B1,correct,1,pass,
+XLK028,lookup,casual,both,,how much of what low value / bulk buyers buy comes back as returns?,correct,1,pass,pass read in the full read
+XLK029,lookup,terse,both,,product lines per order c4-b2,correct,1,pass,pass read in the full read
+XLK030,lookup,terse,both,,C2-B3 tenure,correct,1,pass,pass read in the full read
+XLK031,lookup,casual,both,,what percent of core / holiday buyers are uk-based?,correct,1,pass,pass read in the full read
+XLK032,lookup,terse,both,,p(buys again) top spender bulk,correct,1,pass,pass read in the full read
+XLK033,lookup,casual,both,,how long ago did occasional holiday buyers first order?,correct,1,pass,pass read in the full read
+XLK034,lookup,formal,both,,What is the median number of product lines per order for segment C1-B3?,correct,1,pass,
+XLK035,lookup,casual,both,,what share of all customers are low value / holiday buyers?,correct,1,pass,pass read in the full read
+XLK036,lookup,casual,both,,what's the average order value for occasional holiday buyers?,correct,1,pass,
+XLK037,lookup,terse,both,,C4-B3 size,correct,1,pass,pass read in the full read
+XLK038,lookup,casual,both,,how much do occasional small basket buyers spend a year?,correct,1,pass,pass read in the full read
+XLK039,lookup,typo,both,,how much of what occasional bulk byers buy comes back as returns?,correct,1,pass,pass read in the full read
+XLK040,lookup,formal,both,,What share of revenue do the Low value / Bulk buyers segment buy in October to December?,correct,1,pass,pass read in the full read
+XLK041,lookup,terse,both,,return rate c1-b1,correct,1,pass,
+XLK042,lookup,terse,both,,c4-b3 predicted revenue,correct,1,pass,
+XLK043,lookup,formal,both,,What is the median number of product lines per order for the Top spenders / Holiday buyers segment?,correct,1,pass,
+XLK044,lookup,formal,both,,What is the UK share of segment C3-B2?,correct,1,pass,pass read in the full read
+XLK045,lookup,typo,both,,what's the chance occasional small basket buyers buy agian?,correct,1,pass,pass read in the full read
+XLK046,lookup,terse,both,,days since last order c3-b1,correct,1,pass,pass read in the full read
+XLK047,lookup,casual,both,,"how big are orders from c1-b3, in pounds?",correct,1,pass,pass read in the full read
+XLK048,lookup,terse,both,,top spender small-basket p buys again,correct,1,pass,pass read in the full read
+XLK049,lookup,casual,both,,what do occasional / bulk buyers pay per unit?,correct,1,pass,
+XLK050,lookup,casual,both,,what's the expected revenue for top spender bulk buyers next quarter?,correct,1,pass,
+XLK051,lookup,casual,both,,what's each low value holiday buyers customer expected to bring in next quarter?,correct,1,pass,pass read in the full read
+XLK052,lookup,casual,both,,what's the basket size for low-value bulk buyers?,correct,1,pass,
+XLK053,lookup,terse,both,,p(buys again) occasional holiday,correct,1,pass,pass read in the full read
+XLK054,lookup,formal,both,,What share of all customers belongs to segment C1-B3?,correct,1,pass,
+XLK055,lookup,formal,both,,What is the median order value of segment C4-B3?,correct,1,pass,pass read in the full read
+XLK056,lookup,typo,both,,what's the expected revenue for occasional bulk buers next quarter?,correct,1,pass,pass read in the full read
+XLK057,lookup,casual,both,,how much revenue do we expect from core / holiday buyers next quarter?,correct,1,pass,pass read in the full read
+XLK058,lookup,casual,both,,how many units do occasional small basket buyers buy per order?,correct,1,pass,pass read in the full read
+XLK059,lookup,typo,both,,top spenders / bulk buyerrs share of customers,wrong number,0,fail,share of customers = 1 (100%); answer 6.8%
+XLK060,lookup,terse,both,,C4-B3 lines per order,correct,1,pass,pass read in the full read
+XLK061,lookup,formal,both,,What is the median recency of segment C1-B2?,correct,1,pass,
+XLK062,lookup,formal,both,,What is the median tenure of Core / Holiday buyers?,correct,1,pass,
+XLK063,lookup,casual,both,,what percent of our customers are in core small basket buyers?,correct,1,pass,pass read in the full read
+XLK064,lookup,terse,both,,days since last order core small-basket,correct,1,pass,pass read in the full read
+XLK065,lookup,terse,both,,% of customers in occasional bulk,correct,1,pass,pass read in the full read
+XLK066,lookup,casual,both,,what's each core small-basket buyers customer expected to bring in next quarter?,correct,1,pass,pass read in the full read
+XLK067,lookup,terse,both,,p(buys again) c4-b3,correct,1,pass,pass read in the full read
+XLK068,lookup,terse,both,,c3-b1 size,correct,1,pass,pass read in the full read
+XLK069,lookup,casual,both,,expected revenue per head for c2-b2?,correct,1,pass,
+XLK070,lookup,casual,both,,how long ago did low value / holiday buyers first order?,correct,1,pass,pass read in the full read
+XLK071,lookup,terse,both,,q4 revenue share c3-b3,correct,1,pass,pass read in the full read
+XLK072,lookup,formal,both,,What is the expected revenue per customer next quarter for Core / Bulk buyers?,correct,1,pass,pass read in the full read
+XLK073,lookup,casual,both,,how much of their spend do core / bulk buyers do in october to december?,correct,1,pass,pass read in the full read
+XLK074,lookup,formal,both,,What is the median unit price paid by segment C1-B1?,correct,1,pass,pass read in the full read
+XLK075,lookup,casual,both,,what percent of core / bulk buyers are uk-based?,correct,1,pass,pass read in the full read
+XLK076,lookup,casual,both,,what's each occasional bulk buyers customer expected to bring in next quarter?,correct,1,pass,pass read in the full read
+XLK077,lookup,casual,both,,what share of c1-b1 are in the uk?,correct,1,pass,pass read in the full read
+XLK078,lookup,typo,both,,ordeers last 12 months c2-b1,correct,1,pass,pass read in the full read
+XLK079,lookup,casual,both,,what's the expected revenue for c2-b1 next quarter?,correct,1,pass,pass read in the full read
+XLK080,lookup,casual,both,,what's the q4 share for core / small-basket buyers?,correct,1,pass,pass read in the full read
+XLK081,lookup,terse,both,,core bulk aov,correct,1,pass,pass read in the full read
+XLK082,lookup,typo,both,,low value / bulk buyres chance of ordering,correct,1,pass,pass read in the full read
+XLK083,lookup,casual,both,,expected revenue per head for top spenders / bulk buyers?,correct,1,pass,pass read in the full read
+XLK084,lookup,typo,both,,expceted revenue core / small-basket buyers,correct,1,pass,pass read in the full read
+XLK085,lookup,casual,both,,how much of what core bulk buyers buy comes back as returns?,correct,1,pass,pass read in the full read
+XLK086,lookup,casual,both,,what do top spenders holiday buyers pay per unit?,correct,1,pass,pass read in the full read
+XLK087,lookup,casual,both,,how much of their spend do low value holiday buyers do in october to december?,correct,1,pass,pass read in the full read
+XLK088,lookup,casual,both,,how many product lines are in a typical order from c3-b2?,correct,1,pass,
+XLK089,lookup,casual,both,,what's the average order value for core small basket buyers?,correct,1,pass,
+XLK090,lookup,terse,both,,occasional holiday return rate,correct,1,pass,pass read in the full read
+XLK091,lookup,terse,both,,% of customers in C2-B2,correct,1,pass,pass read in the full read
+XLK092,lookup,terse,both,,basket size c4-b3,correct,1,pass,pass read in the full read
+XLK093,lookup,formal,both,,What is the median number of product lines per order for Low value / Bulk buyers?,correct,1,pass,pass read in the full read
+XLK094,lookup,casual,both,,what's the 12-month net revenue for core bulk buyers?,correct,1,pass,pass read in the full read
+XLK095,lookup,casual,both,,how recently have occasional / holiday buyers ordered?,correct,1,pass,
+XLK096,lookup,formal,both,,What is the expected revenue next quarter for segment C4-B1?,correct,1,pass,
+XLK097,lookup,casual,both,,how much of what low value small-basket buyers buy comes back as returns?,correct,1,pass,
+XLK098,lookup,terse,both,,% of customers in occasional small basket,correct,1,pass,pass read in the full read
+XLK099,lookup,terse,both,,orders last 12 months c1-b3,correct,1,pass,pass read in the full read
+XLK100,lookup,formal,both,,What is the median net revenue over the last 12 months for segment C4-B3?,correct,1,pass,pass read in the full read
+XLK101,lookup,terse,both,,C2-B3 unit price,correct,1,pass,pass read in the full read
+XLK102,lookup,casual,both,,what's the average order value for top spender bulk buyers?,correct,1,pass,pass read in the full read
+XLK103,lookup,typo,both,,what's each c4-b1 customer expeced to bring in next quarter?,correct,1,pass,
+XLK104,lookup,terse,both,,p(buys again) c2-b1,correct,1,pass,
+XLK105,lookup,typo,both,,top speenders holiday buyers headcount,correct,1,pass,
+XLK106,lookup,terse,both,,occasional bulk uk share,correct,1,pass,
+XLK107,lookup,terse,both,,c3-b2 size,correct,1,pass,
+XLK108,lookup,casual,both,,how recently have low value holiday buyers ordered?,correct,1,pass,
+XLK109,lookup,formal,both,,What is the median net revenue over the last 12 months for segment C4-B1?,correct,1,pass,
+XLK110,lookup,casual,both,,what do low value / holiday buyers pay per unit?,correct,1,pass,pass read in the full read
+XLK111,lookup,casual,both,,what share of all customers are c2-b1?,correct,1,pass,pass read in the full read
+XLK112,lookup,formal,both,,What is the expected revenue per customer next quarter for the Occasional / Holiday buyers segment?,correct,1,pass,pass read in the full read
+XLK113,lookup,terse,both,,C3-B1 q4 share,correct,1,pass,
+XLK114,lookup,terse,both,,days since last order c2-b2,correct,1,pass,pass read in the full read
+XLK115,lookup,casual,both,,what's the average order value for c4-b1?,correct,1,pass,
+XLK116,lookup,terse,both,,q4 revenue share occasional holiday,correct,1,pass,pass read in the full read
+XLK117,lookup,casual,both,,how many product lines are in a typical order from top spender bulk buyers?,correct,1,pass,pass read in the full read
+XLK118,lookup,formal,both,,What is the median number of units per order for segment C1-B3?,correct,1,pass,pass read in the full read
+XLK119,lookup,terse,both,,net revenue 12m top spenders bulk,correct,1,pass,pass read in the full read
+XLK120,lookup,formal,both,,"How many days have passed since the last order, at the median, for the Low value / Small-basket buyers segment?",correct,1,pass,pass read in the full read
+XLK121,lookup,terse,both,,top spenders bulk recency,correct,1,pass,
+XLK122,lookup,casual,both,,what percent of our customers are in c4-b1?,correct,1,pass,
+XLK123,lookup,casual,both,,what's the q4 share for core holiday buyers?,correct,1,pass,pass read in the full read
+XLK124,lookup,casual,both,,what's the return rate for core / holiday buyers?,correct,1,pass,pass read in the full read
+XLK125,lookup,typo,both,,what percent of low-vaue small basket buyers are uk-based?,correct,1,pass,pass read in the full read
+XLK126,lookup,terse,both,,C4-B2 return rate,correct,1,pass,pass read in the full read
+XLK127,lookup,formal,both,,What is the median return rate of the Top spenders / Holiday buyers segment?,correct,1,pass,
+XLK128,lookup,terse,both,,core small-basket orders per year,declined-but-answerable,0,fail,says orders per year isn't available; median orders in the last 12 months is (7)
+XLK129,lookup,typo,both,,what's the average orer value for c2-b2?,correct,1,pass,pass read in the full read
+XLK130,lookup,terse,both,,C1-B3 net revenue,correct,1,pass,
+XLK131,lookup,terse,both,,c1-b2 tenure,correct,1,pass,pass read in the full read
+XLK132,lookup,terse,both,,C4-B3 q4 share,correct,1,pass,pass read in the full read
+XLK133,lookup,formal,both,,What is the median net revenue over the last 12 months for segment C2-B2?,correct,1,pass,
+XLK134,lookup,casual,both,,expected revenue per head for c1-b2?,correct,1,pass,pass read in the full read
+XLK135,lookup,terse,both,,uk share c4-b1,correct,1,pass,
+XLK136,lookup,casual,both,,what's the expected revenue for c3-b2 next quarter?,correct,1,pass,pass read in the full read
+XLK137,lookup,formal,both,,What is the median number of orders in the last 12 months for Occasional / Bulk buyers?,correct,1,pass,pass read in the full read
+XLK138,lookup,formal,both,,What is the median number of orders in the last 12 months for segment C1-B2?,correct,1,pass,
+XLK139,lookup,casual,both,,how recently have c1-b3 ordered?,correct,1,pass,
+XLK140,lookup,terse,both,,unit price C3-B3,correct,1,pass,pass read in the full read
+XLK141,lookup,formal,both,,What is the UK share of Occasional / Small-basket buyers?,correct,1,pass,
+XLK142,lookup,casual,both,,how big is core / holiday buyers?,correct,1,pass,pass read in the full read
+XLK143,lookup,formal,both,,What is the expected revenue per customer next quarter for Top spenders / Small-basket buyers?,correct,1,pass,pass read in the full read
+XLK144,lookup,casual,both,,what percent of top spenders small basket buyers are uk-based?,correct,1,pass,pass read in the full read
+XLK145,lookup,formal,both,,What is the customer count of Core / Small-basket buyers?,correct,1,pass,
+XLK146,lookup,typo,both,,what's the expected revenue for occasional small-basket buyesr next quarter?,correct,1,pass,
+XLK147,lookup,terse,both,,aov occasional small basket,correct,1,pass,
+XLK148,lookup,terse,both,,basket size c2-b1,correct,1,pass,
+XLK149,lookup,casual,both,,what's the basket size for c3-b2?,correct,1,pass,pass read in the full read
+XLK150,lookup,terse,both,,orders last 12 months c1-b1,correct,1,pass,pass read in the full read
+XLK151,lookup,casual,both,,what share of all customers are low value small-basket buyers?,correct,1,pass,pass read in the full read
+XLK152,lookup,casual,both,,what's the customer count for occasional / small-basket buyers?,correct,1,pass,pass read in the full read
+XLK153,lookup,formal,both,,What is the median net revenue over the last 12 months for Low value / Holiday buyers?,correct,1,pass,
+XLK154,lookup,formal,both,,What is the median net revenue over the last 12 months for the Core / Small-basket buyers segment?,correct,1,pass,
+XLK155,lookup,casual,both,,how many lines per order for c3-b1?,correct,1,pass,
+XLK156,lookup,casual,both,,what's the average order value for c3-b1?,correct,1,pass,pass read in the full read
+XLK157,lookup,formal,both,,What is the median order value of the Top spenders / Holiday buyers segment?,correct,1,pass,pass read in the full read
+XLK158,lookup,casual,both,,how often do occasional / holiday buyers order?,correct,1,pass,pass read in the full read
+XLK159,lookup,typo,both,,how likely are occasional bulk buyers to order aggain next quarter?,correct,1,pass,pass read in the full read
+XLK160,lookup,formal,both,,What is the median number of orders in the last 12 months for segment C4-B1?,correct,1,pass,pass read in the full read
+XTS001,total_share,terse,both,,core + occasional customers,unhelpful,0,fail,"every Core and Occasional segment row, never the combined 2,307"
+XTS002,total_share,casual,both,,roughly how many of holiday buyers are outside the uk?,correct,1,pass,pass read in the full read
+XTS003,total_share,typo,both,,small-bsaket buyers as % of occasional customers,correct,1,pass,
+XTS004,total_share,casual,both,,what's the expected revenue per customer for the core tier?,correct,1,pass,
+XTS005,total_share,typo,both,,sharre of the core tier that are holiday buyers,correct,1,pass,pass read in the full read
+XTS006,total_share,terse,both,,expected revenue holiday buyers + b3,unhelpful,0,fail,"each style's total, never the combined £607,037"
+XTS007,total_share,casual,both,,what's the average expected revenue per segment in the occasional tier?,correct,1,pass,
+XTS008,total_share,casual,both,,what share of top spenders are in the uk overall?,correct,1,pass,
+XTS009,total_share,casual,both,,what share of next quarter's expected revenue comes from holiday buyers?,correct,1,pass,
+XTS010,total_share,formal,both,,What proportion of the Small-basket buyers buying style are the Top spenders (C1) tier?,correct,1,pass,pass read in the full read
+XTS011,total_share,typo,both,,bulk buyers p buys again overalll,correct,1,pass,pass read in the full read
+XTS012,total_share,formal,both,,What is the expected revenue per customer next quarter for the Occasional (C3) tier?,correct,1,pass,
+XTS013,total_share,casual,both,,what percent of small basket buyers are the occasional tier?,correct,1,pass,pass read in the full read
+XTS014,total_share,formal,both,,How many customers are outside Small-basket buyers (B3)?,correct,1,pass,pass read in the full read
+XTS015,total_share,formal,both,,What percentage of all customers are in the Low value tier?,correct,1,pass,
+XTS016,total_share,typo,both,,the core tier headdcount,correct,1,pass,pass read in the full read
+XTS017,total_share,casual,both,,what share of the low value tier are in the uk overall?,correct,1,pass,pass read in the full read
+XTS018,total_share,terse,both,,share of b1 that are c1,correct,1,pass,pass read in the full read
+XTS019,total_share,casual,both,,how many customers are in core customers and low value customers combined?,correct,1,pass,pass read in the full read
+XTS020,total_share,terse,both,,customers outside bulk buyers,correct,1,pass,pass read in the full read
+XTS021,total_share,typo,both,,expected revenue core customers + low value cutomers,correct,1,pass,pass read in the full read
+XTS022,total_share,formal,both,,How many customers are in the Occasional (C3) tier?,correct,1,pass,pass read in the full read
+XTS023,total_share,casual,both,,what share of bulk buyers are the low value tier?,correct,1,pass,pass read in the full read
+XTS024,total_share,terse,both,,c3 % of predicted revenue,correct,1,pass,
+XTS025,total_share,terse,both,,holiday buyers + small basket customers,unhelpful,0,fail,"segment rows, never the combined 2,514"
+XTS026,total_share,casual,both,,what's the average expected revenue per segment in top spenders?,correct,1,pass,
+XTS027,total_share,terse,both,,share of c4 that are holiday,correct,1,pass,pass read in the full read
+XTS028,total_share,casual,both,,what's the expected revenue from everyone except holiday buyers?,correct,1,pass,
+XTS029,total_share,casual,both,,how many small basket buyers do we have?,correct,1,pass,
+XTS030,total_share,casual,both,,roughly how many of bulk buyers are outside the uk?,correct,1,pass,pass read in the full read
+XTS031,total_share,casual,both,,what share of core customers are small basket buyers?,correct,1,pass,pass read in the full read
+XTS032,total_share,terse,both,,bulk buyers share of expected revenue,correct,1,pass,pass read in the full read
+XTS033,total_share,terse,both,,expected orderers top spenders tier,unhelpful,0,fail,"expected orderers per C1 segment, no tier total (~312)"
+XTS034,total_share,terse,both,,expected revenue excluding b1,unhelpful,0,fail,"segment rows, never the total excluding B1 (£607,037)"
+XTS035,total_share,casual,both,,how many low value customers do we have?,correct,1,pass,pass read in the full read
+XTS036,total_share,terse,both,,b1 + small basket customers,unhelpful,0,fail,"segment rows, never the combined 3,287"
+XTS037,total_share,terse,both,,expected revenue b1 + small basket buyers,unhelpful,0,fail,"segment rows, never the combined £1,545,707"
+XTS038,total_share,formal,both,,What is the customer-weighted probability of buying again for the Core (C2) tier?,correct,1,pass,
+XTS039,total_share,typo,both,,small-basket buyers expected revnue per customer,unhelpful,0,fail,"per-customer revenue for each B3 segment, never the style's £178.16"
+XTS040,total_share,casual,both,,what's the average expected revenue per segment in small-basket buyers?,correct,1,pass,pass read in the full read
+XTS041,total_share,formal,both,,What is the total expected revenue next quarter for the Low value tier?,correct,1,pass,pass read in the full read
+XTS042,total_share,terse,both,,expected revenue core tier + occasional,unhelpful,0,fail,"segment rows, never the combined £523,563"
+XTS043,total_share,casual,both,,what share of all customers are core customers?,correct,1,pass,
+XTS044,total_share,formal,both,,What proportion of the Low value (C4) tier are Bulk buyers (B1)?,correct,1,pass,pass read in the full read
+XTS045,total_share,casual,both,,what percent of our customers are the occasional tier?,correct,1,pass,pass read in the full read
+XTS046,total_share,terse,both,,b3 % of predicted revenue,correct,1,pass,pass read in the full read
+XTS047,total_share,casual,both,,what's the average expected revenue per segment in holiday buyers?,correct,1,pass,pass read in the full read
+XTS048,total_share,casual,both,,what percent of holiday buyers are top spenders?,correct,1,pass,pass read in the full read
+XTS049,total_share,terse,both,,total customers c1,correct,1,pass,pass read in the full read
+XTS050,total_share,casual,both,,what share of next quarter's expected revenue comes from top spenders?,correct,1,pass,
+XTS051,total_share,terse,both,,bulk and holiday expected revenue combined,unhelpful,0,fail,"each style's total, never the combined £1,604,000"
+XTS052,total_share,casual,both,,what's the overall chance that small-basket buyers buy again?,correct,1,pass,pass read in the full read
+XTS053,total_share,casual,both,,what's the expected revenue from everyone except small-basket buyers?,correct,1,pass,pass read in the full read
+XTS054,total_share,terse,both,,core tier expected revenue,unhelpful,0,fail,"""core tier expected revenue"": segment rows, no tier total (£387,619)"
+XTS055,total_share,formal,both,,What proportion of Holiday buyers are the Low value tier?,correct,1,pass,pass read in the full read
+XTS056,total_share,terse,both,,top spenders tier and occasional expected revenue combined,correct,1,pass,
+XTS057,total_share,typo,both,,what percent of top spenders are holiady buyers?,correct,1,pass,
+XTS058,total_share,casual,both,,what's the overall chance that the top spenders tier buy again?,correct,1,pass,pass read in the full read
+XTS059,total_share,casual,both,,what's the average expected revenue per segment in core customers?,correct,1,pass,pass read in the full read
+XTS060,total_share,formal,both,,What is the customer-weighted probability of buying again for the Low value (C4) tier?,correct,1,pass,pass read in the full read
+XTS061,total_share,terse,both,,expected orderers b2,correct,1,pass,pass read in the full read
+XTS062,total_share,formal,both,,What is the combined expected revenue of the Top spenders tier and the Core (C2) tier?,correct,1,pass,
+XTS063,total_share,typo,both,,what's the expected revenue from everyone except core cusotmers?,correct,1,pass,
+XTS064,total_share,terse,both,,core tier expected orderers,unhelpful,0,fail,"expected orderers per Core segment, no tier total (~599)"
+XTS065,total_share,terse,both,,top spenders expected revenue,unhelpful,0,fail,"segment rows, no tier total (£1,290,485)"
+XTS066,total_share,terse,both,,small basket buyers customers outside uk,unhelpful,0,fail,"non-UK counts per B3 segment, no total (~108)"
+XTS067,total_share,casual,both,,how much revenue do we expect from small-basket buyers next quarter?,correct,1,pass,pass read in the full read
+XTS068,total_share,casual,both,,roughly how many of occasional customers are outside the uk?,correct,1,pass,
+XTS069,total_share,casual,both,,what's the expected revenue per customer for bulk buyers?,correct,1,pass,pass read in the full read
+XTS070,total_share,formal,both,,What is the customer-weighted probability of buying again for Holiday buyers (B2)?,correct,1,pass,pass read in the full read
+XTS071,total_share,terse,both,,b2 expected revenue,unhelpful,0,fail,"segment rows, no style total (£332,665)"
+XTS072,total_share,terse,both,,b2 headcount,unhelpful,0,fail,"""b2 headcount"": segment rows, no total (974)"
+XTS073,total_share,formal,both,,What is the overall UK share of the Core (C2) tier?,correct,1,pass,pass read in the full read
+XTS074,total_share,casual,both,,how many customers are not in the top spenders tier?,correct,1,pass,pass read in the full read
+XTS075,total_share,terse,both,,occasional and low value expected revenue combined,correct,1,pass,pass read in the full read
+XTS076,total_share,terse,both,,b3 as % of c1,correct,1,pass,pass read in the full read
+XTS077,total_share,casual,both,,what percent of bulk buyers are the occasional tier?,correct,1,pass,pass read in the full read
+XTS078,total_share,casual,both,,how many of occasional customers will order next quarter?,correct,1,pass,pass read in the full read
+XTS079,total_share,terse,both,,c3 p buys again overall,correct,1,pass,pass read in the full read
+XTS080,total_share,formal,both,,What is the overall UK share of Holiday buyers (B2)?,correct,1,pass,pass read in the full read
+XTS081,total_share,terse,both,,core as % of bulk buyers,correct,1,pass,
+XTS082,total_share,terse,both,,customers occasional tier and c4 combined,unhelpful,0,fail,"segment rows, never the combined 2,805"
+XTS083,total_share,formal,both,,How many customers are outside the Occasional tier?,correct,1,pass,pass read in the full read
+XTS084,total_share,casual,both,,what percent of our customers are bulk buyers?,correct,1,pass,
+XTS085,total_share,casual,both,,how many bulk buyers do we have?,correct,1,pass,
+XTS086,total_share,typo,both,,expecteed revenue excluding the top spenders tier,correct,1,pass,pass read in the full read
+XTS087,total_share,formal,both,,What is the combined expected revenue of the Top spenders tier and the Low value tier?,correct,1,pass,pass read in the full read
+XTS088,total_share,casual,both,,roughly how many of the low value tier are outside the uk?,correct,1,pass,
+XTS089,total_share,typo,both,,total expectde revenue occasional customers,correct,1,pass,pass read in the full read
+XTS090,total_share,casual,both,,how many customers are not in core customers?,correct,1,pass,
+XTS091,total_share,formal,both,,What is the expected revenue of all customers outside the Occasional tier?,correct,1,pass,
+XTS092,total_share,formal,both,,How many customers are in Bulk buyers (B1) and Holiday buyers (B2) combined?,correct,1,pass,pass read in the full read
+XTS093,total_share,formal,both,,What is the overall UK share of the Occasional (C3) tier?,correct,1,pass,pass read in the full read
+XTS094,total_share,formal,both,,How many customers are in the Top spenders (C1) tier and the Low value tier combined?,correct,1,pass,
+XTS095,total_share,typo,both,,what's the average expected revenue per sgement in the low value tier?,correct,1,pass,
+XTS096,total_share,formal,both,,What is the overall UK share of the Small-basket buyers buying style?,correct,1,pass,pass read in the full read
+XTS097,total_share,casual,both,,what's the total expected revenue for bulk buyers?,correct,1,pass,pass read in the full read
+XTS098,total_share,terse,both,,c4 share of expected revenue,correct,1,pass,pass read in the full read
+XTS099,total_share,casual,both,,what share of bulk buyers are in the uk overall?,correct,1,pass,
+XTS100,total_share,casual,both,,what share of next quarter's expected revenue comes from the core tier?,correct,1,pass,
+XTS101,total_share,terse,both,,share of c1 that are b1,correct,1,pass,pass read in the full read
+XTS102,total_share,terse,both,,share of holiday buyers that are occasional,correct,1,pass,pass read in the full read
+XTS103,total_share,casual,both,,what percent of small-basket buyers are the low value tier?,correct,1,pass,pass read in the full read
+XTS104,total_share,casual,both,,how many customers are not in holiday buyers?,correct,1,pass,pass read in the full read
+XTS105,total_share,casual,both,,what's the average expected revenue per segment in bulk buyers?,correct,1,pass,
+XTS106,total_share,casual,both,,what percent of our customers are small basket buyers?,correct,1,pass,
+XTS107,total_share,casual,both,,what's the expected revenue per customer for low value customers?,correct,1,pass,
+XTS108,total_share,casual,both,,what share of the occasional tier are bulk buyers?,correct,1,pass,
+XTS109,total_share,terse,both,,expected orderers b1,correct,1,pass,pass read in the full read
+XTS110,total_share,formal,both,,What proportion of the Low value tier are the Small-basket buyers buying style?,correct,1,pass,
+XRK001,ranking,casual,both,,which low value segment spends the least per year?,correct,1,pass,
+XRK002,ranking,casual,both,,which holiday segment has the fewest lines per order?,correct,1,pass,
+XRK003,ranking,formal,both,,List the three segments with the lowest P(buys again).,correct,1,pass,
+XRK004,ranking,terse,both,,top spender segment with the most lines per order,correct,1,pass,pass read in the full read
+XRK005,ranking,casual,both,,which segment has the longest tenure?,correct,1,pass,pass read in the full read
+XRK006,ranking,formal,both,,Which Bulk buyers segment has the most customers?,correct,1,pass,
+XRK007,ranking,casual,both,,which core segment spends the least per year?,correct,1,pass,
+XRK008,ranking,casual,both,,which small basket segment has the fewest units per order?,correct,1,pass,
+XRK009,ranking,casual,both,,which small basket segment is most seasonal?,correct,1,pass,
+XRK010,ranking,casual,both,,which occasional segment pays the most per unit?,correct,1,pass,pass read in the full read
+XRK011,ranking,typo,both,,which three segemnts have the highest customers?,correct,1,pass,pass read in the full read
+XRK012,ranking,terse,both,,spends the most per year low value segment,correct,1,pass,pass read in the full read
+XRK013,ranking,terse,both,,lowest order value bulk buyers segment,correct,1,pass,
+XRK014,ranking,formal,both,,Which Small-basket buyers segment is most lapsed?,correct,1,pass,
+XRK015,ranking,casual,both,,which small-basket buyers segment has the lowest expected revenue?,correct,1,pass,
+XRK016,ranking,terse,both,,pays the most per unit holiday segment,correct,1,pass,pass read in the full read
+XRK017,ranking,formal,both,,Which Occasional segment has the most lines per order?,correct,1,pass,pass read in the full read
+XRK018,ranking,terse,both,,lowest order value core segment,correct,1,pass,
+XRK019,ranking,terse,both,,spends the most per year segment,correct,1,pass,pass read in the full read
+XRK020,ranking,terse,both,,segment with the highest expected revenue per customer,correct,1,pass,pass read in the full read
+XRK021,ranking,formal,both,,List the three segments with the lowest median orders / 12m.,correct,1,pass,
+XRK022,ranking,typo,both,,whch occasional segment has the fewest units per order?,correct,1,pass,pass read in the full read
+XRK023,ranking,terse,both,,highest order value segment,correct,1,pass,pass read in the full read
+XRK024,ranking,typo,both,,lowest net revenue top spendeer segment,correct,1,pass,pass read in the full read
+XRK025,ranking,casual,both,,which top spender segment spends the most per year?,correct,1,pass,pass read in the full read
+XRK026,ranking,terse,both,,segment with the fewest units per order,correct,1,pass,
+XRK027,ranking,casual,both,,which three segments have the lowest units per order?,correct,1,pass,
+XRK028,ranking,terse,both,,highest order value low-value segment,correct,1,pass,pass read in the full read
+XRK029,ranking,typo,both,,highet orders per year holiday segment,correct,1,pass,pass read in the full read
+XRK030,ranking,formal,both,,Which Bulk buyers segment spends the most per year?,correct,1,pass,
+XRK031,ranking,casual,both,,which value tier has the highest chance of buying again?,correct,1,pass,
+XRK032,ranking,casual,both,,which small basket segment pays the least per unit?,correct,1,pass,pass read in the full read
+XRK033,ranking,casual,both,,which low-value segment has the lowest expected revenue per customer?,correct,1,pass,pass read in the full read
+XRK034,ranking,terse,both,,buying style with the highest chance of buying again,correct,1,pass,pass read in the full read
+XRK035,ranking,casual,both,,which occasional segment has the shortest tenure?,correct,1,pass,
+XRK036,ranking,typo,both,,which buyng style has the lowest expected revenue per customer?,correct,1,pass,pass read in the full read
+XRK037,ranking,casual,both,,which occasional segment has the biggest orders by value?,correct,1,pass,pass read in the full read
+XRK038,ranking,formal,both,,List the three segments with the lowest median lines per order.,correct,1,pass,pass read in the full read
+XRK039,ranking,formal,both,,Which Occasional segment has the most customers?,correct,1,pass,pass read in the full read
+XRK040,ranking,casual,both,,which segment has the fewest lines per order?,correct,1,pass,pass read in the full read
+XRK041,ranking,casual,both,,which low value segment has the fewest units per order?,correct,1,pass,pass read in the full read
+XRK042,ranking,casual,both,,which value tier has the fewest customers?,correct,1,pass,
+XRK043,ranking,casual,both,,what are the bottom 3 segments by recency?,correct,1,pass,pass read in the full read
+XRK044,ranking,typo,both,,which core segment pays the last per unit?,correct,1,pass,
+XRK045,ranking,casual,both,,which three segments have the lowest net revenue?,correct,1,pass,
+XRK046,ranking,formal,both,,Which Holiday buyers segment has the most expected revenue?,correct,1,pass,pass read in the full read
+XRK047,ranking,terse,both,,most likely to order next quarter bulk segment,correct,1,pass,pass read in the full read
+XRK048,ranking,casual,both,,which top spender segment is least likely to buy again?,correct,1,pass,pass read in the full read
+XRK049,ranking,casual,both,,which small basket segment has the highest expected revenue?,correct,1,pass,pass read in the full read
+XRK050,ranking,terse,both,,small-basket buyers segment with the highest order value,correct,1,pass,pass read in the full read
+XRK051,ranking,formal,both,,Which Bulk buyers segment is most seasonal?,correct,1,pass,pass read in the full read
+XRK052,ranking,casual,both,,which small-basket buyers segment has the fewest customers?,correct,1,pass,pass read in the full read
+XRK053,ranking,terse,both,,bulk buyers segment with the fewest customers,correct,1,pass,pass read in the full read
+XRK054,ranking,formal,both,,Which Top spenders segment orders least often?,correct,1,pass,pass read in the full read
+XRK055,ranking,terse,both,,least likely to buy again low value segment,correct,1,pass,
+XRK056,ranking,typo,both,,which segment has the lowest expetced revenue per customer?,correct,1,pass,pass read in the full read
+XRK057,ranking,terse,both,,least expected revenue value tier,correct,1,pass,pass read in the full read
+XRK058,ranking,formal,both,,List the three segments with the highest expected revenue per customer.,correct,1,pass,pass read in the full read
+XRK059,ranking,casual,both,,which low-value segment has the lowest order value?,correct,1,pass,pass read in the full read
+XRK060,ranking,casual,both,,which low value segment has the fewest customers?,correct,1,pass,pass read in the full read
+XRK061,ranking,terse,both,,highest uk share small basket segment,correct,1,pass,pass read in the full read
+XRK062,ranking,terse,both,,top three segments net revenue,correct,1,pass,pass read in the full read
+XRK063,ranking,formal,both,,Which Bulk buyers segment has the shortest tenure?,correct,1,pass,pass read in the full read
+XRK064,ranking,terse,both,,bottom three segments expected revenue per customer,correct,1,pass,pass read in the full read
+XRK065,ranking,formal,both,,Which Core segment has the most customers?,correct,1,pass,
+XRK066,ranking,casual,both,,which occasional segment orders least often?,correct,1,pass,
+XRK067,ranking,terse,both,,highest uk share top spenders segment,correct,1,pass,
+XRK068,ranking,formal,both,,Which buying style has the highest expected revenue per customer?,correct,1,pass,
+XRK069,ranking,casual,both,,which segment pays the most per unit?,correct,1,pass,
+XRK070,ranking,casual,both,,which top spender segment has the lowest uk share?,correct,1,pass,pass read in the full read
+XRK071,ranking,casual,both,,which buying style has the most customers?,correct,1,pass,pass read in the full read
+XRK072,ranking,casual,both,,which low value segment has the highest expected revenue per customer?,correct,1,pass,pass read in the full read
+XRK073,ranking,terse,both,,highest q4 share top spenders segment,correct,1,pass,
+XRK074,ranking,casual,both,,which segment spends the least per year?,correct,1,pass,pass read in the full read
+XRK075,ranking,typo,both,,which low-value segmet pays the most per unit?,correct,1,pass,pass read in the full read
+XRK076,ranking,casual,both,,which top spenders segment has the lowest expected revenue?,correct,1,pass,pass read in the full read
+XRK077,ranking,casual,both,,which holiday segment pays the least per unit?,correct,1,pass,
+XRK078,ranking,formal,both,,Which Bulk buyers segment has the fewest units per order?,correct,1,pass,
+XRK079,ranking,terse,both,,highest q4 share core segment,correct,1,pass,pass read in the full read
+XRK080,ranking,casual,both,,which bulk buyers segment is most lapsed?,correct,1,pass,pass read in the full read
+XRK081,ranking,casual,both,,which bulk buyers segment spends the least per year?,correct,1,pass,pass read in the full read
+XRK082,ranking,terse,both,,highest order value holiday buyers segment,correct,1,pass,pass read in the full read
+XRK083,ranking,casual,both,,which top spenders segment has the fewest units per order?,correct,1,pass,pass read in the full read
+XRK084,ranking,formal,both,,Which Occasional segment has the fewest customers?,correct,1,pass,pass read in the full read
+XRK085,ranking,terse,both,,most expected revenue bulk segment,correct,1,pass,pass read in the full read
+XRK086,ranking,casual,both,,which value tier has the most expected revenue?,correct,1,pass,pass read in the full read
+XRK087,ranking,typo,both,,most recent holday segment,unhelpful,0,pass,"every Holiday segment's full row, never picks the most recent (C1-B2, 8 days)"
+XRK088,ranking,terse,both,,shortest tenure holiday buyers segment,correct,1,pass,pass read in the full read
+XRK089,ranking,formal,both,,Which Holiday buyers segment orders least often?,correct,1,pass,pass read in the full read
+XRK090,ranking,casual,both,,which occasional segment has the lowest expected revenue per customer?,correct,1,pass,pass read in the full read
+XRK091,ranking,terse,both,,most units per order small basket segment,correct,1,pass,pass read in the full read
+XRK092,ranking,formal,both,,Which Occasional segment has the longest tenure?,correct,1,pass,
+XRK093,ranking,formal,both,,List the three segments with the lowest customers.,correct,1,pass,
+XRK094,ranking,terse,both,,holiday buyers segment with the fewest units per order,correct,1,pass,pass read in the full read
+XRK095,ranking,casual,both,,which occasional segment pays the least per unit?,correct,1,pass,
+XRK096,ranking,terse,both,,highest expected revenue per customer core segment,correct,1,pass,pass read in the full read
+XRK097,ranking,terse,both,,highest expected revenue per customer top spender segment,correct,1,pass,
+XRK098,ranking,casual,both,,which core segment spends the most per year?,correct,1,pass,pass read in the full read
+XRK099,ranking,typo,both,,which bulk segment has the lowesst uk share?,correct,1,pass,pass read in the full read
+XRK100,ranking,terse,both,,top three segments recency,correct,1,fail,"read ""top three by recency"" as the most recent, the RFM convention; the question allows either"
+XCP001,comparison,terse,both,,low-value holiday buyers vs low-value bulk buyers q4 share,correct,1,pass,pass read in the full read
+XCP002,comparison,terse,both,,c1-b3 vs c4-b3 unit price,correct,1,pass,pass read in the full read
+XCP003,comparison,casual,both,,do occasional bulk buyers pay more per unit than core bulk buyers?,correct,1,fail,"table, no ""no""; C2-B1 higher"
+XCP004,comparison,formal,both,,Compare segment C1-B3 and the Occasional / Small-basket buyers segment on customers.,correct,1,pass,pass read in the full read
+XCP005,comparison,terse,both,,c2-b3 vs c3-b3 order value,correct,1,pass,pass read in the full read
+XCP006,comparison,casual,both,,how do core holiday buyers and c2-b1 compare on tenure?,correct,1,pass,pass read in the full read
+XCP007,comparison,typo,both,,how do top spenders holiday buyers and occasional / holiday buuyers compare on expected revenue per customer?,correct,1,pass,pass read in the full read
+XCP008,comparison,formal,both,,Have Core / Small-basket buyers ordered more recently than Low value / Small-basket buyers?,correct,1,fail,"table, no ""yes""; C2-B3 more recent"
+XCP009,comparison,terse,both,,c4-b1 vs c1-b1 net revenue,correct,1,pass,pass read in the full read
+XCP010,comparison,terse,both,,c2-b1 vs c2-b2 unit price,correct,1,pass,
+XCP011,comparison,casual,both,,how do top spenders / bulk buyers and top spender small basket buyers compare on expected revenue per customer?,correct,1,pass,pass read in the full read
+XCP012,comparison,casual,both,,how do top spender holiday buyers and low value holiday buyers compare on net revenue?,correct,1,pass,pass read in the full read
+XCP013,comparison,casual,both,,how do the top spenders tier and the low value tier compare on customers?,correct,1,pass,pass read in the full read
+XCP014,comparison,terse,both,,c1-b2 vs c3-b2 unit price,correct,1,pass,pass read in the full read
+XCP015,comparison,casual,both,,do c2-b1 spend more per year than top spender bulk buyers?,correct,1,fail,"table, no ""no""; C1-B1 higher"
+XCP016,comparison,terse,both,,c3-b1 vs c1-b1 uk share,correct,1,pass,pass read in the full read
+XCP017,comparison,formal,both,,Do Low value / Bulk buyers spend more per year than Low value / Small-basket buyers?,correct,1,fail,"table, no ""yes""; C4-B1 higher"
+XCP018,comparison,typo,both,,are low-value bulk buyres more seasonal than c2-b1?,correct,1,fail,"table, no ""no""; C2-B1 higher"
+XCP019,comparison,formal,both,,Do Low value / Small-basket buyers pay more per unit than Top spenders / Small-basket buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP020,comparison,typo,both,,are c3-b1 nweer customers than top spenders / bulk buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP021,comparison,typo,both,,the top spenders tier vs occasioanl customers customers,correct,1,pass,
+XCP022,comparison,casual,both,,are occasional small basket buyers more likely to buy again than occasional bulk buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP023,comparison,formal,both,,Compare the Core (C2) tier and the Low value (C4) tier on customers.,correct,1,pass,pass read in the full read
+XCP024,comparison,terse,both,,low-value small basket buyers vs low value holiday buyers q4 share,correct,1,pass,pass read in the full read
+XCP025,comparison,casual,both,,how do occasional small basket buyers and occasional / bulk buyers compare on order value?,correct,1,pass,pass read in the full read
+XCP026,comparison,terse,both,,low value / bulk buyers vs top spenders bulk buyers uk share,correct,1,pass,pass read in the full read
+XCP027,comparison,terse,both,,low-value bulk buyers vs core bulk buyers recency,correct,1,pass,pass read in the full read
+XCP028,comparison,formal,both,,Compare segment C4-B3 and the Low value / Holiday buyers segment on expected revenue next quarter.,correct,1,pass,pass read in the full read
+XCP029,comparison,terse,both,,c2-b2 vs top spender holiday buyers recency,correct,1,pass,pass read in the full read
+XCP030,comparison,casual,both,,how do top spender small-basket buyers and core / small-basket buyers compare on orders per year?,correct,1,pass,pass read in the full read
+XCP031,comparison,casual,both,,is low-value holiday buyers bigger than occasional holiday buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP032,comparison,casual,both,,how do top spender bulk buyers and low-value bulk buyers compare on lines per order?,correct,1,pass,
+XCP033,comparison,typo,both,,c2-b3 vs c1-b3 untis per order,correct,1,pass,pass read in the full read
+XCP034,comparison,terse,both,,low value bulk buyers vs c3-b1 net revenue,correct,1,pass,pass read in the full read
+XCP035,comparison,terse,both,,core / bulk buyers vs c2-b3 net revenue,correct,1,pass,pass read in the full read
+XCP036,comparison,formal,both,,Compare the Holiday buyers buying style and Small-basket buyers (B3) on expected revenue.,correct,1,pass,pass read in the full read
+XCP037,comparison,formal,both,,Compare Top spenders / Holiday buyers and segment C1-B3 on customers.,correct,1,pass,pass read in the full read
+XCP038,comparison,casual,both,,are occasional bulk buyers more likely to buy again than occasional / holiday buyers?,correct,1,pass,pass read in the full read
+XCP039,comparison,casual,both,,do c4-b3 buy more units per order than core small-basket buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP040,comparison,casual,both,,have top spenders small-basket buyers ordered more recently than top spenders / bulk buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP041,comparison,casual,both,,do low value / holiday buyers have more expected revenue than c4-b3?,correct,1,fail,"table with both values, no yes/no word"
+XCP042,comparison,formal,both,,Is Occasional / Bulk buyers bigger than Core / Bulk buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP043,comparison,typo,both,,c2-b3 vs top spender small basket buyers customesr,correct,1,pass,pass read in the full read
+XCP044,comparison,casual,both,,are core / small-basket buyers newer customers than c1-b3?,correct,1,fail,"table with both values, no yes/no word"
+XCP045,comparison,terse,both,,top spenders / small-basket buyers vs occasional small basket buyers orders per year,correct,1,pass,
+XCP046,comparison,formal,both,,Compare Low value / Small-basket buyers and Top spenders / Small-basket buyers on median tenure.,correct,1,pass,pass read in the full read
+XCP047,comparison,terse,both,,core bulk buyers vs low value bulk buyers expected revenue per customer,correct,1,pass,pass read in the full read
+XCP048,comparison,casual,both,,do c1-b1 order more often than c1-b3?,correct,1,fail,"table with both values, no yes/no word"
+XCP049,comparison,casual,both,,how do occasional holiday buyers and occasional / bulk buyers compare on q4 share?,correct,1,pass,
+XCP050,comparison,typo,both,,low value holiday buyes vs low value / small-basket buyers units per order,correct,1,pass,
+XCP051,comparison,casual,both,,do c3-b1 spend more per year than occasional / holiday buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP052,comparison,casual,both,,do occasional / bulk buyers pay more per unit than low-value bulk buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP053,comparison,terse,both,,c3-b2 vs c1-b2 customers,correct,1,pass,pass read in the full read
+XCP054,comparison,terse,both,,top spenders / bulk buyers vs c1-b3 unit price,correct,1,pass,pass read in the full read
+XCP055,comparison,formal,both,,Do Top spenders / Bulk buyers spend more per year than Low value / Bulk buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP056,comparison,formal,both,,Compare the Top spenders / Small-basket buyers segment and Low value / Small-basket buyers on median orders / 12m.,correct,1,pass,pass read in the full read
+XCP057,comparison,formal,both,,Do Occasional / Small-basket buyers order more often than Occasional / Holiday buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP058,comparison,casual,both,,how do top spenders bulk buyers and top spenders holiday buyers compare on recency?,correct,1,pass,pass read in the full read
+XCP059,comparison,casual,both,,do occasional small basket buyers order more often than top spender small basket buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP060,comparison,casual,both,,how do core small-basket buyers and low value / small-basket buyers compare on expected revenue per customer?,correct,1,pass,pass read in the full read
+XCP061,comparison,casual,both,,how do occasional holiday buyers and c2-b2 compare on expected revenue?,correct,1,pass,pass read in the full read
+XCP062,comparison,terse,both,,c1-b2 vs c1-b3 order value,correct,1,pass,pass read in the full read
+XCP063,comparison,terse,both,,c1-b3 vs c1-b2 orders per year,correct,1,pass,pass read in the full read
+XCP064,comparison,terse,both,,c1-b2 vs top spenders small basket buyers uk share,correct,1,pass,pass read in the full read
+XCP065,comparison,casual,both,,do top spender bulk buyers pay more per unit than low value bulk buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP066,comparison,terse,both,,c3-b2 vs c3-b3 p buys again,correct,1,pass,pass read in the full read
+XCP067,comparison,casual,both,,are low value / holiday buyers more likely to buy again than top spender holiday buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP068,comparison,terse,both,,core small-basket buyers vs occasional small-basket buyers expected revenue per customer,correct,1,pass,pass read in the full read
+XCP069,comparison,terse,both,,occasional bulk buyers vs core bulk buyers units per order,correct,1,pass,pass read in the full read
+XCP070,comparison,formal,both,,Compare Occasional / Small-basket buyers and Core / Small-basket buyers on median recency.,correct,1,pass,pass read in the full read
+XCP071,comparison,formal,both,,Are Core / Bulk buyers more uk-based than Top spenders / Bulk buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP072,comparison,casual,both,,do low value / small-basket buyers buy more units per order than c4-b2?,correct,1,fail,"table with both values, no yes/no word"
+XCP073,comparison,casual,both,,do low value holiday buyers place bigger orders by value than core / holiday buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP074,comparison,terse,both,,c3-b2 vs c2-b2 recency,correct,1,pass,pass read in the full read
+XCP075,comparison,casual,both,,do c3-b1 place bigger orders by value than top spenders / bulk buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP076,comparison,typo,both,,are core holiday buyers more sasonal than low value / holiday buyers?,correct,1,fail,"table with both values, no yes/no word"
+XCP077,comparison,casual,both,,do low value / holiday buyers have more expected revenue than c1-b2?,correct,1,fail,"table with both values, no yes/no word"
+XCP078,comparison,casual,both,,how do low-value holiday buyers and top spender holiday buyers compare on customers?,correct,1,pass,pass read in the full read
+XCP079,comparison,formal,both,,Compare Top spenders / Small-basket buyers and Top spenders / Holiday buyers on median units per order.,correct,1,pass,pass read in the full read
+XCP080,comparison,casual,both,,is core / bulk buyers bigger than top spenders / bulk buyers?,correct,1,fail,"table with both values, no yes/no word"
+XBD001,breakdown,typo,both,,orders per year for each occasioonal customers segment,correct,1,pass,pass read in the full read
+XBD002,breakdown,terse,both,,tenure for every segment,correct,1,pass,pass read in the full read
+XBD003,breakdown,casual,both,,show me the lines per order for each segment,correct,1,pass,pass read in the full read
+XBD004,breakdown,casual,both,,how does uk share break down by value tier?,correct,1,pass,pass read in the full read
+XBD005,breakdown,terse,both,,uk share for each bulk buyers segment,correct,1,pass,pass read in the full read
+XBD006,breakdown,casual,both,,what's the p buys again for each small basket buyers segment?,correct,1,pass,pass read in the full read
+XBD007,breakdown,casual,both,,break down small-basket buyers by value tier on unit price,correct,1,pass,pass read in the full read
+XBD008,breakdown,formal,both,,"Break down the Occasional (C3) tier by buying style, showing median net revenue / 12m.",correct,1,pass,pass read in the full read
+XBD009,breakdown,terse,both,,orders per year for each bulk buyers segment,correct,1,pass,pass read in the full read
+XBD010,breakdown,terse,both,,uk share for each core segment,correct,1,pass,pass read in the full read
+XBD011,breakdown,typo,both,,low value customers exppected revenue by buying style,correct,1,fail,
+XBD012,breakdown,terse,both,,customers by segment,correct,1,pass,
+XBD013,breakdown,casual,both,,show me expected revenue per customer for each buying style,correct,1,pass,pass read in the full read
+XBD014,breakdown,terse,both,,net revenue for each c2 segment,correct,1,pass,pass read in the full read
+XBD015,breakdown,typo,both,,show me the expected reveenue for each segment,correct,1,pass,pass read in the full read
+XBD016,breakdown,casual,both,,break down the core tier by buying style on recency,correct,1,pass,pass read in the full read
+XBD017,breakdown,terse,both,,tenure for each top spenders tier segment,correct,1,pass,pass read in the full read
+XBD018,breakdown,terse,both,,holiday buyers orders per year by value tier,correct,1,pass,pass read in the full read
+XBD019,breakdown,casual,both,,show me expected revenue for each buying style,correct,1,pass,
+XBD020,breakdown,formal,both,,"Break down the Occasional tier by buying style, showing expected revenue next quarter.",correct,1,pass,pass read in the full read
+XBD021,breakdown,formal,both,,"Break down the Low value tier by buying style, showing customers.",correct,1,pass,pass read in the full read
+XBD022,breakdown,casual,both,,what's the unit price for each holiday buyers segment?,correct,1,pass,pass read in the full read
+XBD023,breakdown,formal,both,,"Break down Holiday buyers by value tier, showing median units per order.",correct,1,pass,pass read in the full read
+XBD024,breakdown,casual,both,,break down the low value tier by buying style on orders per year,correct,1,pass,
+XBD025,breakdown,formal,both,,"Break down the Top spenders tier by buying style, showing median orders / 12m.",correct,1,pass,pass read in the full read
+XBD026,breakdown,terse,both,,net revenue for each b3 segment,correct,1,pass,pass read in the full read
+XBD027,breakdown,formal,both,,"Break down the Top spenders (C1) tier by buying style, showing median order value.",correct,1,pass,pass read in the full read
+XBD028,breakdown,terse,both,,tenure for each c3 segment,correct,1,pass,
+XBD029,breakdown,casual,both,,break down core customers by buying style on customers,correct,1,fail,
+XBD030,breakdown,casual,both,,how does customers break down by value tier?,correct,1,pass,pass read in the full read
+XBD031,breakdown,formal,both,,"Break down the Occasional (C3) tier by buying style, showing median recency.",correct,1,pass,
+XBD032,breakdown,terse,both,,net revenue for every segment,correct,1,pass,pass read in the full read
+XBD033,breakdown,typo,both,,tenure for each bulk buyers segmet,correct,1,pass,pass read in the full read
+XBD034,breakdown,casual,both,,show me the median return rate for each segment,correct,1,pass,pass read in the full read
+XBD035,breakdown,formal,both,,Provide a breakdown of uk share by buying style.,correct,1,pass,
+XBD036,breakdown,casual,both,,break down small-basket buyers by value tier on customers,correct,1,pass,pass read in the full read
+XBD037,breakdown,casual,both,,break down the top spenders tier by buying style on recency,correct,1,pass,pass read in the full read
+XBD038,breakdown,casual,both,,break down small basket buyers by value tier on units per order,correct,1,pass,pass read in the full read
+XBD039,breakdown,terse,both,,unit price by segment,correct,1,pass,pass read in the full read
+XBD040,breakdown,casual,both,,break down holiday buyers by value tier on uk share,correct,1,fail,
+XFL001,filter,typo,both,,how many customers are in segments with order vaalue less than £300?,correct,1,fail,
+XFL002,filter,terse,both,,customers in segments with units per order below 225,unhelpful,0,fail,"segment rows, never the total 2,569"
+XFL003,filter,formal,both,,Which segments have customers over 550?,correct,1,pass,pass read in the full read
+XFL004,filter,terse,both,,expected revenue of segments with lines per order more than 16,unhelpful,0,fail,"segment rows, never the total £1,604,000"
+XFL005,filter,casual,both,,which segments have chance of buying again above 25%?,correct,1,pass,pass read in the full read
+XFL006,filter,terse,both,,customers in segments with q4 revenue share over 85%,unhelpful,0,fail,"segment rows, never the total 684"
+XFL007,filter,casual,both,,how many segments have median net revenue above £500?,correct,1,fail,
+XFL008,filter,casual,both,,how many customers are in segments with median tenure under 550 days?,correct,1,fail,
+XFL009,filter,terse,both,,expected revenue of segments with q4 revenue share above 65%,unhelpful,0,fail,"segment rows, never the total £150,432"
+XFL010,filter,terse,both,,segments with orders a year over 15,correct,1,pass,
+XFL011,filter,formal,both,,What is the total expected revenue of segments with lines per order below 10?,correct,1,fail,
+XFL012,filter,terse,both,,expected revenue of segments with order value under £150,correct,1,pass,pass read in the full read
+XFL013,filter,casual,both,,how many segments have lines per order less than 26?,correct,1,fail,
+XFL014,filter,casual,both,,"how many segments have expected revenue below £20,000?",correct,1,fail,
+XFL015,filter,casual,both,,"how many customers are in segments with expected revenue over £200,000?",correct,1,fail,
+XFL016,filter,formal,both,,What is the total expected revenue of segments with median recency less than 20 days?,correct,1,fail,
+XFL017,filter,terse,both,,expected revenue of segments with units per order below 75,correct,1,pass,pass read in the full read
+XFL018,filter,casual,both,,how many customers are in segments with units per order less than 100?,correct,1,fail,
+XFL019,filter,typo,both,,"how many segments have expeted revenue more than £60,000?",correct,1,fail,
+XFL020,filter,casual,both,,how many customers are in segments with median recency more than 30 days?,correct,1,fail,
+XFL021,filter,casual,both,,how many customers are in segments with unit price under £1.80?,correct,1,fail,
+XFL022,filter,casual,both,,how many customers are in segments with median recency below 10 days?,correct,1,fail,
+XFL023,filter,formal,both,,Which segments have order value below £300?,correct,1,pass,pass read in the full read
+XFL024,filter,casual,both,,how many segments have order value below £300?,correct,1,fail,
+XFL025,filter,formal,both,,Which segments have median net revenue less than £500?,correct,1,pass,pass read in the full read
+XFL026,filter,casual,both,,how many customers are in segments with units per order above 225?,correct,1,fail,
+XFL027,filter,formal,both,,What is the total expected revenue of segments with chance of buying again less than 70%?,correct,1,fail,
+XFL028,filter,terse,both,,"segments with expected revenue more than £120,000",correct,1,pass,pass read in the full read
+XFL029,filter,terse,both,,customers in segments with lines per order over 26,correct,1,fail,
+XFL030,filter,typo,both,,number of segments with ordder value over £650,correct,1,fail,
+XME001,model_eval,casual,both,,what's the buys-again auc for the rfm baseline in the q3 backtest?,correct,1,pass,pass read in the full read
+XME002,model_eval,formal,both,,What was the smallest segment share for k = 4 on the behaviour axis?,correct,1,pass,pass read in the full read
+XME003,model_eval,casual,both,,what value eta squared did the two-axis grid get?,correct,1,pass,pass read in the full read
+XME004,model_eval,formal,both,,What was the buying-style separation (eta squared) of the outcome-guided tiers (3-4 segments) in the q2 backtest?,correct,1,pass,pass read in the full read
+XME005,model_eval,formal,both,,What was the persistence of the outcome-guided tiers at grid size (9-12 segments) in the q3 backtest?,correct,1,pass,pass read in the full read
+XME006,model_eval,formal,both,,What was the revenue Spearman correlation of the RFM baseline in the q2 backtest?,correct,1,pass,pass read in the full read
+XME007,model_eval,casual,both,,what revenue forecast bias did the unsegmented outcome model get in the q2 backtest?,correct,1,pass,
+XME008,model_eval,terse,both,,hybrid revenue spearman,correct,1,pass,pass read in the full read
+XME009,model_eval,terse,both,,hybrid buying-style eta squared q2,correct,1,pass,pass read in the full read
+XME010,model_eval,casual,both,,what's the revenue spearman for classic rfm?,correct,1,pass,pass read in the full read
+XME011,model_eval,casual,both,,what silhouette did k=6 get on the behaviour axis?,correct,1,pass,pass read in the full read
+XME012,model_eval,casual,both,,what's the value eta squared for the two-axis grid in the q2 backtest?,correct,1,pass,pass read in the full read
+XME013,model_eval,casual,both,,what silhouette did k=6 get on the value axis?,correct,1,pass,pass read in the full read
+XME014,model_eval,terse,both,,value axis k=3 next-revenue r2,correct,1,pass,pass read in the full read
+XME015,model_eval,terse,both,,the hybrid top-20% revenue capture q2,correct,1,pass,pass read in the full read
+XME016,model_eval,formal,both,,What was the revenue Spearman correlation of the hybrid scheme in the q2 backtest?,correct,1,pass,pass read in the full read
+XME017,model_eval,casual,both,,how many rows had no customer id?,declined-but-answerable,0,fail,"says missing customer IDs aren't tracked; the cleaning table shows 232,834 such rows"
+XME018,model_eval,formal,both,,"What was the persistence of the outcome-guided tiers (3-4 segments), averaged over the two backtests?",correct,1,pass,pass read in the full read
+XME019,model_eval,typo,both,,the vaue-axis-only scheme top-20% revenue capture,correct,1,pass,pass read in the full read
+XME020,model_eval,casual,both,,how many rows were left after the sheet overlap was removed?,correct,1,pass,pass read in the full read
+XME021,model_eval,casual,both,,"leaving out the unsegmented model, which scheme has the best value eta squared?",correct,1,fail,
+XME022,model_eval,formal,both,,What was the top-20% revenue capture of the unsegmented outcome model in the q2 backtest?,correct,1,pass,pass read in the full read
+XME023,model_eval,terse,both,,behaviour axis k=3 stability ari,correct,1,pass,pass read in the full read
+XME024,model_eval,casual,both,,what's the buying-style eta squared for the value-axis-only scheme?,correct,1,pass,pass read in the full read
+XME025,model_eval,terse,both,,value axis k=4 stability ari,correct,1,pass,
+XME026,model_eval,casual,both,,what rule fidelity did the value-axis-only scheme get in the q3 backtest?,correct,1,pass,pass read in the full read
+XME027,model_eval,terse,both,,rows left after removing exact duplicates,correct,1,pass,pass read in the full read
+XME028,model_eval,typo,both,,what rule fidelity did the two-axis grid get in the q2 backttest?,correct,1,pass,
+XME029,model_eval,terse,both,,"best segmentation scheme by buying-style eta squared, not counting the unsegmented model",correct,1,pass,pass read in the full read
+XME030,model_eval,terse,both,,behaviour axis k=4 next-revenue r2,correct,1,pass,pass read in the full read
+XME031,model_eval,casual,both,,what's the value eta squared for the outcome tiers at grid size (9-12 segments) in the q2 backtest?,correct,1,pass,pass read in the full read
+XME032,model_eval,terse,both,,the outcome tiers at grid size (9-12 segments) value eta squared,correct,1,pass,pass read in the full read
+XME033,model_eval,casual,both,,what stability ari did k=6 get on the behaviour axis?,correct,1,pass,pass read in the full read
+XME034,model_eval,formal,both,,What was the persistence of the outcome-guided tiers (3-4 segments) in the q2 backtest?,correct,1,pass,pass read in the full read
+XME035,model_eval,typo,both,,what buys-aain auc did the two-axis grid get?,unhelpful,0,fail,both folds but not their mean (0.7535)
+XME036,model_eval,casual,both,,what's the revenue spearman for the outcome tiers (3-4 segments) in the q2 backtest?,correct,1,pass,pass read in the full read
+XME037,model_eval,terse,both,,the outcome tiers (3-4 segments) buying-style eta squared q3,correct,1,pass,
+XME038,model_eval,casual,both,,what stability ari did k=3 get on the value axis?,correct,1,pass,pass read in the full read
+XME039,model_eval,terse,both,,the grid buys-again auc q2,correct,1,pass,pass read in the full read
+XME040,model_eval,typo,both,,what's the value eta squaared for hybrid in the q2 backtest?,correct,1,pass,pass read in the full read
+XAM001,ambiguous,casual,both,,how good is the unsegmented outcome model?,correct,1,pass,
+XAM002,ambiguous,casual,both,,spend core / holiday buyers,correct,1,pass,
+XAM003,ambiguous,casual,both,,revenue for occasional small-basket buyers,correct,1,pass,
+XAM004,ambiguous,casual,both,,which holiday segment is the largest?,correct,1,pass,
+XAM005,ambiguous,terse,both,,how engaged are holiday?,correct,1,pass,
+XAM006,ambiguous,terse,both,,spend C3-B2,correct,1,pass,
+XAM007,ambiguous,casual,both,,what is the size of the core tier?,unhelpful,0,fail,"""size of the core tier"": segment rows, no total (1,073)"
+XAM008,ambiguous,casual,both,,best top spenders segment,correct,1,pass,
+XAM009,ambiguous,casual,both,,how valuable are occasional small basket buyers?,correct,1,pass,
+XAM010,ambiguous,formal,both,,How engaged are the Bulk buyers buying style?,correct,1,pass,
+XAM011,ambiguous,casual,both,,weakest segment,correct,1,pass,
+XAM012,ambiguous,typo,both,,how valuable are low-vlue small basket buyers?,correct,1,pass,
+XAM013,ambiguous,casual,both,,revenue for top spender bulk buyers,correct,1,pass,
+XAM014,ambiguous,casual,both,,how many churning customers do we have?,correct,1,pass,"Low value tier as a proxy (1,571), the same customers as the P(buys again) under 25% reading"
+XAM015,ambiguous,casual,both,,which low-value segment performs best?,correct,1,pass,
+XAM016,ambiguous,typo,both,,best small-baket buyers segment,correct,1,pass,
+XAM017,ambiguous,terse,both,,number of seasonal customers,correct,1,pass,
+XAM018,ambiguous,formal,both,,How much do the Low value / Holiday buyers segment spend?,correct,1,pass,
+XAM019,ambiguous,terse,both,,how much are C1-B2 worth?,correct,1,pass,
+XAM020,ambiguous,formal,both,,Revenue for segment C2-B2,correct,1,pass,
+XAM021,ambiguous,typo,both,,revenue for low vlue bulk buyers,correct,1,pass,
+XAM022,ambiguous,terse,both,,christmas customers count,correct,1,pass,
+XAM023,ambiguous,casual,both,,how valuable is occasional / holiday buyers?,correct,1,pass,
+XAM024,ambiguous,casual,both,,how valuable is low value / bulk buyers?,correct,1,pass,
+XAM025,ambiguous,terse,both,,spend C3-B3,correct,1,pass,
+XAM026,ambiguous,terse,both,,what's the hit rate for the unsegmented outcome model?,unhelpful,0,fail,"""hit rate"" read as predicted vs actual active rate, not a listed reading"
+XAM027,ambiguous,terse,both,,how good is the grid?,wrong number,0,fail,"""the grid"" answered with the hybrid's scores; the two-axis grid's AUC is 0.7535"
+XAM028,ambiguous,terse,both,,number of valuable customers,correct,1,pass,
+XAM029,ambiguous,formal,both,,What's the price for the Top spenders (C1) tier?,correct,1,pass,
+XAM030,ambiguous,formal,both,,How many bargain customers are there?,wrong claim,0,fail,"""bargain"" read as small-basket buyers, called the lowest-price style; they pay the most per unit"
+XAM031,ambiguous,terse,both,,at-risk customers count,unhelpful,0,pass,"""at-risk"" read as the Occasional and Low value tiers, not a listed reading"
+XAM032,ambiguous,typo,both,,how valuable is core bulk buyerrs?,correct,1,pass,
+XAM033,ambiguous,casual,both,,how much are c2-b2 worth?,correct,1,pass,
+XAM034,ambiguous,casual,both,,revenue for c4-b3,correct,1,pass,
+XAM035,ambiguous,casual,both,,what's the price for bulk buyers?,correct,1,pass,
+XAM036,ambiguous,terse,both,,how well do we retain c1?,correct,1,pass,
+XAM037,ambiguous,terse,both,,what is the size of c4?,correct,1,pass,
+XAM038,ambiguous,terse,both,,how much are C3-B3 worth?,correct,1,pass,
+XAM039,ambiguous,formal,both,,Revenue for segment C2-B1,correct,1,pass,
+XAM040,ambiguous,casual,both,,weakest bulk segment,correct,1,pass,
+XAM041,ambiguous,terse,both,,how well do we retain b1?,correct,1,pass,
+XAM042,ambiguous,casual,both,,which occasional segment is the worst?,correct,1,pass,
+XAM043,ambiguous,typo,both,,best seegment,correct,1,pass,
+XAM044,ambiguous,casual,both,,which core segment is the worst?,correct,1,pass,
+XAM045,ambiguous,terse,both,,how valuable are c2-b2?,correct,1,pass,
+XAM046,ambiguous,casual,both,,how much are low-value small basket buyers worth?,correct,1,pass,
+XAM047,ambiguous,formal,both,,How much are segment C3-B2 worth?,correct,1,pass,
+XAM048,ambiguous,terse,both,,spend C1-B2,correct,1,pass,
+XAM049,ambiguous,typo,both,,what's the hit rate for the two-axis grid?,correct,1,pass,
+XAM050,ambiguous,casual,both,,what is occasional bulk buyers worth?,correct,1,pass,
+XAM051,ambiguous,terse,both,,how valuable are low value holiday?,correct,1,pass,
+XAM052,ambiguous,casual,both,,what is c1-b3 worth?,correct,1,pass,
+XAM053,ambiguous,casual,both,,how valuable is top spenders holiday buyers?,correct,1,pass,
+XAM054,ambiguous,typo,both,,what's the hit rate for the hybrd?,correct,1,pass,
+XAM055,ambiguous,terse,both,,number of key customers,correct,1,pass,
+XAM056,ambiguous,formal,both,,Which Holiday buyers segment performs best?,correct,1,pass,
+XAM057,ambiguous,formal,both,,How good is the hybrid scheme?,correct,1,pass,
+XAM058,ambiguous,casual,both,,revenue for c4-b2,correct,1,pass,
+XAM059,ambiguous,formal,both,,How many frequent customers are there?,wrong claim,0,fail,"""frequent"" read as Bulk buyers (1,747); bulk isn't frequency"
+XAM060,ambiguous,terse,both,,C1-B2 revenue,correct,1,pass,
+XAM061,ambiguous,formal,both,,Weakest Small-basket buyers segment,correct,1,pass,
+XAM062,ambiguous,formal,both,,Revenue for Top spenders / Small-basket buyers,correct,1,pass,
+XAM063,ambiguous,terse,both,,which core segment performs best?,correct,1,pass,
+XAM064,ambiguous,formal,both,,How much do segment C2-B3 spend?,correct,1,pass,
+XAM065,ambiguous,casual,both,,how much do occasional bulk buyers spend?,correct,1,pass,
+XAM066,ambiguous,terse,both,,how engaged are top spenders tier?,correct,1,pass,
+XAM067,ambiguous,casual,both,,how much are low value holiday buyers worth?,correct,1,pass,
+XAM068,ambiguous,casual,both,,how valuable is core / small-basket buyers?,correct,1,pass,
+XAM069,ambiguous,terse,both,,number of new customers,wrong claim,0,fail,"""new customers"" answered with all 4,261"
+XAM070,ambiguous,terse,both,,number of good customers,unhelpful,0,fail,"""good customers"" read as the Core tier (1,073), not a listed reading"
+XAM071,ambiguous,casual,both,,best occasional segment,correct,1,pass,
+XAM072,ambiguous,terse,both,,biggest bulk segment,correct,1,pass,
+XAM073,ambiguous,casual,both,,how many high-value buyers are there?,correct,1,pass,
+XAM074,ambiguous,casual,both,,what's the hit rate for the outcome tiers (3-4 segments)?,correct,1,pass,
+XAM075,ambiguous,casual,both,,how much are core / bulk buyers worth?,correct,1,pass,
+XAM076,ambiguous,terse,both,,how good is the outcome tiers (3-4 segments)?,correct,1,pass,
+XAM077,ambiguous,casual,both,,how valuable is top spenders / small-basket buyers?,correct,1,pass,
+XAM078,ambiguous,formal,both,,What is the size of the Top spenders (C1) tier?,correct,1,pass,
+XAM079,ambiguous,terse,both,,how well do we retain low value?,correct,1,pass,
+XAM080,ambiguous,formal,both,,How well do we retain the Occasional tier?,correct,1,pass,
+XAM081,ambiguous,casual,both,,how much do core bulk buyers spend?,correct,1,pass,
+XAM082,ambiguous,casual,both,,how engaged are the low value tier?,correct,1,pass,
+XAM083,ambiguous,terse,both,,number of premium customers,correct,1,pass,
+XAM084,ambiguous,formal,both,,How good is the value-axis-only scheme?,correct,1,pass,
+XAM085,ambiguous,typo,both,,how good is the outccome tiers at grid size (9-12 segments)?,correct,1,pass,
+XAM086,ambiguous,terse,both,,what's the price for small basket buyers?,correct,1,pass,
+XAM087,ambiguous,typo,both,,how many recent cusomers do we have?,unhelpful,0,fail,"recency for every segment and the total; no count of recent customers, no question back"
+XAM088,ambiguous,casual,both,,what's the price for the low value tier?,correct,1,pass,
+XAM089,ambiguous,formal,both,,How well do we retain Small-basket buyers (B3)?,correct,1,pass,
+XAM090,ambiguous,casual,both,,how much do c4-b3 spend?,correct,1,pass,
+XAM091,ambiguous,casual,both,,how many small buyers are there?,correct,1,pass,
+XAM092,ambiguous,formal,both,,Which Holiday buyers segment is the worst?,correct,1,pass,
+XAM093,ambiguous,formal,both,,What's the hit rate for the value-axis-only scheme?,correct,1,pass,
+XAM094,ambiguous,terse,both,,what's the price for core?,correct,1,pass,
+XAM095,ambiguous,casual,both,,how many large customers do we have?,correct,1,pass,
+XUN001,unanswerable,casual,both,,what will low-value small basket buyers spend over the next two years?,correct,1,pass,
+XUN002,unanswerable,formal,both,,how many holiday buyers are in germany?,correct,1,pass,
+XUN003,unanswerable,terse,both,,c2-b2 favourite product category,correct,1,pass,
+XUN004,unanswerable,casual,both,,top spenders customers in lithuania,correct,1,pass,
+XUN005,unanswerable,casual,both,,what's the satisfaction score for occasional small-basket buyers?,correct,1,pass,
+XUN006,unanswerable,terse,both,,c3-b3 customers in iceland,correct,1,pass,
+XUN007,unanswerable,casual,both,,can you tell me the postcodes of top spenders bulk buyers?,correct,1,pass,
+XUN008,unanswerable,casual,both,,how many c2-b3 are in germany?,correct,1,pass,
+XUN009,unanswerable,terse,both,,what did C1-B3 spend in march 2011?,correct,1,pass,
+XUN010,unanswerable,terse,both,,c4-b3 average delivery time,correct,1,pass,
+XUN011,unanswerable,casual,both,,how many top spenders are in australia?,correct,1,pass,
+XUN012,unanswerable,formal,both,,Which sales rep looks after low value tier?,correct,1,pass,
+XUN013,unanswerable,formal,both,,how many c2-b1 are in lithuania?,correct,1,pass,
+XUN014,unanswerable,formal,both,,C4-B1 customers in australia,correct,1,pass,
+XUN015,unanswerable,formal,both,,What is the industry of Holiday buyers?,correct,1,pass,
+XUN016,unanswerable,casual,both,,c3 customers in malta,correct,1,pass,
+XUN017,unanswerable,casual,both,,can you tell me the phone numbers of the occasional tier?,correct,1,pass,
+XUN018,unanswerable,typo,both,,how many bulk buyres are in lebanon?,correct,1,pass,
+XUN019,unanswerable,terse,both,,marketing channel c1-b2,answered-instead-of-declining,0,fail,"marketing channel: the segment profile, no word that channels aren't held"
+XUN020,unanswerable,terse,both,,c3-b2 customers in singapore,correct,1,pass,
+XUN021,unanswerable,casual,both,,can you tell me the company size of occasional holiday buyers?,answered-instead-of-declining,0,pass,company size read as the segment's customer count
+XUN022,unanswerable,terse,both,,how many bulk buyers are in the netherlands?,correct,1,pass,
+XUN023,unanswerable,casual,both,,C4-B3 customers in belgium,correct,1,pass,
+XUN024,unanswerable,typo,both,,what's the profit for the occaional tier?,correct,1,pass,
+XUN025,unanswerable,casual,both,,small basket buyers customers in lebanon,correct,1,pass,
+XUN026,unanswerable,casual,both,,how many bulk buyers churned last month?,correct,1,pass,
+XUN027,unanswerable,formal,both,,Weekly orders for low value in 2010,correct,1,pass,
+XUN028,unanswerable,casual,both,,what's the acquisition source for top spenders small-basket buyers?,correct,1,pass,
+XUN029,unanswerable,formal,both,,how many the core tier are in belgium?,correct,1,pass,
+XUN030,unanswerable,casual,both,,how many occasional bulk buyers are in iceland?,correct,1,pass,
+XUN031,unanswerable,typo,both,,how many low-vale bulk buyers are in canada?,correct,1,pass,
+XUN032,unanswerable,casual,both,,what's the profit for occasional bulk buyers?,correct,1,pass,
+XUN033,unanswerable,casual,both,,can you tell me the satisfaction score of top spenders / holiday buyers?,answered-instead-of-declining,0,fail,satisfaction score: the segment profile instead
+XUN034,unanswerable,terse,both,,how many occasional small-basket churned last month?,correct,1,pass,
+XUN035,unanswerable,casual,both,,how many c3-b1 are in malta?,correct,1,pass,
+XUN036,unanswerable,casual,both,,which sales rep looks after occasional / holiday buyers?,correct,1,pass,
+XUN037,unanswerable,casual,both,,can you tell me the average age of core / small-basket buyers?,answered-instead-of-declining,0,pass,"average age read as tenure, without saying age isn't held"
+XUN038,unanswerable,casual,both,,how many c1-b3 opened last month's newsletter?,correct,1,pass,
+XUN039,unanswerable,casual,both,,what's the industry for c1-b2?,correct,1,fail,
+XUN040,unanswerable,formal,both,,How many c2-b1 churned last month?,correct,1,pass,
+XUN041,unanswerable,formal,both,,What is the phone numbers of segment C1-B2?,correct,1,pass,
+XUN042,unanswerable,terse,both,,how many small-basket buyers are in bahrain?,correct,1,pass,
+XUN043,unanswerable,formal,both,,What is the campaign response rate of Top spenders / Holiday buyers?,answered-instead-of-declining,0,fail,campaign response rate given as P(buys again)
+XUN044,unanswerable,terse,both,,C2-B1 industry,correct,1,pass,
+XUN045,unanswerable,terse,both,,how many core / bulk buyers are in the usa?,correct,1,pass,
+XUN046,unanswerable,casual,both,,can you tell me the gender split of occasional holiday buyers?,correct,1,pass,
+XUN047,unanswerable,terse,both,,occasional bulk customers in australia,correct,1,pass,
+XUN048,unanswerable,typo,both,,what's the customer names for core bulk buers?,correct,1,fail,
+XUN049,unanswerable,formal,both,,How many low value tier moved up a tier last quarter?,correct,1,pass,
+XUN050,unanswerable,terse,both,,how many occasional customers are in the netherlands?,correct,1,pass,
+XUN051,unanswerable,casual,both,,how many core holiday buyers are in ireland?,correct,1,pass,
+XUN052,unanswerable,terse,both,,c2-b2 gender split,correct,1,pass,
+XUN053,unanswerable,terse,both,,how many bulk buyers are in israel?,correct,1,pass,
+XUN054,unanswerable,formal,both,,What is the phone numbers of Core / Bulk buyers?,correct,1,pass,
+XUN055,unanswerable,casual,both,,what's the average age for top spenders?,correct,1,pass,
+XUN056,unanswerable,casual,both,,what will c4-b1 spend over the next two years?,correct,1,pass,
+XUN057,unanswerable,terse,both,,occasional holiday income level,answered-instead-of-declining,0,fail,"income level: a spend profile, no word that income isn't held"
+XUN058,unanswerable,terse,both,,c1-b1 customers in iceland,correct,1,pass,
+XUN059,unanswerable,formal,both,,What is the lifetime value of the Low value / Bulk buyers segment?,correct,1,fail,
+XUN060,unanswerable,casual,both,,how many small basket buyers churned last month?,correct,1,pass,
+XUN061,unanswerable,casual,both,,can you tell me the acquisition source of c3-b2?,correct,1,pass,
+XUN062,unanswerable,terse,both,,gross margin c2-b1,correct,1,pass,
+XUN063,unanswerable,terse,both,,core average discount,correct,1,pass,
+XUN064,unanswerable,typo,both,,low vlue bulk buyers preferred payment method,correct,1,pass,
+XUN065,unanswerable,terse,both,,how many top spender holiday buyers are in france?,correct,1,pass,
+XUN066,unanswerable,casual,both,,how many top spender holiday buyers are in malta?,correct,1,pass,
+XUN067,unanswerable,formal,both,,What is the gender split of the Low value / Bulk buyers segment?,correct,1,pass,
+XUN068,unanswerable,terse,both,,C4-B3 profit,correct,1,pass,
+XUN069,unanswerable,terse,both,,C4-B2 phone numbers,correct,1,pass,
+XUN070,unanswerable,casual,both,,what's the average delivery time for core holiday buyers?,correct,1,pass,
+XUN071,unanswerable,terse,both,,how many low value customers are in lithuania?,correct,1,pass,
+XUN072,unanswerable,typo,both,,can you tell me the profit of low value / holiday buuyers?,correct,1,pass,
+XUN073,unanswerable,casual,both,,c1-b3 customers in the usa,correct,1,pass,
+XUN074,unanswerable,terse,both,,how many c4-b3 are in germany?,correct,1,pass,
+XUN075,unanswerable,formal,both,,how many the occasional tier are in canada?,correct,1,pass,
+XUN076,unanswerable,formal,both,,What is the income level of the Low value / Bulk buyers segment?,correct,1,fail,
+XUN077,unanswerable,typo,both,,how many bulk buyers are in malat?,correct,1,pass,
+XUN078,unanswerable,casual,both,,what's the email open rate for core / small-basket buyers?,correct,1,pass,
+XUN079,unanswerable,casual,both,,C4-B1 customers in ireland,correct,1,pass,
+XUN080,unanswerable,typo,both,,what's the emal open rate for c4-b2?,correct,1,pass,
+XFU001,followup,casual,both,XLK157,and their tenure?,correct,1,pass,pass read in the full read
+XFU002,followup,casual,both,XRK067,and the lowest?,correct,1,pass,pass read in the full read
+XFU003,followup,terse,both,XCP071,what's the gap between them?,correct,1,pass,pass read in the full read
+XFU004,followup,casual,both,XCP063,what about their order value?,correct,1,pass,
+XFU005,followup,casual,both,XLK001,and their p buys again?,correct,1,pass,pass read in the full read
+XFU006,followup,terse,both,XBD019,and by value tier?,unhelpful,0,fail,"""and by value tier?"" gave the style x tier table, not the tier totals"
+XFU007,followup,casual,both,XRK099,how many customers does it have?,correct,1,pass,pass read in the full read
+XFU008,followup,terse,both,XRK081,how likely is it to buy again?,correct,1,pass,
+XFU009,followup,terse,both,XRK035,how big is that segment?,correct,1,pass,pass read in the full read
+XFU010,followup,terse,both,XRK007,what about the opposite end?,correct,1,pass,pass read in the full read
+XFU011,followup,terse,both,XTS065,per customer?,unhelpful,0,pass,"per-customer revenue for each C1 segment, never the tier's £3,369 (C1-B1's £3,371 matched it within tolerance)"
+XFU012,followup,casual,both,XCP045,what's the gap between them?,correct,1,pass,pass read in the full read
+XFU013,followup,terse,both,XCP073,what's the difference?,correct,1,pass,pass read in the full read
+XFU014,followup,casual,both,XLK051,what about recency?,correct,1,pass,pass read in the full read
+XFU015,followup,casual,both,XLK022,what about C3-B2?,correct,1,pass,pass read in the full read
+XFU016,followup,casual,both,XLK018,what about c1-b3?,correct,1,pass,pass read in the full read
+XFU017,followup,casual,both,XTS097,and small basket buyers?,correct,1,pass,
+XFU018,followup,terse,both,XCP042,what's the gap between them?,correct,1,pass,pass read in the full read
+XFU019,followup,terse,both,XME015,what about the q3 backtest?,correct,1,pass,pass read in the full read
+XFU020,followup,terse,both,XLK050,what about p buys again?,wrong number,0,fail,"read ""p buys again"" as ""periodic buyers"": Holiday buyers' revenue, not C1-B1's 82.0%"
+XFU021,followup,casual,both,XCP070,what about their customers?,correct,1,pass,pass read in the full read
+XFU022,followup,terse,both,XLK124,what about order value?,correct,1,pass,pass read in the full read
+XFU023,followup,terse,both,XLK158,what about C3-B1?,correct,1,pass,pass read in the full read
+XFU024,followup,casual,both,XME028,and q3?,correct,1,pass,pass read in the full read
+XFU025,followup,casual,both,XLK011,what about C1-B1?,correct,1,pass,
+XFU026,followup,terse,both,XME039,what about the q3 backtest?,correct,1,pass,pass read in the full read
+XFU027,followup,casual,both,XRK082,how much revenue do we expect from it?,correct,1,pass,pass read in the full read
+XFU028,followup,casual,both,XLK145,and their p buys again?,correct,1,pass,pass read in the full read
+XFU029,followup,terse,both,XLK095,what about C3-B1?,correct,1,pass,
+XFU030,followup,terse,both,XCP004,what about their order value?,correct,1,pass,pass read in the full read
+XFU031,followup,typo,both,XRK001,what abouut the opposite end?,correct,1,pass,
+XFU032,followup,casual,both,XRK009,what about the opposite end?,correct,1,pass,pass read in the full read
+XFU033,followup,terse,both,XCP047,what about their recency?,correct,1,pass,pass read in the full read
+XFU034,followup,terse,both,XRK052,what's its order value?,correct,1,pass,pass read in the full read
+XFU035,followup,terse,both,XLK086,and their expected revenue?,correct,1,pass,pass read in the full read
+XFU036,followup,terse,both,XTS022,what share of the total is that?,correct,1,pass,pass read in the full read
+XFU037,followup,terse,both,XCP064,what's the difference?,correct,1,pass,pass read in the full read
+XFU038,followup,terse,both,XLK002,and c4-b1?,correct,1,pass,pass read in the full read
+XFU039,followup,terse,both,XCP050,what's the difference?,correct,1,pass,pass read in the full read
+XFU040,followup,typo,both,XLK017,and their uk shre?,correct,1,pass,pass read in the full read
+XFU041,followup,terse,both,XLK070,and low-value small basket buyers?,correct,1,pass,pass read in the full read
+XFU042,followup,terse,both,XLK006,and their customers?,correct,1,pass,full row; customers 45
+XFU043,followup,casual,both,XRK080,what's its expected revenue?,correct,1,pass,pass read in the full read
+XFU044,followup,casual,both,XCP067,and on orders per year?,correct,1,pass,pass read in the full read
+XFU045,followup,casual,both,XLK128,and c3-b3?,correct,1,pass,pass read in the full read
+XFU046,followup,casual,both,XCP052,and on customers?,correct,1,pass,pass read in the full read
+XFU047,followup,casual,both,XLK114,what about net revenue?,correct,1,pass,pass read in the full read
+XFU048,followup,terse,both,XLK063,what about order value?,wrong number,0,fail,"""what about order value?"" gave C2-B3's share of expected revenue, not £260"
+XFU049,followup,casual,both,XTS029,and holiday buyers?,correct,1,pass,
+XFU050,followup,terse,both,XLK074,and their p buys again?,correct,1,pass,pass read in the full read
+XFU051,followup,terse,both,XME004,what about the q3 backtest?,correct,1,pass,pass read in the full read
+XFU052,followup,terse,both,XLK131,what about C3-B2?,correct,1,pass,pass read in the full read
+XFU053,followup,terse,both,XLK094,what about tenure?,correct,1,pass,pass read in the full read
+XFU054,followup,terse,both,XTS085,as a percentage of everyone?,correct,1,pass,
+XFU055,followup,casual,both,XLK147,and their recency?,correct,1,pass,
+XFU056,followup,casual,both,XLK064,and their net revenue?,correct,1,pass,pass read in the full read
+XFU057,followup,terse,both,XLK023,what about c2-b2?,correct,1,pass,pass read in the full read
+XFU058,followup,casual,both,XLK049,what about low-value bulk?,correct,1,pass,pass read in the full read
+XFU059,followup,casual,both,XLK067,and occasional small-basket buyers?,correct,1,pass,pass read in the full read
+XFU060,followup,casual,both,XTS072,what about bulk buyers?,unhelpful,0,fail,"segment rows, no Bulk buyers total (1,747)"
+XFU061,followup,terse,both,XCP074,and on p buys again?,correct,1,pass,pass read in the full read
+XFU062,followup,terse,both,XCP019,what about their expected revenue?,correct,1,pass,pass read in the full read
+XFU063,followup,terse,both,XRK095,how likely is it to buy again?,correct,1,pass,pass read in the full read
+XFU064,followup,casual,both,XME031,what about the q3 backtest?,correct,1,pass,pass read in the full read
+XFU065,followup,terse,both,XLK026,and their orders per year?,declined-but-answerable,0,fail,says orders per year isn't held; median orders in the last 12 months is (4)
+XFU066,followup,casual,both,XRK002,what about the opposite end?,correct,1,pass,
+XFU067,followup,terse,both,XLK043,what about order value?,correct,1,pass,pass read in the full read
+XFU068,followup,terse,both,XCP061,what's the gap between them?,correct,1,pass,pass read in the full read
+XFU069,followup,terse,both,XLK082,what about expected revenue?,correct,1,pass,pass read in the full read
+XFU070,followup,typo,both,XLK072,and c1-b1?,correct,1,pass,pass read in the full read
+XFU071,followup,casual,both,XME032,what about the two-axis grid?,correct,1,pass,pass read in the full read
+XFU072,followup,typo,both,XCP027,what's the gap betewen them?,correct,1,pass,pass read in the full read
+XFU073,followup,terse,both,XLK110,and occasional holiday buyers?,correct,1,pass,pass read in the full read
+XFU074,followup,terse,both,XCP048,and on customers?,correct,1,pass,pass read in the full read
+XFU075,followup,terse,both,XLK075,what about low-value bulk?,correct,1,pass,pass read in the full read
+XFU076,followup,terse,both,XRK028,how much revenue do we expect from it?,correct,1,pass,pass read in the full read
+XFU077,followup,terse,both,XLK013,and occasional small basket buyers?,correct,1,pass,pass read in the full read
+XFU078,followup,terse,both,XLK036,what about p buys again?,wrong number,0,fail,"misread ""p buys again""; order values instead of C3-B2's 30.4%"
+XFU079,followup,casual,both,XLK033,what about net revenue?,correct,1,pass,pass read in the full read
+XFU080,followup,terse,both,XLK061,and top spenders / small-basket buyers?,correct,1,pass,pass read in the full read
+XFU081,followup,terse,both,XCP016,what's the difference?,correct,1,pass,pass read in the full read
+XFU082,followup,casual,both,XTS089,and per head?,correct,1,pass,pass read in the full read
+XFU083,followup,terse,both,XCP044,and on orders per year?,correct,1,pass,
+XFU084,followup,casual,both,XRK087,how many customers does it have?,unhelpful,0,pass,"every Holiday segment's count; never picks the most recent (C1-B2, 45)"
+XFU085,followup,terse,both,XCP053,what about their orders per year?,correct,1,pass,
+XFU086,followup,terse,both,XRK063,what's its expected revenue?,correct,1,pass,pass read in the full read
+XFU087,followup,casual,both,XFL013,how much expected revenue do they hold?,correct,1,pass,pass read in the full read
+XFU088,followup,terse,both,XLK052,what about low value holiday?,correct,1,pass,pass read in the full read
+XFU089,followup,casual,both,XFL003,how much expected revenue do they hold?,unhelpful,0,fail,"each segment's revenue, never the combined £259,761"
+XFU090,followup,terse,both,XRK024,and its chance of ordering next quarter?,correct,1,pass,pass read in the full read
+XFU091,followup,terse,both,XFL023,how many customers is that?,correct,1,pass,pass read in the full read
+XFU092,followup,terse,both,XCP062,what's the gap between them?,correct,1,pass,pass read in the full read
+XFU093,followup,terse,both,XLK133,and low-value holiday buyers?,correct,1,pass,pass read in the full read
+XFU094,followup,terse,both,XME022,and q3?,correct,1,pass,pass read in the full read
+XFU095,followup,typo,both,XLK113,and their order vlue?,correct,1,pass,
+XFU096,followup,terse,both,XLK129,and occasional holiday buyers?,correct,1,pass,pass read in the full read
+XFU097,followup,typo,both,XCP058,what about their cusstomers?,correct,1,pass,pass read in the full read
+XFU098,followup,casual,both,XLK025,what about unit price?,correct,1,pass,pass read in the full read
+XFU099,followup,terse,both,XME016,what about the q3 backtest?,correct,1,pass,pass read in the full read
+XFU100,followup,casual,both,XLK058,what about core small-basket?,correct,1,pass,pass read in the full read
+XFU101,followup,terse,both,XME010,and the unsegmented outcome model?,correct,1,pass,pass read in the full read
+XFU102,followup,terse,both,XLK143,and core small-basket buyers?,correct,1,pass,pass read in the full read
+XFU103,followup,terse,both,XLK088,and their orders per year?,correct,1,pass,pass read in the full read
+XFU104,followup,casual,both,XCP068,what about their orders per year?,declined-but-answerable,0,fail,says orders per year isn't held; median orders in the last 12 months is (7 vs 3)
+XFU105,followup,terse,both,XCP078,what's the difference?,correct,1,pass,pass read in the full read
+XFU106,followup,casual,both,XFL007,how many customers is that?,correct,1,pass,
+XFU107,followup,casual,both,XLK109,what about C4-B3?,correct,1,pass,pass read in the full read
+XFU108,followup,casual,both,XRK053,and its chance of ordering next quarter?,correct,1,pass,pass read in the full read
+XFU109,followup,casual,both,XLK101,and their customers?,correct,1,pass,pass read in the full read
+XFU110,followup,casual,both,XLK138,and their unit price?,correct,1,pass,pass read in the full read
+XFU111,followup,casual,both,XRK015,what about the opposite end?,correct,1,pass,pass read in the full read
+XFU112,followup,terse,both,XRK006,what's its order value?,correct,1,pass,pass read in the full read
+XFU113,followup,casual,both,XTS016,% of total,correct,1,pass,pass read in the full read
+XFU114,followup,terse,both,XLK048,what about occasional small-basket?,correct,1,pass,pass read in the full read
+XFU115,followup,terse,both,XRK085,what's its order value?,correct,1,pass,pass read in the full read
+XFU116,followup,casual,both,XLK107,and their net revenue?,correct,1,pass,pass read in the full read
+XFU117,followup,terse,both,XRK088,and the highest?,correct,1,pass,pass read in the full read
+XFU118,followup,casual,both,XME008,and the value-axis-only scheme?,correct,1,pass,pass read in the full read
+XFU119,followup,terse,both,XRK046,how big is that segment?,correct,1,pass,pass read in the full read
+XFU120,followup,casual,both,XRK025,how likely is it to buy again?,correct,1,pass,pass read in the full read
+XFU121,followup,typo,both,XRK005,how big is that sgement?,correct,1,pass,pass read in the full read
+XFU122,followup,terse,both,XME040,and q3?,correct,1,pass,pass read in the full read
+XFU123,followup,casual,both,XLK120,and occasional / small-basket buyers?,correct,1,pass,
+XFU124,followup,casual,both,XLK139,what about net revenue?,correct,1,pass,pass read in the full read
+XFU125,followup,casual,both,XLK053,and their unit price?,correct,1,pass,pass read in the full read
+XFU126,followup,terse,both,XRK014,how many customers does it have?,correct,1,pass,
+XFU127,followup,terse,both,XLK045,and c1-b3?,correct,1,pass,pass read in the full read
+XFU128,followup,terse,both,XLK144,what about top spenders bulk?,correct,1,pass,
+XFU129,followup,casual,both,XRK026,how much revenue do we expect from it?,correct,1,pass,
+XFU130,followup,terse,both,XLK020,and their tenure?,correct,1,pass,pass read in the full read
+XFU131,followup,casual,both,XLK091,what about C2-B3?,correct,1,pass,pass read in the full read
+XFU132,followup,terse,both,XLK140,and occasional / holiday buyers?,correct,1,pass,pass read in the full read
+XFU133,followup,terse,both,XRK012,and the lowest?,correct,1,pass,pass read in the full read
+XFU134,followup,terse,both,XCP046,what about their order value?,correct,1,pass,pass read in the full read
+XFU135,followup,terse,both,XRK077,and the highest?,correct,1,pass,pass read in the full read
+XFU136,followup,casual,both,XLK034,and their customers?,correct,1,pass,pass read in the full read
+XFU137,followup,terse,both,XLK062,and their uk share?,correct,1,pass,pass read in the full read
+XFU138,followup,casual,both,XCP010,and on orders per year?,correct,1,pass,pass read in the full read
+XFU139,followup,casual,both,XCP079,what's the difference?,correct,1,pass,pass read in the full read
+XFU140,followup,terse,both,XCP020,what's the gap between them?,correct,1,pass,pass read in the full read

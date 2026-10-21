@@ -1,0 +1,6 @@
+sha256 6cf54e7bd7879a59f632d04cdc161677cac93d01d0b677c9d42f702bbff747a8
+frozen 2026-10-17T00:47:10.610978+00:00
+items 350
+seed 20261017
+before any system answered them
+plan sha256 fb8836f5fd17df7647ce4a9661a26c2c400e87cfbf8f7f538967a7d33cd54cf4 (with the 90% amendment)

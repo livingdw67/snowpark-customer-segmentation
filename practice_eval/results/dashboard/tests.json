@@ -1,0 +1,70 @@
+[
+ {
+  "test": "kappa",
+  "system": "assistant",
+  "n": 175,
+  "statistic": 0.88531,
+  "agreement": 0.97143,
+  "chance_agreement": 0.75089,
+  "lo": 0.7705,
+  "hi": 0.97542,
+  "first_pass_pass_read_wrong": 1,
+  "first_pass_fail_read_right": 4
+ },
+ {
+  "test": "kappa",
+  "system": "analyst",
+  "n": 238,
+  "statistic": 0.62323,
+  "agreement": 0.92017,
+  "chance_agreement": 0.78812,
+  "lo": 0.45349,
+  "hi": 0.76537,
+  "first_pass_pass_read_wrong": 4,
+  "first_pass_fail_read_right": 15
+ },
+ {
+  "test": "followup",
+  "system": "assistant",
+  "first_n": 112,
+  "first_correct": 104,
+  "first_accuracy": 0.92857,
+  "followup_n": 28,
+  "followup_correct": 20,
+  "followup_accuracy": 0.71429,
+  "statistic": 5.2,
+  "p": 0.00413
+ },
+ {
+  "test": "followup",
+  "system": "analyst",
+  "first_n": 152,
+  "first_correct": 141,
+  "first_accuracy": 0.92763,
+  "followup_n": 38,
+  "followup_correct": 34,
+  "followup_accuracy": 0.89474,
+  "statistic": 1.50802,
+  "p": 0.50555
+ },
+ {
+  "test": "wording",
+  "system": "assistant",
+  "statistic": 2.14823,
+  "p": 0.56387,
+  "p_chi2": 0.70852,
+  "min_expected": 4.472,
+  "cells_below_5": 1,
+  "permutations": 20000
+ },
+ {
+  "test": "wording",
+  "system": "analyst",
+  "statistic": 3.22339,
+  "p": 0.37853,
+  "p_chi2": 0.52116,
+  "min_expected": 2.704,
+  "cells_below_5": 1,
+  "permutations": 20000
+ }
+]

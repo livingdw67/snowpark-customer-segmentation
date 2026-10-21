@@ -1,0 +1,48 @@
+[
+ {
+  "check": "All 175 data questions (main result)",
+  "unit": "question",
+  "n": 175,
+  "assistant_only": 21,
+  "analyst_only": 13,
+  "p": 0.22948,
+  "method": "exact binomial"
+ },
+ {
+  "check": "Follow-ups grouped with the question before them",
+  "unit": "conversation",
+  "n": 147,
+  "assistant_only": 21,
+  "analyst_only": 13,
+  "p": 0.2059,
+  "method": "clustered McNemar (Durkalski 2003)"
+ },
+ {
+  "check": "First questions only (follow-ups dropped)",
+  "unit": "question",
+  "n": 147,
+  "assistant_only": 16,
+  "analyst_only": 10,
+  "p": 0.32694,
+  "method": "exact binomial"
+ },
+ {
+  "check": "Graded by the machine first pass instead of the read",
+  "unit": "question",
+  "n": 175,
+  "assistant_only": 23,
+  "analyst_only": 14,
+  "p": 0.18774,
+  "method": "exact binomial"
+ },
+ {
+  "check": "Analyst's 7 FLOAT-equality failures counted right",
+  "unit": "question",
+  "n": 175,
+  "assistant_only": 15,
+  "analyst_only": 14,
+  "p": 1.0,
+  "method": "exact binomial",
+  "counted_right": 7
+ }
+]

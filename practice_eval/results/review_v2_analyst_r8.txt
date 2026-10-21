@@ -1,0 +1,176 @@
+# v2_analyst_r8: answers identical to v2_analyst_answers.jsonl keep its verdict; changed ones are read.
+HLK06|correct|same answer as before
+HFU11|correct|same answer as before
+HLK09|correct|same answer as before
+HLK15|correct|same answer as before
+HLK18|correct|same answer as before
+HLK19|correct|same answer as before
+HLK22|correct|same answer as before
+HLK24|correct|same answer as before
+HLK27|correct|same answer as before
+HLK28|correct|same answer as before
+HLK31|correct|same answer as before
+HLK32|correct|same answer as before
+HTS01|unhelpful|same answer as before: "core tier customers": Core's segment rows, no tier total (1,073)
+HTS03|correct|same answer as before
+HTS05|correct|same answer as before
+HFU15|correct|same answer as before
+HTS07|correct|same answer as before
+HTS14|correct|same answer as before
+HTS15|unhelpful|same answer as before: "occasional + core": each tier's revenue, no combined total (£523,563)
+HTS19|correct|same answer as before
+HTS21|correct|same answer as before
+HTS22|correct|same answer as before
+HRK03|correct|same answer as before
+HFU04|correct|same answer as before
+HRK13|correct|same answer as before
+HRK14|correct|same answer as before
+HRK17|correct|same answer as before
+HRK19|correct|same answer as before
+HCP06|correct|same answer as before
+HCP07|correct|same answer as before
+HFU21|correct|same answer as before
+HCP11|correct|same answer as before
+HCP12|correct|same answer as before
+HCP13|correct|same answer as before: interpretation says lower tenure = newer; 412 < 447.5
+HCP15|correct|same answer as before
+HBD02|correct|same answer as before
+HBD05|correct|same answer as before: long-format table
+HBD07|correct|same answer as before
+HFL02|correct|same answer as before
+HFU19|correct|same answer as before
+HFL04|correct|same answer as before
+HME02|correct|same answer as before
+HME05|correct|same answer as before
+HME08|correct|same answer as before
+HAM01|correct|same answer as before: expected revenue, labelled
+HAM02|correct|same answer as before: by customers, labelled
+HAM03|correct|same answer as before: read "good" as Top spenders (383), labelled
+HAM04|wrong claim|same answer as before: maps "cheap buyers" to small-basket buyers "as they have the lowest unit price"; they have the highest
+HAM06|wrong number|same answer as before: "loyal customers count" answered with all customers (4,261)
+HAM12|correct|same answer as before
+HAM13|correct|same answer as before
+HAM17|correct|same answer as before: read active buyers as expected orderers, labelled
+HLK01|correct|
+HLK02|correct|full row; customers 199
+HLK03|correct|
+HLK04|correct|
+HLK05|correct|
+HLK07|correct|
+HLK08|correct|
+HLK10|correct|
+HLK11|correct|
+HLK12|correct|
+HLK13|correct|
+HLK14|correct|
+HLK16|correct|
+HLK17|correct|
+HLK20|correct|
+HLK21|correct|
+HLK23|correct|
+HLK25|correct|
+HLK26|correct|
+HLK29|correct|
+HLK30|correct|
+HTS02|unhelpful|"holiday buyers headcount": per-segment rows, no total (974)
+HTS04|correct|
+HTS06|correct|
+HTS08|correct|
+HTS09|unhelpful|expected orderers per C1 segment, no tier total (~312)
+HTS10|correct|
+HTS11|unhelpful|non-UK count per C1 segment, no total (~63)
+HTS12|correct|
+HTS13|correct|
+HTS16|correct|
+HTS17|correct|
+HTS18|correct|
+HTS20|correct|
+HRK01|correct|QUALIFY RANK() now returns the row
+HRK02|correct|
+HRK04|correct|QUALIFY RANK() now returns the row
+HRK05|correct|
+HRK06|correct|
+HRK07|correct|
+HRK08|correct|QUALIFY RANK() now returns the row
+HRK09|correct|QUALIFY RANK() now returns the row
+HRK10|correct|
+HRK11|correct|
+HRK12|unhelpful|"most recent occasional segment": every C3 row and column, no pick
+HRK15|correct|
+HRK16|correct|both tied segments
+HRK18|correct|
+HRK20|correct|
+HCP01|correct|table, no "no"; C1-B3 higher
+HCP02|correct|
+HCP03|correct|table, no "yes"; C2-B3 7 vs 5
+HCP04|correct|
+HCP05|correct|table, no "yes"; 893 vs 629
+HCP08|correct|
+HCP09|correct|table, no "yes"; 67.0% vs 58.7%
+HCP10|correct|customers and revenue for both tiers
+HCP14|correct|
+HCP16|correct|table, no "no"; C3-B2 higher
+HBD01|correct|
+HBD03|correct|
+HBD04|correct|
+HBD06|correct|
+HBD08|correct|
+HFL01|correct|
+HFL03|correct|
+HFL05|correct|
+HFL06|correct|1,211
+HME01|correct|
+HME03|correct|
+HME04|correct|
+HME06|declined-but-answerable|again says there are no customer IDs; its own cleaning table has 794,165 product lines with a customer ID
+HME07|correct|
+HFU01|correct|full row; customers 245
+HFU02|correct|
+HFU03|correct|
+HFU05|correct|
+HFU06|correct|
+HFU07|unhelpful|"and by buying style?" gave the tier x style table, not the style totals
+HFU08|correct|1,747 now that the parent returns a row
+HFU09|correct|
+HFU10|correct|
+HFU12|correct|
+HFU13|correct|
+HFU14|correct|
+HFU16|correct|
+HFU17|correct|
+HFU18|correct|QUALIFY RANK() now returns the row
+HFU20|wrong number|"as a percentage?" gave share = 1 (100%) again; answer 8.1%
+HFU22|correct|
+HFU23|correct|
+HFU24|correct|QUALIFY RANK() now returns the row
+HFU25|unhelpful|"its expected revenue" after the unpicked C3 list: all three C3 segments, no pick (C3-B2 £38,344)
+HFU26|correct|
+HFU27|correct|long-format table
+HFU28|correct|
+HAM05|correct|lowest expected revenue, labelled
+HAM07|correct|per-segment engagement measures
+HAM08|correct|segment rows plus the tier total (1,234)
+HAM09|correct|every scheme
+HAM10|correct|per segment
+HAM11|correct|full row with expected revenue and per-customer revenue
+HAM14|correct|hit rate read as top-20 capture, labelled
+HAM15|correct|
+HAM16|correct|
+HAM18|correct|full row with expected revenue
+HAM19|correct|highest expected revenue, labelled
+HUN01|correct|no age; tenure offered as the nearest, labelled
+HUN02|correct|says there's no product data; shows the behaviour profile instead
+HUN03|correct|says monthly revenue isn't held
+HUN04|answered-instead-of-declining|"names of the ... customers" answered with the segment's name
+HUN05|correct|
+HUN06|correct|
+HUN07|correct|
+HUN08|correct|
+HUN09|correct|next quarter, with the caveat
+HUN10|answered-instead-of-declining|income answered with spend figures, without saying income isn't held
+HUN11|correct|
+HUN12|correct|
+HUN13|correct|
+HUN14|correct|
+HUN15|correct|
+HUN16|correct|

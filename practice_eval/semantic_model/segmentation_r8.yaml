@@ -1,0 +1,370 @@
+name: customer_segmentation
+description: >
+  Segment-level results of a customer segmentation of 4,261 active wholesale-gift customers (UCI Online
+  Retail II) at the snapshot 2011-12-10. Twelve hybrid segments = 4 value tiers x 3 buying styles, plus
+  out-of-time backtests of the segmentation schemes, how k was chosen per axis, and data-cleaning row
+  counts. There are no customer-level rows.
+custom_instructions: >
+  Segment codes are <value tier>-<buying style>. Value tiers: C1 Top spenders (highest predicted
+  next-quarter value), C2 Core, C3 Occasional, C4 Low value (lowest). Buying styles: B1 Bulk buyers,
+  B2 Holiday buyers, B3 Small-basket buyers. A "tier" means all three segments with that C code; a
+  "buying style" means all four segments with that B code.
+  Columns starting MEDIAN_ are the median customer of one segment. Never sum or average medians across
+  segments; for a tier or style, show each segment's median instead.
+  Customers, expected revenue, expected orderers and UK / non-UK customer counts add up across segments.
+  Probabilities (MEAN_P_ACTIVE) and UK_SHARE combine as customer-weighted averages:
+  SUM(CUSTOMERS * x) / SUM(CUSTOMERS).
+  Lower MEDIAN_RECENCY_DAYS means more recent; higher means more lapsed. MEDIAN_TENURE_DAYS is days since
+  first order: lower means newer customers. "Basket size" means units per order.
+  SHARE, UK_SHARE, MEDIAN_RETURN_RATE, MEDIAN_Q4_REVENUE_SHARE and MEAN_P_ACTIVE are fractions
+  (0.07 = 7%). Money is GBP; there is no exchange rate.
+  "Share of X that are Y" divides Y's customers by X's customers, not by all customers.
+  Expected revenue and P(buys again) are forecasts for the next quarter only (the 91 days after
+  2011-12-10). There is no revenue by past month or year, no forecasts beyond next quarter, and no age,
+  gender, country (only UK share), product, discount, profit or contact data, and no customer IDs.
+  Do not answer questions that need those; say the data doesn't hold them.
+  Backtests have two folds: backtest_q2 (fit 2011-03-10, scored 2011-06-10) and backtest_q3 (fit
+  2011-06-10, scored 2011-09-10). When a fold isn't named, report the mean of the two folds.
+  When asking which segment (or tier, style, scheme) is highest or lowest, return every one tied at
+  that value instead of LIMIT 1: rank with QUALIFY RANK() OVER (ORDER BY <measure> DESC) = 1 (ASC for
+  lowest). Never compare a column or aggregate to (SELECT MAX(...)) or (SELECT MIN(...)) with "=":
+  the columns are FLOAT and full-precision values don't compare equal, so that returns no rows.
+  "Mean per segment" or "average per segment" is the total divided by
+  the number of segments. A follow-up asking for the average after a single-fold answer means the
+  mean over both folds. Comparing tiers or styles on an additive measure means their totals.
+  When asked for another currency, give the GBP value and say there is no exchange rate.
+tables:
+  - name: segments
+    description: One row per hybrid segment at the latest snapshot (2011-12-10).
+    base_table:
+      database: CUSTOMER_SEGMENTATION
+      schema: ANALYST
+      table: SEGMENTS
+    primary_key:
+      columns: [segment]
+    dimensions:
+      - name: segment
+        expr: SEGMENT
+        data_type: VARCHAR
+        description: Segment code <value tier>-<buying style>, e.g. C2-B1.
+        synonyms: [segment code, seg, cell]
+        unique: true
+        sample_values: [C1-B1, C1-B2, C1-B3, C2-B1, C2-B2, C2-B3, C3-B1, C3-B2, C3-B3, C4-B1, C4-B2, C4-B3]
+      - name: segment_name
+        expr: SEGMENT_NAME
+        data_type: VARCHAR
+        description: Readable name, e.g. 'Core / Holiday buyers'.
+        sample_values: [Top spenders / Bulk buyers, Core / Holiday buyers, Low value / Small-basket buyers]
+      - name: value_tier
+        expr: VALUE_TIER
+        data_type: VARCHAR
+        description: Value tier code. C1 = highest predicted next-quarter value, C4 = lowest.
+        synonyms: [tier, value segment]
+        is_enum: true
+        sample_values: [C1, C2, C3, C4]
+      - name: value_tier_name
+        expr: VALUE_TIER_NAME
+        data_type: VARCHAR
+        description: Value tier name.
+        synonyms: [tier name]
+        is_enum: true
+        sample_values: [Top spenders, Core, Occasional, Low value]
+      - name: buying_style
+        expr: BEHAVIOR_SEGMENT
+        data_type: VARCHAR
+        description: Buying style code. B1 = bulk, B2 = holiday, B3 = small-basket.
+        synonyms: [behavior segment, behaviour, style]
+        is_enum: true
+        sample_values: [B1, B2, B3]
+      - name: buying_style_name
+        expr: BEHAVIOR_NAME
+        data_type: VARCHAR
+        description: Buying style name.
+        synonyms: [behavior name, style name]
+        is_enum: true
+        sample_values: [Bulk buyers, Holiday buyers, Small-basket buyers]
+      - name: traits
+        expr: TRAITS
+        data_type: VARCHAR
+        description: Three words on what stands out for the segment (e.g. 'lapsed, year-round, infrequent').
+    facts:
+      - name: customers
+        expr: CUSTOMERS
+        data_type: NUMBER
+        description: Number of active customers in the segment. Adds up across segments.
+        synonyms: [headcount, size, number of customers, customer count]
+      - name: share_of_customers
+        expr: SHARE
+        data_type: NUMBER
+        description: Segment's share of all 4,261 customers (fraction).
+      - name: expected_revenue
+        expr: EXPECTED_REVENUE
+        data_type: NUMBER
+        description: Predicted next-quarter revenue summed over the segment's customers, GBP. Adds up.
+        synonyms: [predicted revenue, forecast revenue, expected rev, value next quarter]
+      - name: p_buys_again
+        expr: MEAN_P_ACTIVE
+        data_type: NUMBER
+        description: Average predicted probability that a customer orders in the next 91 days (fraction). Combine customer-weighted.
+        synonyms: [P(buys again), chance of ordering next quarter, probability of buying again, likelihood to return, retention]
+      - name: expected_orderers
+        expr: CUSTOMERS * MEAN_P_ACTIVE
+        data_type: NUMBER
+        description: Customers expected to order next quarter (customers x P(buys again)). Adds up.
+        synonyms: [expected buyers, expected to order]
+      - name: uk_share
+        expr: UK_SHARE
+        data_type: NUMBER
+        description: Share of the segment's customers based in the UK (fraction). Combine customer-weighted.
+      - name: uk_customers
+        expr: CUSTOMERS * UK_SHARE
+        data_type: NUMBER
+        description: Estimated customers in the UK. Adds up.
+      - name: non_uk_customers
+        expr: CUSTOMERS * (1 - UK_SHARE)
+        data_type: NUMBER
+        description: Estimated customers outside the UK. Adds up.
+        synonyms: [international customers, customers abroad]
+      - name: median_recency_days
+        expr: MEDIAN_RECENCY_DAYS
+        data_type: NUMBER
+        description: Median days since last order. Lower = more recent, higher = more lapsed. Median; never combine.
+        synonyms: [recency, days since last order, last purchase]
+      - name: median_orders
+        expr: MEDIAN_ORDERS
+        data_type: NUMBER
+        description: Median orders in the last 12 months (frequency). Median; never combine.
+        synonyms: [frequency, order count, how often they order]
+      - name: median_net_revenue
+        expr: MEDIAN_NET_REVENUE
+        data_type: NUMBER
+        description: Median net revenue (spend) in the last 12 months, GBP. Median; never combine.
+        synonyms: [spend, net revenue, annual spend]
+      - name: median_units_per_order
+        expr: MEDIAN_AVG_UNITS_PER_ORDER
+        data_type: NUMBER
+        description: Median units per order (basket size). Median; never combine.
+        synonyms: [basket size, units per order, items per order]
+      - name: median_unit_price
+        expr: MEDIAN_AVG_UNIT_PRICE
+        data_type: NUMBER
+        description: Median price paid per unit, GBP. Median; never combine.
+        synonyms: [unit price, price per item]
+      - name: median_lines_per_order
+        expr: MEDIAN_AVG_LINES_PER_ORDER
+        data_type: NUMBER
+        description: Median distinct product lines per order (basket width). Median; never combine.
+        synonyms: [lines per order, basket width]
+      - name: median_return_rate
+        expr: MEDIAN_RETURN_RATE
+        data_type: NUMBER
+        description: Median return rate (fraction). Median; never combine.
+        synonyms: [returns]
+      - name: median_q4_revenue_share
+        expr: MEDIAN_Q4_REVENUE_SHARE
+        data_type: NUMBER
+        description: Median share of revenue bought in October-December (fraction). Higher = more seasonal. Median; never combine.
+        synonyms: [seasonality, q4 share, holiday share]
+      - name: median_order_value
+        expr: MEDIAN_AVG_ORDER_VALUE
+        data_type: NUMBER
+        description: Median average order value, GBP. Median; never combine.
+        synonyms: [AOV, order value, spend per order]
+      - name: median_tenure_days
+        expr: MEDIAN_TENURE_DAYS
+        data_type: NUMBER
+        description: Median days since first order. Lower = newer customers. Median; never combine.
+        synonyms: [tenure, customer age, how long they've been customers]
+    metrics:
+      - name: total_customers
+        expr: SUM(customers)
+        description: Customers across the selected segments.
+      - name: total_expected_revenue
+        expr: SUM(expected_revenue)
+        description: Predicted next-quarter revenue across the selected segments, GBP.
+      - name: weighted_p_buys_again
+        expr: SUM(customers * p_buys_again) / SUM(customers)
+        description: Customer-weighted P(buys again) for a group of segments.
+      - name: weighted_uk_share
+        expr: SUM(customers * uk_share) / SUM(customers)
+        description: Customer-weighted UK share for a group of segments.
+      - name: revenue_per_customer
+        expr: SUM(expected_revenue) / SUM(customers)
+        description: Predicted next-quarter revenue per customer, GBP.
+  - name: backtest
+    description: >
+      Out-of-time comparison of segmentation schemes, one row per scheme per fold. Schemes:
+      rfm_score_baseline, two_axis_value, two_axis_grid, outcome_guided (3-4 segments),
+      outcome_guided_grid_size (9-12 segments), hybrid, outcome_model_continuous (unsegmented ceiling).
+    base_table:
+      database: CUSTOMER_SEGMENTATION
+      schema: ANALYST
+      table: BACKTEST
+    dimensions:
+      - name: scheme
+        expr: SCHEME
+        data_type: VARCHAR
+        is_enum: true
+        sample_values: [rfm_score_baseline, two_axis_value, two_axis_grid, outcome_guided, outcome_guided_grid_size, hybrid, outcome_model_continuous]
+      - name: fold
+        expr: RUN_ID
+        data_type: VARCHAR
+        description: Backtest fold.
+        synonyms: [run, backtest]
+        is_enum: true
+        sample_values: [backtest_q2, backtest_q3]
+      - name: train_snapshot
+        expr: TRAIN_SNAPSHOT
+        data_type: VARCHAR
+        description: Snapshot the scheme was fit on.
+      - name: eval_snapshot
+        expr: EVAL_SNAPSHOT
+        data_type: VARCHAR
+        description: Snapshot the scheme was scored on.
+    facts:
+      - name: next_active_auc
+        expr: NEXT_ACTIVE_AUC
+        data_type: NUMBER
+        description: How well segments rank who buys again next quarter (AUC, higher is better).
+        synonyms: [AUC, buys-again AUC]
+      - name: revenue_spearman
+        expr: REVENUE_SPEARMAN
+        data_type: NUMBER
+        description: Rank correlation with next-quarter revenue (higher is better).
+      - name: top20_revenue_capture
+        expr: TOP20_REVENUE_CAPTURE
+        data_type: NUMBER
+        description: Share of next-quarter revenue held by the top 20% of customers ranked by segment (higher is better).
+        synonyms: [top-20 capture, revenue capture]
+      - name: rule_fidelity
+        expr: RULE_FIDELITY
+        data_type: NUMBER
+        description: How often plain-English rules reproduce the segments.
+      - name: n_segments
+        expr: N_SEGMENTS
+        data_type: NUMBER
+        description: Number of segments in the scheme.
+      - name: min_segment_share
+        expr: MIN_SEGMENT_SHARE
+        data_type: NUMBER
+        description: Smallest segment's share of customers.
+      - name: value_eta2
+        expr: VALUE_ETA2
+        data_type: NUMBER
+        description: Variance in value features explained by segment (0-1).
+      - name: behavior_eta2
+        expr: BEHAVIOR_ETA2
+        data_type: NUMBER
+        description: Variance in buying-style features explained by segment (0-1).
+        synonyms: [behaviour eta2, buying-style separation]
+      - name: persistence
+        expr: PERSISTENCE
+        data_type: NUMBER
+        description: Share of customers keeping their segment quarter to quarter (higher = more stable).
+      - name: predicted_active_rate
+        expr: PREDICTED_ACTIVE_RATE
+        data_type: NUMBER
+        description: Predicted share of customers ordering (continuous model only).
+      - name: actual_active_rate
+        expr: ACTUAL_ACTIVE_RATE
+        data_type: NUMBER
+        description: Actual share of customers who ordered (continuous model only).
+      - name: revenue_forecast_bias
+        expr: REVENUE_FORECAST_BIAS
+        data_type: NUMBER
+        description: Revenue forecast bias, negative = under-forecast (continuous model only).
+  - name: k_choices
+    description: How the number of segments (k) was chosen for each axis of the two-axis method in production.
+    base_table:
+      database: CUSTOMER_SEGMENTATION
+      schema: ANALYST
+      table: K_CHOICES
+    dimensions:
+      - name: axis
+        expr: AXIS
+        data_type: VARCHAR
+        is_enum: true
+        sample_values: [value, behavior]
+      - name: criterion
+        expr: CRITERION
+        data_type: VARCHAR
+        description: What was maximised when choosing k (next_revenue_r2 for value, silhouette for behavior).
+      - name: eligible
+        expr: ELIGIBLE
+        data_type: BOOLEAN
+        description: Met stability ARI >= 0.85 and every segment >= 5% of customers.
+      - name: chosen
+        expr: CHOSEN
+        data_type: BOOLEAN
+        description: The selected k.
+    facts:
+      - name: k
+        expr: K
+        data_type: NUMBER
+        description: Number of segments on the axis.
+      - name: stability_ari
+        expr: STABILITY_ARI
+        data_type: NUMBER
+        description: Bootstrap stability (ARI); >= 0.85 required.
+        synonyms: [stability]
+      - name: min_share
+        expr: MIN_SHARE
+        data_type: NUMBER
+        description: Smallest segment's share of customers.
+      - name: silhouette
+        expr: SILHOUETTE
+        data_type: NUMBER
+      - name: next_revenue_r2
+        expr: NEXT_REVENUE_R2
+        data_type: NUMBER
+        description: Out-of-fold R2 for next-quarter revenue.
+  - name: cleaning
+    description: Row counts after each data-cleaning step, from raw transactions to product lines.
+    base_table:
+      database: CUSTOMER_SEGMENTATION
+      schema: ANALYST
+      table: CLEANING
+    dimensions:
+      - name: stage
+        expr: STAGE
+        data_type: VARCHAR
+        description: Cleaning step name.
+    facts:
+      - name: step
+        expr: STEP
+        data_type: NUMBER
+        description: Step order (1 = raw rows).
+      - name: rows_remaining
+        expr: ROWS_REMAINING
+        data_type: NUMBER
+        description: Rows left after the step.
+      - name: change
+        expr: CHANGE
+        data_type: NUMBER
+        description: Rows added by the step (negative = removed; empty for the first step).
+verified_queries:
+  - name: lowest_expected_revenue_segment
+    question: which segment has the lowest expected revenue?
+    sql: SELECT segment, segment_name, expected_revenue FROM __segments ORDER BY expected_revenue ASC LIMIT 1
+    verified_at: 1760000000
+    verified_by: round 2
+  - name: top_spender_share
+    question: what share of customers are top spenders?
+    sql: SELECT SUM(CASE WHEN value_tier = 'C1' THEN customers ELSE 0 END) / SUM(customers) AS share_of_customers FROM __segments
+    verified_at: 1760000000
+    verified_by: round 2
+  - name: style_revenue
+    question: which buying style has the highest total expected revenue?
+    sql: SELECT buying_style, buying_style_name, SUM(expected_revenue) AS total_expected_revenue FROM __segments GROUP BY buying_style, buying_style_name ORDER BY total_expected_revenue DESC
+    verified_at: 1760000000
+    verified_by: round 3
+  - name: tier_weighted_p
+    question: Rank the value tiers by customer-weighted P(buys again).
+    sql: SELECT value_tier, value_tier_name, SUM(customers * p_buys_again) / SUM(customers) AS weighted_p_buys_again FROM __segments GROUP BY value_tier, value_tier_name ORDER BY weighted_p_buys_again DESC
+    verified_at: 1760000000
+    verified_by: round 3
+  - name: scheme_auc_mean
+    question: Which scheme has the best average next-active AUC?
+    sql: SELECT scheme, AVG(next_active_auc) AS mean_auc FROM __backtest GROUP BY scheme ORDER BY mean_auc DESC
+    verified_at: 1760000000
+    verified_by: round 5
