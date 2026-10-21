@@ -157,6 +157,12 @@ Still open from round 5: a terse "why?" follow-up that misstates the k rule, a "
 
 Every figure in every answer traced back to the data. Most of these questions were tuned against, so 100% means past fixes still hold, not that new questions will be answered correctly; the rounds above measure that. Results are in `results/assistant_eval.csv`; rerun with `python -m assistant.evaluate`.
 
+**Against Cortex Analyst, on questions weighted to real use.** The rounds above pick questions to break the Assistant. [practice_eval/](practice_eval/) asks them in the proportions people actually ask them (lookups, rankings, follow-ups, ambiguous and unanswerable questions, documentation and writing requests), with every truth computed from the data, and puts the same data questions to Snowflake's Cortex Analyst:
+
+- **Practice mix, 250 questions each:** Assistant 82.8%, Analyst 89.6%. On the 238 data questions both answered, 85.3% vs 90.3% (McNemar p = 0.09).
+- **Held-out retest of the fixes:** 250 new questions, frozen before any fix was written and graded blind. The old code scored 80.0% and the fixed code **87.2%**; they disagreed on 18 questions and the fixed code was right on all 18 (p = 8e-6). On the 175 data questions, the fixed Assistant got 91.4% to Analyst's 86.9% (p = 0.23).
+- **Power run, 1,400 paired data questions** (sized for 90% power at 3.4 points): Analyst 93.8%, Assistant 87.9%. Analyst is ahead by 5.9 points (95% CI 3.8–8.0, p = 4e-8). The biggest gap is questions the data can't answer, such as other countries or CRM fields, where the Assistant gives the nearest figure instead of declining.
+
 | | Offline (default) | Live |
 |---|---|---|
 | Data | DuckDB over `results/*.csv` (aggregated, committed) | The same tables from the `ML` schema in Snowflake |
@@ -317,6 +323,7 @@ app.py                Segment Assistant UI (Streamlit)
 assistant/              graph.py (LangGraph agents), semantics.py (metrics + calculations),
                       docs.py (README retrieval), verify.py (figure check), evaluate.py
 tests/                pytest suite + Snowflake runner
+practice_eval/        1,788 questions: Segment Assistant vs Cortex Analyst (practice mix, held-out, power run)
 exploration/          the initial 109-configuration method bake-off
 results/              exported comparison, cleaning audit, k selection, hybrid profiles
 docs/img/             charts

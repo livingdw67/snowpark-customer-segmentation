@@ -1,0 +1,146 @@
+[
+ {
+  "id": "HLK04",
+  "type": "Lookup",
+  "question": "occasinal holiday p buys again",
+  "change": "fixed",
+  "wrong_verdict": "wrong number",
+  "note": "dropped the tier: all Holiday buyers 35.0%, not C3-B2 30.4%"
+ },
+ {
+  "id": "HLK12",
+  "type": "Lookup",
+  "question": "What is the median number of orders placed by Occasional / Small-basket buyers in the last 12 months?",
+  "change": "fixed",
+  "wrong_verdict": "wrong number",
+  "note": "asked orders in 12 months; gave net revenue £635"
+ },
+ {
+  "id": "HRK05",
+  "type": "Ranking",
+  "question": "which core segment has the biggest orders by value?",
+  "change": "fixed",
+  "wrong_verdict": "wrong number",
+  "note": "ranked orders per year, not order value"
+ },
+ {
+  "id": "HCP03",
+  "type": "Comparison",
+  "question": "Do Core / Small-basket buyers order more often than Core / Bulk buyers?",
+  "change": "fixed",
+  "wrong_verdict": "wrong claim",
+  "note": "says No; Core / Small-basket buyers do order more often (7 vs 5)"
+ },
+ {
+  "id": "HCP09",
+  "type": "Comparison",
+  "question": "Do Core / Holiday buyers have a higher Q4 revenue share than Top spenders / Holiday buyers?",
+  "change": "fixed",
+  "wrong_verdict": "wrong claim",
+  "note": "says No; Core / Holiday buyers' Q4 share is higher (67.0% vs 58.7%)"
+ },
+ {
+  "id": "HFU04",
+  "type": "Follow-up",
+  "question": "how many customers do those three have?",
+  "change": "fixed",
+  "wrong_verdict": "wrong number",
+  "note": "only two of the three segments, and no total"
+ },
+ {
+  "id": "HFU19",
+  "type": "Follow-up",
+  "question": "what's their combined expected revenue?",
+  "change": "fixed",
+  "wrong_verdict": "wrong number",
+  "note": "all customers' revenue, not the three segments'"
+ },
+ {
+  "id": "HAM03",
+  "type": "Ambiguous",
+  "question": "how many good customers do we have?",
+  "change": "fixed",
+  "wrong_verdict": "wrong claim",
+  "note": "counts every customer as good"
+ },
+ {
+  "id": "HAM04",
+  "type": "Ambiguous",
+  "question": "how many cheap buyers are there?",
+  "change": "fixed",
+  "wrong_verdict": "unhelpful",
+  "note": "lists unit prices; no count and no question back"
+ },
+ {
+  "id": "HAM06",
+  "type": "Ambiguous",
+  "question": "loyal customers count",
+  "change": "fixed",
+  "wrong_verdict": "wrong claim",
+  "note": "gives all customers' chance of ordering as the loyal count"
+ },
+ {
+  "id": "HUN04",
+  "type": "Unanswerable",
+  "question": "give me the names of the top spender small-basket customers",
+  "change": "fixed",
+  "wrong_verdict": "answered-instead-of-declining",
+  "note": "gave the segment's count instead of saying names aren't held"
+ },
+ {
+  "id": "HUN14",
+  "type": "Unanswerable",
+  "question": "what's the customer satisfaction score for low value buyers?",
+  "change": "fixed",
+  "wrong_verdict": "answered-instead-of-declining",
+  "note": "tier overview, nothing about satisfaction not being held"
+ },
+ {
+  "id": "HUN15",
+  "type": "Unanswerable",
+  "question": "how many customers upgraded from occasional to core this year?",
+  "change": "fixed",
+  "wrong_verdict": "answered-instead-of-declining",
+  "note": "tier counts, as if they showed upgrades"
+ },
+ {
+  "id": "HWR03",
+  "type": "Docs, writing, off-topic",
+  "question": "2 subject lines for top spender bulk buyers",
+  "change": "fixed",
+  "wrong_verdict": "unhelpful",
+  "note": "asked for 2 subject lines; wrote a whole campaign"
+ },
+ {
+  "id": "HWR05",
+  "type": "Docs, writing, off-topic",
+  "question": "summarise the segmentation in 3 bullets for the sales team",
+  "change": "fixed",
+  "wrong_verdict": "unhelpful",
+  "note": "asks which segment instead of summarising the whole segmentation"
+ },
+ {
+  "id": "HWR20",
+  "type": "Docs, writing, off-topic",
+  "question": "suggest a contact schedule for occasional small-basket buyers",
+  "change": "fixed",
+  "wrong_verdict": "unhelpful",
+  "note": "a segment profile, no contact schedule"
+ },
+ {
+  "id": "HWR21",
+  "type": "Docs, writing, off-topic",
+  "question": "how often should we contact top spender small-basket buyers?",
+  "change": "fixed",
+  "wrong_verdict": "unhelpful",
+  "note": "states 18 orders a year; no contact advice"
+ },
+ {
+  "id": "HOT02",
+  "type": "Docs, writing, off-topic",
+  "question": "great, thanks!",
+  "change": "fixed",
+  "wrong_verdict": "unhelpful",
+  "note": "answers thanks with the off-topic refusal"
+ }
+]

@@ -1,0 +1,14 @@
+[
+ {
+  "system": "assistant",
+  "n": 1400,
+  "agreement": 0.95071,
+  "kappa": 0.77529
+ },
+ {
+  "system": "analyst",
+  "n": 1348,
+  "agreement": 0.92953,
+  "kappa": 0.56777
+ }
+]

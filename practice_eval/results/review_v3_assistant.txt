@@ -1,0 +1,1434 @@
+# Power run, Segment Assistant (98bcfbe) on questions_v3.json. Read per POWER_RUN_PLAN.md; unread passes filled at the end.
+XLK007|correct|
+XLK008|correct|
+XLK010|correct|49 first, then every other measure
+XLK015|correct|
+XLK016|correct|
+XLK025|wrong number|asked UK share; gave C2-B3's share of the Core tier (18.5%)
+XLK026|correct|
+XLK031|wrong number|asked UK share; gave C2-B2's share of the Core tier (22.8%)
+XLK045|misrouted|sent to the docs agent; no figure (35.1%)
+XLK046|correct|
+XLK047|wrong number|"how big are orders, in pounds" read as order count (18); order value is £401
+XLK057|correct|
+XLK058|correct|
+XLK059|correct|
+XLK075|wrong number|asked UK share; gave C2-B1's share of the Core tier (58.6%)
+XLK077|correct|
+XLK078|wrong number|typo "ordeers": gave net revenue instead of orders (5)
+XLK085|correct|
+XLK087|correct|
+XLK098|correct|
+XLK117|correct|
+XLK124|correct|
+XLK141|wrong number|asked UK share; gave C3-B3's share of the Occasional tier (32.3%)
+XLK144|wrong number|asked UK share; gave C1-B3's share of the Top spenders tier (12.8%)
+XTS001|unhelpful|each tier's count, never the combined 2,307
+XTS003|wrong number|share of all customers (9.4%), not of the Occasional tier (32.3%)
+XTS004|correct|
+XTS005|wrong number|share of all customers (5.7%), not of the Core tier (22.8%)
+XTS006|unhelpful|compared the two styles instead of adding them (£607,037)
+XTS008|correct|
+XTS014|wrong number|gave Small-basket buyers' count (1,540), not everyone outside them (2,721)
+XTS015|correct|
+XTS020|wrong number|gave Bulk buyers' non-UK estimate (216), not customers outside Bulk buyers (2,514)
+XTS021|unhelpful|compared the two tiers instead of adding them (£451,942)
+XTS025|correct|combined 2,514 given, inside a long dump of every measure
+XTS032|correct|
+XTS036|unhelpful|both counts, never the combined 3,287
+XTS037|unhelpful|compared the two styles instead of adding them (£1,545,707)
+XTS038|correct|
+XTS042|unhelpful|compared the two tiers instead of adding them (£523,563)
+XTS043|correct|
+XTS057|wrong number|typo "holiady": gave Top spenders' share of all customers (9.0%), not holiday buyers' share of the tier (11.7%)
+XTS059|wrong number|average per Core segment (£129,206) answered with revenue per customer (£361)
+XTS070|correct|
+XTS072|correct|
+XTS079|correct|
+XTS082|correct|
+XTS091|error|plan JSON failed to parse
+XTS092|correct|
+XTS095|wrong number|average per Low value segment (£21,441) answered with the tier total
+XTS096|correct|
+XRK009|correct|
+XRK024|wrong number|typo "spendeer" dropped the tier: lowest of all segments (C4-B3), not of Top spenders (C1-B2)
+XRK041|correct|
+XRK047|correct|
+XRK065|correct|
+XRK068|correct|
+XRK078|correct|
+XRK081|correct|
+XRK093|unhelpful|"three segments with the lowest customers" met with "I don't have a group called 'lowest customers'"
+XRK099|wrong number|typo "lowesst": Bulk buyers' overall UK share, no ranking (C1-B1 82.7%)
+XRK100|correct|
+XCP009|correct|
+XCP016|correct|
+XCP020|wrong number|typo "nweer": compared customer counts, not tenure
+XCP025|correct|
+XCP030|correct|
+XCP031|correct|no "no", but says C3-B2 is bigger with both counts
+XCP033|wrong number|typo "untis": compared order value, not units per order
+XCP042|correct|no "no", but says C2-B1 is bigger with both counts
+XCP044|correct|
+XCP048|correct|
+XCP073|correct|no "no", but says C2-B2's orders are bigger with both values
+XCP075|correct|no "no", but says C1-B1's orders are bigger with both values
+XCP076|correct|
+XCP080|correct|no "yes", but says C2-B1 is bigger with both counts
+XBD003|correct|grid, all 12
+XBD005|wrong number|asked each bulk segment; gave the style's weighted UK share only
+XBD006|wrong number|asked each small-basket segment; gave the style's weighted average only
+XBD007|correct|whole grid; the small-basket column is right
+XBD008|correct|whole grid; the Occasional row is right
+XBD010|wrong number|asked each Core segment; gave the tier's weighted UK share only
+XBD011|wrong number|asked the Low value tier by style; gave every style's total across all tiers
+XBD016|correct|whole grid; the Core row is right
+XBD020|correct|whole grid; the Occasional row is right
+XBD021|correct|whole grid; the Low value row is right
+XBD023|unhelpful|"per segment only" placeholders instead of the four Holiday segments' values
+XBD024|correct|whole grid; the Low value row is right
+XBD025|correct|whole grid; the Top spenders row is right
+XBD027|correct|whole grid; the Top spenders row is right
+XBD031|correct|whole grid; the Occasional row is right
+XBD033|correct|
+XBD034|correct|grid, all 12
+XBD035|correct|
+XBD036|wrong number|asked small-basket buyers by tier; gave whole-tier counts
+XBD037|correct|whole grid; the Top spenders row is right
+XBD038|unhelpful|"per segment only" placeholders instead of the four small-basket values
+XBD040|wrong number|asked Holiday buyers by tier; gave whole-tier UK shares
+XFL001|wrong number|typo "vaalue": filtered on customers < 300, not order value
+XFL010|unhelpful|says 1 segment holds 49 customers but never names it (C1-B3)
+XFL012|correct|£33,478; doesn't name C4-B3
+XFL017|correct|£33,478; doesn't name C4-B3
+XFL019|wrong number|typo "expeted": filtered customer counts over 60,000 (0 segments)
+XFL020|correct|
+XFL023|correct|
+XFL029|correct|
+XFL030|correct|count asked: 1
+XME005|wrong number|gave the 3-4 segment outcome tiers (82.5%), not the grid-size ones (58.0%)
+XME007|correct|-16.6%
+XME011|declined-but-answerable|the k-selection table has silhouette (0.1536)
+XME017|correct|
+XME024|wrong number|answered from the k-selection table; behaviour eta squared for the value-only scheme is 0.0412
+XME025|wrong number|gave the value-only scheme's persistence, not value k=4's ARI (0.9319)
+XME026|wrong number|answered with the value-axis k-selection summary; rule fidelity (85.5%) is never stated
+XME032|wrong number|gave the customer grid, not the grid-size outcome tiers' value eta squared (0.6414)
+XME035|correct|mean 0.753
+XME038|wrong number|gave the value-only scheme's persistence, not value k=3's ARI (0.9608)
+XAM001|correct|AUC and capture
+XAM002|correct|one labelled reading
+XAM003|correct|one labelled reading
+XAM004|correct|by customers, labelled
+XAM005|correct|chance of ordering, labelled
+XAM006|correct|net revenue first, labelled
+XAM007|correct|
+XAM008|unhelpful|ranked by 12-month net revenue, not one of the listed readings
+XAM009|correct|
+XAM010|correct|chance of ordering, labelled
+XAM011|unhelpful|asks which group "weakest segment" is; the ambiguity is the measure, not the group
+XAM012|correct|
+XAM013|correct|
+XAM014|correct|asks what "churning" means
+XAM015|correct|expected revenue, labelled
+XAM016|correct|
+XAM017|correct|asks what "seasonal" means
+XAM018|correct|
+XAM019|correct|
+XAM020|correct|
+XAM021|correct|
+XAM022|wrong number|"christmas customers count" answered with C2-B2's Q4 revenue share
+XAM023|correct|
+XAM024|correct|
+XAM025|correct|
+XAM026|correct|AUC, labelled
+XAM027|unhelpful|"how good is the grid?" answered with its segment counts
+XAM028|correct|asks what "valuable" means
+XAM029|correct|unit price per segment
+XAM030|correct|asks what "bargain" means
+XAM031|correct|asks what "at-risk" means
+XAM032|correct|
+XAM033|correct|
+XAM034|correct|
+XAM035|correct|
+XAM036|correct|
+XAM037|correct|
+XAM038|correct|
+XAM039|correct|
+XAM040|unhelpful|profile of all four bulk segments; never picks the weakest
+XAM041|correct|
+XAM042|correct|lowest chance of ordering, labelled
+XAM043|correct|
+XAM044|correct|lowest chance of ordering, labelled
+XAM045|correct|
+XAM046|correct|
+XAM047|correct|
+XAM048|correct|
+XAM049|correct|AUC, labelled
+XAM050|correct|
+XAM051|correct|
+XAM052|correct|expected revenue first
+XAM053|correct|
+XAM054|correct|every scheme's AUC, hybrid 0.734 among them
+XAM055|correct|asks what "key" means
+XAM056|correct|
+XAM057|correct|
+XAM058|correct|
+XAM059|correct|asks what "frequent" means
+XAM060|correct|
+XAM061|unhelpful|the style's overall chance of ordering; never picks the weakest segment (C4-B3)
+XAM062|correct|
+XAM063|correct|
+XAM064|correct|
+XAM065|correct|
+XAM066|correct|
+XAM067|correct|
+XAM068|correct|
+XAM069|correct|asks what "new" means
+XAM070|correct|asks what "good" means
+XAM071|correct|
+XAM072|correct|by customers, labelled
+XAM073|correct|asks what "high-value" means
+XAM074|correct|AUC, labelled
+XAM075|correct|
+XAM076|unhelpful|"how good" answered with persistence, not a listed reading
+XAM077|correct|
+XAM078|correct|
+XAM079|correct|
+XAM080|correct|
+XAM081|correct|
+XAM082|correct|
+XAM083|unhelpful|"premium customers" answered with Top spenders' unit prices; no count and no question back
+XAM084|unhelpful|answered from the value-axis k table, not the scheme's backtest scores
+XAM085|unhelpful|every scheme's persistence, not a listed reading
+XAM086|correct|
+XAM087|unhelpful|recency per segment; no count and no question back
+XAM088|correct|
+XAM089|correct|
+XAM090|correct|
+XAM091|correct|small-basket buyers, labelled
+XAM092|error|"the plan names no known metric (next_active_auc)"
+XAM093|unhelpful|answered from the value-axis k table, not the scheme's backtest scores
+XAM094|correct|
+XAM095|correct|asks what "large" means
+XUN001|answered-instead-of-declining|past 12-month spend, no word that two-year forecasts don't exist
+XUN002|correct|
+XUN003|correct|
+XUN004|answered-instead-of-declining|Lithuania: gave all Top spenders (383)
+XUN005|correct|
+XUN006|answered-instead-of-declining|Iceland: gave the UK share, never says countries aren't held
+XUN007|correct|
+XUN008|correct|
+XUN009|correct|
+XUN010|correct|
+XUN011|correct|
+XUN012|correct|
+XUN013|answered-instead-of-declining|Lithuania: gave all of C2-B1 (629)
+XUN014|correct|
+XUN015|correct|
+XUN016|answered-instead-of-declining|Malta: gave the tier's UK share
+XUN017|correct|
+XUN018|answered-instead-of-declining|Lebanon: gave all Bulk buyers (1,747)
+XUN019|correct|
+XUN020|answered-instead-of-declining|Singapore: UK share and non-UK estimate, never says countries aren't held
+XUN021|answered-instead-of-declining|company size: a spend profile instead
+XUN022|correct|
+XUN023|correct|
+XUN024|correct|
+XUN025|answered-instead-of-declining|Lebanon: non-UK estimate (108) as if it were the answer
+XUN026|correct|declines; the reason given (no revenue by past period) is off
+XUN027|correct|
+XUN028|correct|
+XUN029|correct|
+XUN030|answered-instead-of-declining|Iceland: gave all of C3-B1 (484)
+XUN031|correct|
+XUN032|correct|
+XUN033|correct|
+XUN034|correct|declines; the reason given is off
+XUN035|answered-instead-of-declining|Malta: gave all of C3-B1 (484)
+XUN036|correct|
+XUN037|correct|
+XUN038|correct|declines; the reason given is off
+XUN039|correct|
+XUN040|correct|declines; the reason given is off
+XUN041|correct|
+XUN042|answered-instead-of-declining|Bahrain: gave all small-basket buyers (1,540)
+XUN043|answered-instead-of-declining|campaign response rate: revenue figures instead
+XUN044|answered-instead-of-declining|industry: expected revenue instead
+XUN045|correct|
+XUN046|correct|
+XUN047|correct|
+XUN048|correct|
+XUN049|correct|declines; the reason given is off
+XUN050|correct|
+XUN051|correct|
+XUN052|correct|
+XUN053|answered-instead-of-declining|Israel: gave all Bulk buyers (1,747)
+XUN054|correct|
+XUN055|correct|
+XUN056|answered-instead-of-declining|past 12-month spend, no word that two-year forecasts don't exist
+XUN057|correct|
+XUN058|answered-instead-of-declining|Iceland: gave the UK share
+XUN059|correct|
+XUN060|correct|declines; the reason given is off
+XUN061|answered-instead-of-declining|acquisition source: the segment profile instead
+XUN062|correct|
+XUN063|correct|
+XUN064|answered-instead-of-declining|payment method: a Bulk buyers profile instead
+XUN065|correct|
+XUN066|answered-instead-of-declining|Malta: gave all of C1-B2 (45)
+XUN067|correct|
+XUN068|correct|
+XUN069|correct|
+XUN070|correct|
+XUN071|answered-instead-of-declining|Lithuania: gave the whole tier (1,571)
+XUN072|correct|
+XUN073|correct|
+XUN074|correct|
+XUN075|correct|
+XUN076|correct|
+XUN077|answered-instead-of-declining|typo "malat": gave all Bulk buyers (1,747)
+XUN078|answered-instead-of-declining|email open rate: the segment profile instead
+XUN079|correct|
+XUN080|correct|
+XFU002|wrong number|"and the lowest?" gave the tier's overall UK share, not C1-B2 (75.6%)
+XFU003|wrong number|"what's the gap" compared UK customer counts, not the shares (4.9 points)
+XFU006|wrong number|"and by value tier?" listed segments and styles; no tier totals
+XFU007|wrong number|followed a parent that never named a segment: all Bulk buyers (1,747), not C1-B1 (289)
+XFU026|correct|
+XFU027|correct|£182,233, framed against the rest combined
+XFU031|wrong number|"opposite end" left the Low value tier: C1-B3, not C4-B1
+XFU035|correct|
+XFU037|correct|difference 20.3 points
+XFU049|correct|
+XFU066|wrong number|"opposite end" stayed on C4-B2 (24), not C1-B2 (32.1)
+XFU075|wrong number|share of UK customers, not C4-B1's UK share (92.8%)
+XFU076|wrong number|added all three Low value segments, not C4-B1 alone (£15,496)
+XFU078|correct|
+XFU081|correct|difference 4.3 points
+XFU082|wrong number|"per head?" gave the customer count, not £110
+XFU084|wrong number|parent named C1-B3; the most recent holiday segment is C1-B2 (45)
+XFU088|correct|
+XFU090|wrong number|parent named C4-B3; the lowest-spend top spender segment is C1-B2 (76.6%)
+XFU117|correct|
+XFU118|wrong number|answered from the value-axis k table, not the scheme's Spearman (0.502)
+XFU123|correct|
+XFU129|correct|£33,478, though framed as "equal" to itself
+XFU139|correct|
+XFU140|wrong number|repeated the customer comparison; the tenure gap is 246.5 days
+XLK001|correct|first pass (not read; audit 1/62 wrong)
+XFU005|correct|first pass (not read; audit 1/62 wrong)
+XLK002|correct|first pass (not read; audit 1/62 wrong)
+XFU038|correct|first pass (not read; audit 1/62 wrong)
+XLK003|correct|first pass (not read; audit 1/62 wrong)
+XLK004|correct|first pass (not read; audit 1/62 wrong)
+XLK005|correct|first pass (not read; audit 1/62 wrong)
+XLK006|correct|first pass (not read; audit 1/62 wrong)
+XFU042|correct|first pass (not read; audit 1/62 wrong)
+XLK009|correct|first pass (not read; audit 1/62 wrong)
+XLK011|correct|first pass (not read; audit 1/62 wrong)
+XFU025|correct|first pass (not read; audit 1/62 wrong)
+XLK012|correct|first pass (not read; audit 1/62 wrong)
+XLK013|correct|first pass (not read; audit 1/62 wrong)
+XFU077|correct|first pass (not read; audit 1/62 wrong)
+XLK014|correct|first pass (not read; audit 1/62 wrong)
+XLK017|correct|first pass (not read; audit 1/62 wrong)
+XFU040|correct|first pass (not read; audit 1/62 wrong)
+XLK018|correct|first pass (not read; audit 1/62 wrong)
+XFU016|correct|first pass (not read; audit 1/62 wrong)
+XLK019|correct|first pass (not read; audit 1/62 wrong)
+XLK020|correct|first pass (not read; audit 1/62 wrong)
+XFU130|correct|first pass (not read; audit 1/62 wrong)
+XLK021|correct|first pass (not read; audit 1/62 wrong)
+XLK022|correct|first pass (not read; audit 1/62 wrong)
+XFU015|correct|first pass (not read; audit 1/62 wrong)
+XLK023|correct|first pass (not read; audit 1/62 wrong)
+XFU057|correct|first pass (not read; audit 1/62 wrong)
+XLK024|correct|first pass (not read; audit 1/62 wrong)
+XFU098|correct|first pass (not read; audit 1/62 wrong)
+XFU065|correct|first pass (not read; audit 1/62 wrong)
+XLK027|correct|first pass (not read; audit 1/62 wrong)
+XLK028|correct|first pass (not read; audit 1/62 wrong)
+XLK029|correct|first pass (not read; audit 1/62 wrong)
+XLK030|correct|first pass (not read; audit 1/62 wrong)
+XLK032|correct|first pass (not read; audit 1/62 wrong)
+XLK033|correct|first pass (not read; audit 1/62 wrong)
+XFU079|correct|first pass (not read; audit 1/62 wrong)
+XLK034|correct|first pass (not read; audit 1/62 wrong)
+XFU136|correct|first pass (not read; audit 1/62 wrong)
+XLK035|correct|first pass (not read; audit 1/62 wrong)
+XLK036|correct|first pass (not read; audit 1/62 wrong)
+XLK037|correct|first pass (not read; audit 1/62 wrong)
+XLK038|correct|first pass (not read; audit 1/62 wrong)
+XLK039|correct|first pass (not read; audit 1/62 wrong)
+XLK040|correct|first pass (not read; audit 1/62 wrong)
+XLK041|correct|first pass (not read; audit 1/62 wrong)
+XLK042|correct|first pass (not read; audit 1/62 wrong)
+XLK043|correct|first pass (not read; audit 1/62 wrong)
+XFU067|correct|first pass (not read; audit 1/62 wrong)
+XLK044|correct|first pass (not read; audit 1/62 wrong)
+XFU127|correct|first pass (not read; audit 1/62 wrong)
+XLK048|correct|first pass (not read; audit 1/62 wrong)
+XFU114|correct|first pass (not read; audit 1/62 wrong)
+XLK049|correct|first pass (not read; audit 1/62 wrong)
+XFU058|correct|first pass (not read; audit 1/62 wrong)
+XLK050|correct|first pass (not read; audit 1/62 wrong)
+XFU020|correct|first pass (not read; audit 1/62 wrong)
+XLK051|correct|first pass (not read; audit 1/62 wrong)
+XFU014|correct|first pass (not read; audit 1/62 wrong)
+XLK052|correct|first pass (not read; audit 1/62 wrong)
+XLK053|correct|first pass (not read; audit 1/62 wrong)
+XFU125|correct|first pass (not read; audit 1/62 wrong)
+XLK054|correct|first pass (not read; audit 1/62 wrong)
+XLK055|correct|first pass (not read; audit 1/62 wrong)
+XLK056|correct|first pass (not read; audit 1/62 wrong)
+XFU100|correct|first pass (not read; audit 1/62 wrong)
+XLK060|correct|first pass (not read; audit 1/62 wrong)
+XLK061|correct|first pass (not read; audit 1/62 wrong)
+XFU080|correct|first pass (not read; audit 1/62 wrong)
+XLK062|correct|first pass (not read; audit 1/62 wrong)
+XFU137|correct|first pass (not read; audit 1/62 wrong)
+XLK063|correct|first pass (not read; audit 1/62 wrong)
+XFU048|correct|first pass (not read; audit 1/62 wrong)
+XLK064|correct|first pass (not read; audit 1/62 wrong)
+XFU056|correct|first pass (not read; audit 1/62 wrong)
+XLK065|correct|first pass (not read; audit 1/62 wrong)
+XLK066|correct|first pass (not read; audit 1/62 wrong)
+XLK067|correct|first pass (not read; audit 1/62 wrong)
+XFU059|correct|first pass (not read; audit 1/62 wrong)
+XLK068|correct|first pass (not read; audit 1/62 wrong)
+XLK069|correct|first pass (not read; audit 1/62 wrong)
+XLK070|correct|first pass (not read; audit 1/62 wrong)
+XFU041|correct|first pass (not read; audit 1/62 wrong)
+XLK071|correct|first pass (not read; audit 1/62 wrong)
+XLK072|correct|first pass (not read; audit 1/62 wrong)
+XFU070|correct|first pass (not read; audit 1/62 wrong)
+XLK073|correct|first pass (not read; audit 1/62 wrong)
+XLK074|correct|first pass (not read; audit 1/62 wrong)
+XFU050|correct|first pass (not read; audit 1/62 wrong)
+XLK076|correct|first pass (not read; audit 1/62 wrong)
+XLK079|correct|first pass (not read; audit 1/62 wrong)
+XLK080|correct|first pass (not read; audit 1/62 wrong)
+XLK081|correct|first pass (not read; audit 1/62 wrong)
+XLK082|correct|first pass (not read; audit 1/62 wrong)
+XFU069|correct|first pass (not read; audit 1/62 wrong)
+XLK083|correct|first pass (not read; audit 1/62 wrong)
+XLK084|correct|first pass (not read; audit 1/62 wrong)
+XLK086|correct|first pass (not read; audit 1/62 wrong)
+XLK088|correct|first pass (not read; audit 1/62 wrong)
+XFU103|correct|first pass (not read; audit 1/62 wrong)
+XLK089|correct|first pass (not read; audit 1/62 wrong)
+XLK090|correct|first pass (not read; audit 1/62 wrong)
+XLK091|correct|first pass (not read; audit 1/62 wrong)
+XFU131|correct|first pass (not read; audit 1/62 wrong)
+XLK092|correct|first pass (not read; audit 1/62 wrong)
+XLK093|correct|first pass (not read; audit 1/62 wrong)
+XLK094|correct|first pass (not read; audit 1/62 wrong)
+XFU053|correct|first pass (not read; audit 1/62 wrong)
+XLK095|correct|first pass (not read; audit 1/62 wrong)
+XFU029|correct|first pass (not read; audit 1/62 wrong)
+XLK096|correct|first pass (not read; audit 1/62 wrong)
+XLK097|correct|first pass (not read; audit 1/62 wrong)
+XLK099|correct|first pass (not read; audit 1/62 wrong)
+XLK100|correct|first pass (not read; audit 1/62 wrong)
+XLK101|correct|first pass (not read; audit 1/62 wrong)
+XFU109|correct|first pass (not read; audit 1/62 wrong)
+XLK102|correct|first pass (not read; audit 1/62 wrong)
+XLK103|correct|first pass (not read; audit 1/62 wrong)
+XLK104|correct|first pass (not read; audit 1/62 wrong)
+XLK105|correct|first pass (not read; audit 1/62 wrong)
+XLK106|correct|first pass (not read; audit 1/62 wrong)
+XLK107|correct|first pass (not read; audit 1/62 wrong)
+XFU116|correct|first pass (not read; audit 1/62 wrong)
+XLK108|correct|first pass (not read; audit 1/62 wrong)
+XLK109|correct|first pass (not read; audit 1/62 wrong)
+XFU107|correct|first pass (not read; audit 1/62 wrong)
+XLK110|correct|first pass (not read; audit 1/62 wrong)
+XFU073|correct|first pass (not read; audit 1/62 wrong)
+XLK111|correct|first pass (not read; audit 1/62 wrong)
+XLK112|correct|first pass (not read; audit 1/62 wrong)
+XLK113|correct|first pass (not read; audit 1/62 wrong)
+XFU095|correct|first pass (not read; audit 1/62 wrong)
+XLK114|correct|first pass (not read; audit 1/62 wrong)
+XFU047|correct|first pass (not read; audit 1/62 wrong)
+XLK115|correct|first pass (not read; audit 1/62 wrong)
+XLK116|correct|first pass (not read; audit 1/62 wrong)
+XLK118|correct|first pass (not read; audit 1/62 wrong)
+XLK119|correct|first pass (not read; audit 1/62 wrong)
+XLK120|correct|first pass (not read; audit 1/62 wrong)
+XLK121|correct|first pass (not read; audit 1/62 wrong)
+XLK122|correct|first pass (not read; audit 1/62 wrong)
+XLK123|correct|first pass (not read; audit 1/62 wrong)
+XFU022|correct|first pass (not read; audit 1/62 wrong)
+XLK125|correct|first pass (not read; audit 1/62 wrong)
+XLK126|correct|first pass (not read; audit 1/62 wrong)
+XLK127|correct|first pass (not read; audit 1/62 wrong)
+XLK128|correct|first pass (not read; audit 1/62 wrong)
+XFU045|correct|first pass (not read; audit 1/62 wrong)
+XLK129|correct|first pass (not read; audit 1/62 wrong)
+XFU096|correct|first pass (not read; audit 1/62 wrong)
+XLK130|correct|first pass (not read; audit 1/62 wrong)
+XLK131|correct|first pass (not read; audit 1/62 wrong)
+XFU052|correct|first pass (not read; audit 1/62 wrong)
+XLK132|correct|first pass (not read; audit 1/62 wrong)
+XLK133|correct|first pass (not read; audit 1/62 wrong)
+XFU093|correct|first pass (not read; audit 1/62 wrong)
+XLK134|correct|first pass (not read; audit 1/62 wrong)
+XLK135|correct|first pass (not read; audit 1/62 wrong)
+XLK136|correct|first pass (not read; audit 1/62 wrong)
+XLK137|correct|first pass (not read; audit 1/62 wrong)
+XLK138|correct|first pass (not read; audit 1/62 wrong)
+XFU110|correct|first pass (not read; audit 1/62 wrong)
+XLK139|correct|first pass (not read; audit 1/62 wrong)
+XFU124|correct|first pass (not read; audit 1/62 wrong)
+XLK140|correct|first pass (not read; audit 1/62 wrong)
+XFU132|correct|first pass (not read; audit 1/62 wrong)
+XLK142|correct|first pass (not read; audit 1/62 wrong)
+XLK143|correct|first pass (not read; audit 1/62 wrong)
+XFU102|correct|first pass (not read; audit 1/62 wrong)
+XFU128|correct|first pass (not read; audit 1/62 wrong)
+XLK145|correct|first pass (not read; audit 1/62 wrong)
+XFU028|correct|first pass (not read; audit 1/62 wrong)
+XLK146|correct|first pass (not read; audit 1/62 wrong)
+XLK147|correct|first pass (not read; audit 1/62 wrong)
+XFU055|correct|first pass (not read; audit 1/62 wrong)
+XLK148|correct|first pass (not read; audit 1/62 wrong)
+XLK149|correct|first pass (not read; audit 1/62 wrong)
+XLK150|correct|first pass (not read; audit 1/62 wrong)
+XLK151|correct|first pass (not read; audit 1/62 wrong)
+XLK152|correct|first pass (not read; audit 1/62 wrong)
+XLK153|correct|first pass (not read; audit 1/62 wrong)
+XLK154|correct|first pass (not read; audit 1/62 wrong)
+XLK155|correct|first pass (not read; audit 1/62 wrong)
+XLK156|correct|first pass (not read; audit 1/62 wrong)
+XLK157|correct|first pass (not read; audit 1/62 wrong)
+XFU001|correct|first pass (not read; audit 1/62 wrong)
+XLK158|correct|first pass (not read; audit 1/62 wrong)
+XFU023|correct|first pass (not read; audit 1/62 wrong)
+XLK159|correct|first pass (not read; audit 1/62 wrong)
+XLK160|correct|first pass (not read; audit 1/62 wrong)
+XTS002|correct|first pass (not read; audit 1/62 wrong)
+XTS007|correct|first pass (not read; audit 1/62 wrong)
+XTS009|correct|first pass (not read; audit 1/62 wrong)
+XTS010|correct|first pass (not read; audit 1/62 wrong)
+XTS011|correct|first pass (not read; audit 1/62 wrong)
+XTS012|correct|first pass (not read; audit 1/62 wrong)
+XTS013|correct|first pass (not read; audit 1/62 wrong)
+XTS016|correct|first pass (not read; audit 1/62 wrong)
+XFU113|correct|first pass (not read; audit 1/62 wrong)
+XTS017|correct|first pass (not read; audit 1/62 wrong)
+XTS018|correct|first pass (not read; audit 1/62 wrong)
+XTS019|correct|first pass (not read; audit 1/62 wrong)
+XTS022|correct|first pass (not read; audit 1/62 wrong)
+XFU036|correct|first pass (not read; audit 1/62 wrong)
+XTS023|correct|first pass (not read; audit 1/62 wrong)
+XTS024|correct|first pass (not read; audit 1/62 wrong)
+XTS026|correct|first pass (not read; audit 1/62 wrong)
+XTS027|correct|first pass (not read; audit 1/62 wrong)
+XTS028|correct|first pass (not read; audit 1/62 wrong)
+XTS029|correct|first pass (not read; audit 1/62 wrong)
+XTS030|correct|first pass (not read; audit 1/62 wrong)
+XTS031|correct|first pass (not read; audit 1/62 wrong)
+XTS033|correct|first pass (not read; audit 1/62 wrong)
+XTS034|correct|first pass (not read; audit 1/62 wrong)
+XTS035|correct|first pass (not read; audit 1/62 wrong)
+XTS039|correct|first pass (not read; audit 1/62 wrong)
+XTS040|correct|first pass (not read; audit 1/62 wrong)
+XTS041|correct|first pass (not read; audit 1/62 wrong)
+XTS044|correct|first pass (not read; audit 1/62 wrong)
+XTS045|correct|first pass (not read; audit 1/62 wrong)
+XTS046|correct|first pass (not read; audit 1/62 wrong)
+XTS047|correct|first pass (not read; audit 1/62 wrong)
+XTS048|correct|first pass (not read; audit 1/62 wrong)
+XTS049|correct|first pass (not read; audit 1/62 wrong)
+XTS050|correct|first pass (not read; audit 1/62 wrong)
+XTS051|correct|first pass (not read; audit 1/62 wrong)
+XTS052|correct|first pass (not read; audit 1/62 wrong)
+XTS053|correct|first pass (not read; audit 1/62 wrong)
+XTS054|correct|first pass (not read; audit 1/62 wrong)
+XTS055|correct|first pass (not read; audit 1/62 wrong)
+XTS056|correct|first pass (not read; audit 1/62 wrong)
+XTS058|correct|first pass (not read; audit 1/62 wrong)
+XTS060|correct|first pass (not read; audit 1/62 wrong)
+XTS061|correct|first pass (not read; audit 1/62 wrong)
+XTS062|correct|first pass (not read; audit 1/62 wrong)
+XTS063|correct|first pass (not read; audit 1/62 wrong)
+XTS064|correct|first pass (not read; audit 1/62 wrong)
+XTS065|correct|first pass (not read; audit 1/62 wrong)
+XFU011|correct|first pass (not read; audit 1/62 wrong)
+XTS066|correct|first pass (not read; audit 1/62 wrong)
+XTS067|correct|first pass (not read; audit 1/62 wrong)
+XTS068|correct|first pass (not read; audit 1/62 wrong)
+XTS069|correct|first pass (not read; audit 1/62 wrong)
+XTS071|correct|first pass (not read; audit 1/62 wrong)
+XFU060|correct|first pass (not read; audit 1/62 wrong)
+XTS073|correct|first pass (not read; audit 1/62 wrong)
+XTS074|correct|first pass (not read; audit 1/62 wrong)
+XTS075|correct|first pass (not read; audit 1/62 wrong)
+XTS076|correct|first pass (not read; audit 1/62 wrong)
+XTS077|correct|first pass (not read; audit 1/62 wrong)
+XTS078|correct|first pass (not read; audit 1/62 wrong)
+XTS080|correct|first pass (not read; audit 1/62 wrong)
+XTS081|correct|first pass (not read; audit 1/62 wrong)
+XTS083|correct|first pass (not read; audit 1/62 wrong)
+XTS084|correct|first pass (not read; audit 1/62 wrong)
+XTS085|correct|first pass (not read; audit 1/62 wrong)
+XFU054|correct|first pass (not read; audit 1/62 wrong)
+XTS086|correct|first pass (not read; audit 1/62 wrong)
+XTS087|correct|first pass (not read; audit 1/62 wrong)
+XTS088|correct|first pass (not read; audit 1/62 wrong)
+XTS089|correct|first pass (not read; audit 1/62 wrong)
+XTS090|correct|first pass (not read; audit 1/62 wrong)
+XTS093|correct|first pass (not read; audit 1/62 wrong)
+XTS094|correct|first pass (not read; audit 1/62 wrong)
+XTS097|correct|first pass (not read; audit 1/62 wrong)
+XFU017|correct|first pass (not read; audit 1/62 wrong)
+XTS098|correct|first pass (not read; audit 1/62 wrong)
+XTS099|correct|first pass (not read; audit 1/62 wrong)
+XTS100|correct|first pass (not read; audit 1/62 wrong)
+XTS101|correct|first pass (not read; audit 1/62 wrong)
+XTS102|correct|first pass (not read; audit 1/62 wrong)
+XTS103|correct|first pass (not read; audit 1/62 wrong)
+XTS104|correct|first pass (not read; audit 1/62 wrong)
+XTS105|correct|first pass (not read; audit 1/62 wrong)
+XTS106|correct|first pass (not read; audit 1/62 wrong)
+XTS107|correct|first pass (not read; audit 1/62 wrong)
+XTS108|correct|first pass (not read; audit 1/62 wrong)
+XTS109|correct|first pass (not read; audit 1/62 wrong)
+XTS110|correct|first pass (not read; audit 1/62 wrong)
+XRK001|correct|first pass (not read; audit 1/62 wrong)
+XRK002|correct|first pass (not read; audit 1/62 wrong)
+XRK003|correct|first pass (not read; audit 1/62 wrong)
+XRK004|correct|first pass (not read; audit 1/62 wrong)
+XRK005|correct|first pass (not read; audit 1/62 wrong)
+XFU121|correct|first pass (not read; audit 1/62 wrong)
+XRK006|correct|first pass (not read; audit 1/62 wrong)
+XFU112|correct|first pass (not read; audit 1/62 wrong)
+XRK007|correct|first pass (not read; audit 1/62 wrong)
+XFU010|correct|first pass (not read; audit 1/62 wrong)
+XRK008|correct|first pass (not read; audit 1/62 wrong)
+XFU032|correct|first pass (not read; audit 1/62 wrong)
+XRK010|correct|first pass (not read; audit 1/62 wrong)
+XRK011|correct|first pass (not read; audit 1/62 wrong)
+XRK012|correct|first pass (not read; audit 1/62 wrong)
+XFU133|correct|first pass (not read; audit 1/62 wrong)
+XRK013|correct|first pass (not read; audit 1/62 wrong)
+XRK014|correct|first pass (not read; audit 1/62 wrong)
+XFU126|correct|first pass (not read; audit 1/62 wrong)
+XRK015|correct|first pass (not read; audit 1/62 wrong)
+XFU111|correct|first pass (not read; audit 1/62 wrong)
+XRK016|correct|first pass (not read; audit 1/62 wrong)
+XRK017|correct|first pass (not read; audit 1/62 wrong)
+XRK018|correct|first pass (not read; audit 1/62 wrong)
+XRK019|correct|first pass (not read; audit 1/62 wrong)
+XRK020|correct|first pass (not read; audit 1/62 wrong)
+XRK021|correct|first pass (not read; audit 1/62 wrong)
+XRK022|correct|first pass (not read; audit 1/62 wrong)
+XRK023|correct|first pass (not read; audit 1/62 wrong)
+XRK025|correct|first pass (not read; audit 1/62 wrong)
+XFU120|correct|first pass (not read; audit 1/62 wrong)
+XRK026|correct|first pass (not read; audit 1/62 wrong)
+XRK027|correct|first pass (not read; audit 1/62 wrong)
+XRK028|correct|first pass (not read; audit 1/62 wrong)
+XRK029|correct|first pass (not read; audit 1/62 wrong)
+XRK030|correct|first pass (not read; audit 1/62 wrong)
+XRK031|correct|first pass (not read; audit 1/62 wrong)
+XRK032|correct|first pass (not read; audit 1/62 wrong)
+XRK033|correct|first pass (not read; audit 1/62 wrong)
+XRK034|correct|first pass (not read; audit 1/62 wrong)
+XRK035|correct|first pass (not read; audit 1/62 wrong)
+XFU009|correct|first pass (not read; audit 1/62 wrong)
+XRK036|correct|first pass (not read; audit 1/62 wrong)
+XRK037|correct|first pass (not read; audit 1/62 wrong)
+XRK038|correct|first pass (not read; audit 1/62 wrong)
+XRK039|correct|first pass (not read; audit 1/62 wrong)
+XRK040|correct|first pass (not read; audit 1/62 wrong)
+XRK042|correct|first pass (not read; audit 1/62 wrong)
+XRK043|correct|first pass (not read; audit 1/62 wrong)
+XRK044|correct|first pass (not read; audit 1/62 wrong)
+XRK045|correct|first pass (not read; audit 1/62 wrong)
+XRK046|correct|first pass (not read; audit 1/62 wrong)
+XFU119|correct|first pass (not read; audit 1/62 wrong)
+XRK048|correct|first pass (not read; audit 1/62 wrong)
+XRK049|correct|first pass (not read; audit 1/62 wrong)
+XRK050|correct|first pass (not read; audit 1/62 wrong)
+XRK051|correct|first pass (not read; audit 1/62 wrong)
+XRK052|correct|first pass (not read; audit 1/62 wrong)
+XFU034|correct|first pass (not read; audit 1/62 wrong)
+XRK053|correct|first pass (not read; audit 1/62 wrong)
+XFU108|correct|first pass (not read; audit 1/62 wrong)
+XRK054|correct|first pass (not read; audit 1/62 wrong)
+XRK055|correct|first pass (not read; audit 1/62 wrong)
+XRK056|correct|first pass (not read; audit 1/62 wrong)
+XRK057|correct|first pass (not read; audit 1/62 wrong)
+XRK058|correct|first pass (not read; audit 1/62 wrong)
+XRK059|correct|first pass (not read; audit 1/62 wrong)
+XRK060|correct|first pass (not read; audit 1/62 wrong)
+XRK061|correct|first pass (not read; audit 1/62 wrong)
+XRK062|correct|first pass (not read; audit 1/62 wrong)
+XRK063|correct|first pass (not read; audit 1/62 wrong)
+XFU086|correct|first pass (not read; audit 1/62 wrong)
+XRK064|correct|first pass (not read; audit 1/62 wrong)
+XRK066|correct|first pass (not read; audit 1/62 wrong)
+XRK067|correct|first pass (not read; audit 1/62 wrong)
+XRK069|correct|first pass (not read; audit 1/62 wrong)
+XRK070|correct|first pass (not read; audit 1/62 wrong)
+XRK071|correct|first pass (not read; audit 1/62 wrong)
+XRK072|correct|first pass (not read; audit 1/62 wrong)
+XRK073|correct|first pass (not read; audit 1/62 wrong)
+XRK074|correct|first pass (not read; audit 1/62 wrong)
+XRK075|correct|first pass (not read; audit 1/62 wrong)
+XRK076|correct|first pass (not read; audit 1/62 wrong)
+XRK077|correct|first pass (not read; audit 1/62 wrong)
+XFU135|correct|first pass (not read; audit 1/62 wrong)
+XRK079|correct|first pass (not read; audit 1/62 wrong)
+XRK080|correct|first pass (not read; audit 1/62 wrong)
+XFU043|correct|first pass (not read; audit 1/62 wrong)
+XFU008|correct|first pass (not read; audit 1/62 wrong)
+XRK082|correct|first pass (not read; audit 1/62 wrong)
+XRK083|correct|first pass (not read; audit 1/62 wrong)
+XRK084|correct|first pass (not read; audit 1/62 wrong)
+XRK085|correct|first pass (not read; audit 1/62 wrong)
+XFU115|correct|first pass (not read; audit 1/62 wrong)
+XRK086|correct|first pass (not read; audit 1/62 wrong)
+XRK087|correct|first pass (not read; audit 1/62 wrong)
+XRK088|correct|first pass (not read; audit 1/62 wrong)
+XRK089|correct|first pass (not read; audit 1/62 wrong)
+XRK090|correct|first pass (not read; audit 1/62 wrong)
+XRK091|correct|first pass (not read; audit 1/62 wrong)
+XRK092|correct|first pass (not read; audit 1/62 wrong)
+XRK094|correct|first pass (not read; audit 1/62 wrong)
+XRK095|correct|first pass (not read; audit 1/62 wrong)
+XFU063|correct|first pass (not read; audit 1/62 wrong)
+XRK096|correct|first pass (not read; audit 1/62 wrong)
+XRK097|correct|first pass (not read; audit 1/62 wrong)
+XRK098|correct|first pass (not read; audit 1/62 wrong)
+XCP001|correct|first pass (not read; audit 1/62 wrong)
+XCP002|correct|first pass (not read; audit 1/62 wrong)
+XCP003|correct|first pass (not read; audit 1/62 wrong)
+XCP004|correct|first pass (not read; audit 1/62 wrong)
+XFU030|correct|first pass (not read; audit 1/62 wrong)
+XCP005|correct|first pass (not read; audit 1/62 wrong)
+XCP006|correct|first pass (not read; audit 1/62 wrong)
+XCP007|correct|first pass (not read; audit 1/62 wrong)
+XCP008|correct|first pass (not read; audit 1/62 wrong)
+XCP010|correct|first pass (not read; audit 1/62 wrong)
+XFU138|correct|first pass (not read; audit 1/62 wrong)
+XCP011|correct|first pass (not read; audit 1/62 wrong)
+XCP012|correct|first pass (not read; audit 1/62 wrong)
+XCP013|correct|first pass (not read; audit 1/62 wrong)
+XCP014|correct|first pass (not read; audit 1/62 wrong)
+XCP015|correct|first pass (not read; audit 1/62 wrong)
+XCP017|correct|first pass (not read; audit 1/62 wrong)
+XCP018|correct|first pass (not read; audit 1/62 wrong)
+XCP019|correct|first pass (not read; audit 1/62 wrong)
+XFU062|correct|first pass (not read; audit 1/62 wrong)
+XCP021|correct|first pass (not read; audit 1/62 wrong)
+XCP022|correct|first pass (not read; audit 1/62 wrong)
+XCP023|correct|first pass (not read; audit 1/62 wrong)
+XCP024|correct|first pass (not read; audit 1/62 wrong)
+XCP026|correct|first pass (not read; audit 1/62 wrong)
+XCP027|correct|first pass (not read; audit 1/62 wrong)
+XFU072|correct|first pass (not read; audit 1/62 wrong)
+XCP028|correct|first pass (not read; audit 1/62 wrong)
+XCP029|correct|first pass (not read; audit 1/62 wrong)
+XCP032|correct|first pass (not read; audit 1/62 wrong)
+XCP034|correct|first pass (not read; audit 1/62 wrong)
+XCP035|correct|first pass (not read; audit 1/62 wrong)
+XCP036|correct|first pass (not read; audit 1/62 wrong)
+XCP037|correct|first pass (not read; audit 1/62 wrong)
+XCP038|correct|first pass (not read; audit 1/62 wrong)
+XCP039|correct|first pass (not read; audit 1/62 wrong)
+XCP040|correct|first pass (not read; audit 1/62 wrong)
+XCP041|correct|first pass (not read; audit 1/62 wrong)
+XFU018|correct|first pass (not read; audit 1/62 wrong)
+XCP043|correct|first pass (not read; audit 1/62 wrong)
+XFU083|correct|first pass (not read; audit 1/62 wrong)
+XCP045|correct|first pass (not read; audit 1/62 wrong)
+XFU012|correct|first pass (not read; audit 1/62 wrong)
+XCP046|correct|first pass (not read; audit 1/62 wrong)
+XFU134|correct|first pass (not read; audit 1/62 wrong)
+XCP047|correct|first pass (not read; audit 1/62 wrong)
+XFU033|correct|first pass (not read; audit 1/62 wrong)
+XFU074|correct|first pass (not read; audit 1/62 wrong)
+XCP049|correct|first pass (not read; audit 1/62 wrong)
+XCP050|correct|first pass (not read; audit 1/62 wrong)
+XFU039|correct|first pass (not read; audit 1/62 wrong)
+XCP051|correct|first pass (not read; audit 1/62 wrong)
+XCP052|correct|first pass (not read; audit 1/62 wrong)
+XFU046|correct|first pass (not read; audit 1/62 wrong)
+XCP053|correct|first pass (not read; audit 1/62 wrong)
+XFU085|correct|first pass (not read; audit 1/62 wrong)
+XCP054|correct|first pass (not read; audit 1/62 wrong)
+XCP055|correct|first pass (not read; audit 1/62 wrong)
+XCP056|correct|first pass (not read; audit 1/62 wrong)
+XCP057|correct|first pass (not read; audit 1/62 wrong)
+XCP058|correct|first pass (not read; audit 1/62 wrong)
+XFU097|correct|first pass (not read; audit 1/62 wrong)
+XCP059|correct|first pass (not read; audit 1/62 wrong)
+XCP060|correct|first pass (not read; audit 1/62 wrong)
+XCP061|correct|first pass (not read; audit 1/62 wrong)
+XFU068|correct|first pass (not read; audit 1/62 wrong)
+XCP062|correct|first pass (not read; audit 1/62 wrong)
+XFU092|correct|first pass (not read; audit 1/62 wrong)
+XCP063|correct|first pass (not read; audit 1/62 wrong)
+XFU004|correct|first pass (not read; audit 1/62 wrong)
+XCP064|correct|first pass (not read; audit 1/62 wrong)
+XCP065|correct|first pass (not read; audit 1/62 wrong)
+XCP066|correct|first pass (not read; audit 1/62 wrong)
+XCP067|correct|first pass (not read; audit 1/62 wrong)
+XFU044|correct|first pass (not read; audit 1/62 wrong)
+XCP068|correct|first pass (not read; audit 1/62 wrong)
+XFU104|correct|first pass (not read; audit 1/62 wrong)
+XCP069|correct|first pass (not read; audit 1/62 wrong)
+XCP070|correct|first pass (not read; audit 1/62 wrong)
+XFU021|correct|first pass (not read; audit 1/62 wrong)
+XCP071|correct|first pass (not read; audit 1/62 wrong)
+XCP072|correct|first pass (not read; audit 1/62 wrong)
+XFU013|correct|first pass (not read; audit 1/62 wrong)
+XCP074|correct|first pass (not read; audit 1/62 wrong)
+XFU061|correct|first pass (not read; audit 1/62 wrong)
+XCP077|correct|first pass (not read; audit 1/62 wrong)
+XCP078|correct|first pass (not read; audit 1/62 wrong)
+XFU105|correct|first pass (not read; audit 1/62 wrong)
+XCP079|correct|first pass (not read; audit 1/62 wrong)
+XBD001|correct|first pass (not read; audit 1/62 wrong)
+XBD002|correct|first pass (not read; audit 1/62 wrong)
+XBD004|correct|first pass (not read; audit 1/62 wrong)
+XBD009|correct|first pass (not read; audit 1/62 wrong)
+XBD012|correct|first pass (not read; audit 1/62 wrong)
+XBD013|correct|first pass (not read; audit 1/62 wrong)
+XBD014|correct|first pass (not read; audit 1/62 wrong)
+XBD015|correct|first pass (not read; audit 1/62 wrong)
+XBD017|correct|first pass (not read; audit 1/62 wrong)
+XBD018|correct|first pass (not read; audit 1/62 wrong)
+XBD019|correct|first pass (not read; audit 1/62 wrong)
+XBD022|correct|first pass (not read; audit 1/62 wrong)
+XBD026|correct|first pass (not read; audit 1/62 wrong)
+XBD028|correct|first pass (not read; audit 1/62 wrong)
+XBD029|correct|first pass (not read; audit 1/62 wrong)
+XBD030|correct|first pass (not read; audit 1/62 wrong)
+XBD032|correct|first pass (not read; audit 1/62 wrong)
+XBD039|correct|first pass (not read; audit 1/62 wrong)
+XFL002|correct|first pass (not read; audit 1/62 wrong)
+XFL003|correct|first pass (not read; audit 1/62 wrong)
+XFU089|correct|first pass (not read; audit 1/62 wrong)
+XFL004|correct|first pass (not read; audit 1/62 wrong)
+XFL005|correct|first pass (not read; audit 1/62 wrong)
+XFL006|correct|first pass (not read; audit 1/62 wrong)
+XFL007|correct|first pass (not read; audit 1/62 wrong)
+XFU106|correct|first pass (not read; audit 1/62 wrong)
+XFL008|correct|first pass (not read; audit 1/62 wrong)
+XFL009|correct|first pass (not read; audit 1/62 wrong)
+XFL011|correct|first pass (not read; audit 1/62 wrong)
+XFL013|correct|first pass (not read; audit 1/62 wrong)
+XFU087|correct|first pass (not read; audit 1/62 wrong)
+XFL014|correct|first pass (not read; audit 1/62 wrong)
+XFL015|correct|first pass (not read; audit 1/62 wrong)
+XFL016|correct|first pass (not read; audit 1/62 wrong)
+XFL018|correct|first pass (not read; audit 1/62 wrong)
+XFL021|correct|first pass (not read; audit 1/62 wrong)
+XFL022|correct|first pass (not read; audit 1/62 wrong)
+XFU091|correct|first pass (not read; audit 1/62 wrong)
+XFL024|correct|first pass (not read; audit 1/62 wrong)
+XFL025|correct|first pass (not read; audit 1/62 wrong)
+XFL026|correct|first pass (not read; audit 1/62 wrong)
+XFL027|correct|first pass (not read; audit 1/62 wrong)
+XFL028|correct|first pass (not read; audit 1/62 wrong)
+XME001|correct|first pass (not read; audit 1/62 wrong)
+XME002|correct|first pass (not read; audit 1/62 wrong)
+XME003|correct|first pass (not read; audit 1/62 wrong)
+XME004|correct|first pass (not read; audit 1/62 wrong)
+XFU051|correct|first pass (not read; audit 1/62 wrong)
+XME006|correct|first pass (not read; audit 1/62 wrong)
+XME008|correct|first pass (not read; audit 1/62 wrong)
+XME009|correct|first pass (not read; audit 1/62 wrong)
+XME010|correct|first pass (not read; audit 1/62 wrong)
+XFU101|correct|first pass (not read; audit 1/62 wrong)
+XME012|correct|first pass (not read; audit 1/62 wrong)
+XME013|correct|first pass (not read; audit 1/62 wrong)
+XME014|correct|first pass (not read; audit 1/62 wrong)
+XME015|correct|first pass (not read; audit 1/62 wrong)
+XFU019|correct|first pass (not read; audit 1/62 wrong)
+XME016|correct|first pass (not read; audit 1/62 wrong)
+XFU099|correct|first pass (not read; audit 1/62 wrong)
+XME018|correct|first pass (not read; audit 1/62 wrong)
+XME019|correct|first pass (not read; audit 1/62 wrong)
+XME020|correct|first pass (not read; audit 1/62 wrong)
+XME021|correct|first pass (not read; audit 1/62 wrong)
+XME022|correct|first pass (not read; audit 1/62 wrong)
+XFU094|correct|first pass (not read; audit 1/62 wrong)
+XME023|correct|first pass (not read; audit 1/62 wrong)
+XME027|correct|first pass (not read; audit 1/62 wrong)
+XME028|correct|first pass (not read; audit 1/62 wrong)
+XFU024|correct|first pass (not read; audit 1/62 wrong)
+XME029|correct|first pass (not read; audit 1/62 wrong)
+XME030|correct|first pass (not read; audit 1/62 wrong)
+XME031|correct|first pass (not read; audit 1/62 wrong)
+XFU064|correct|first pass (not read; audit 1/62 wrong)
+XFU071|correct|first pass (not read; audit 1/62 wrong)
+XME033|correct|first pass (not read; audit 1/62 wrong)
+XME034|correct|first pass (not read; audit 1/62 wrong)
+XME036|correct|first pass (not read; audit 1/62 wrong)
+XME037|correct|first pass (not read; audit 1/62 wrong)
+XME039|correct|first pass (not read; audit 1/62 wrong)
+XME040|correct|first pass (not read; audit 1/62 wrong)
+XFU122|correct|first pass (not read; audit 1/62 wrong)
+XLK001|correct|pass read in the full read
+XFU005|correct|pass read in the full read
+XLK002|correct|pass read in the full read
+XFU038|correct|pass read in the full read
+XLK003|correct|pass read in the full read
+XLK004|correct|pass read in the full read
+XLK005|correct|pass read in the full read
+XLK006|correct|pass read in the full read
+XFU042|correct|pass read in the full read
+XLK009|correct|pass read in the full read
+XLK011|correct|pass read in the full read
+XFU025|correct|pass read in the full read
+XLK012|correct|pass read in the full read
+XLK013|correct|pass read in the full read
+XFU077|correct|pass read in the full read
+XLK014|correct|pass read in the full read
+XLK017|correct|pass read in the full read
+XFU040|correct|pass read in the full read
+XLK018|correct|pass read in the full read
+XFU016|correct|pass read in the full read
+XLK019|correct|pass read in the full read
+XLK020|correct|pass read in the full read
+XFU130|correct|pass read in the full read
+XLK021|correct|pass read in the full read
+XLK022|correct|pass read in the full read
+XFU015|correct|pass read in the full read
+XLK023|correct|pass read in the full read
+XFU057|correct|pass read in the full read
+XLK024|correct|pass read in the full read
+XFU098|correct|pass read in the full read
+XFU065|correct|pass read in the full read
+XLK027|correct|pass read in the full read
+XLK028|correct|pass read in the full read
+XLK029|correct|pass read in the full read
+XLK030|correct|pass read in the full read
+XLK032|correct|pass read in the full read
+XLK033|correct|pass read in the full read
+XFU079|wrong claim|right figure (£669) but says C3-B2 has the lowest net revenue (a one-row ranking), which is false (C4-B3 £177 is lowest)
+XLK034|correct|pass read in the full read
+XFU136|correct|pass read in the full read
+XLK035|correct|pass read in the full read
+XLK036|correct|pass read in the full read
+XLK037|correct|pass read in the full read
+XLK038|correct|pass read in the full read
+XLK039|correct|pass read in the full read
+XLK040|correct|pass read in the full read
+XLK041|correct|pass read in the full read
+XLK042|correct|pass read in the full read
+XLK043|correct|pass read in the full read
+XFU067|correct|pass read in the full read
+XLK044|correct|pass read in the full read
+XFU127|correct|pass read in the full read
+XLK048|correct|pass read in the full read
+XFU114|correct|pass read in the full read
+XLK049|correct|pass read in the full read
+XFU058|correct|pass read in the full read
+XLK050|correct|pass read in the full read
+XFU020|correct|pass read in the full read
+XLK051|correct|pass read in the full read
+XFU014|correct|pass read in the full read
+XLK052|correct|pass read in the full read
+XLK053|correct|pass read in the full read
+XFU125|correct|pass read in the full read
+XLK054|correct|pass read in the full read
+XLK055|correct|pass read in the full read
+XLK056|correct|pass read in the full read
+XFU100|correct|pass read in the full read
+XLK060|correct|pass read in the full read
+XLK061|correct|pass read in the full read
+XFU080|correct|pass read in the full read
+XLK062|correct|pass read in the full read
+XFU137|correct|pass read in the full read
+XLK063|correct|pass read in the full read
+XFU048|correct|pass read in the full read
+XLK064|correct|pass read in the full read
+XFU056|correct|pass read in the full read
+XLK065|correct|pass read in the full read
+XLK066|correct|pass read in the full read
+XLK067|correct|pass read in the full read
+XFU059|correct|pass read in the full read
+XLK068|correct|pass read in the full read
+XLK069|correct|pass read in the full read
+XLK070|correct|pass read in the full read
+XFU041|correct|pass read in the full read
+XLK071|correct|pass read in the full read
+XLK072|correct|pass read in the full read
+XFU070|correct|pass read in the full read
+XLK073|correct|pass read in the full read
+XLK074|correct|pass read in the full read
+XFU050|correct|pass read in the full read
+XLK076|correct|pass read in the full read
+XLK079|correct|pass read in the full read
+XLK080|correct|pass read in the full read
+XLK081|correct|pass read in the full read
+XLK082|correct|pass read in the full read
+XFU069|correct|pass read in the full read
+XLK083|correct|pass read in the full read
+XLK084|correct|pass read in the full read
+XLK086|correct|pass read in the full read
+XLK088|correct|pass read in the full read
+XFU103|correct|pass read in the full read
+XLK089|correct|pass read in the full read
+XLK090|correct|pass read in the full read
+XLK091|correct|pass read in the full read
+XFU131|correct|pass read in the full read
+XLK092|correct|pass read in the full read
+XLK093|correct|pass read in the full read
+XLK094|correct|pass read in the full read
+XFU053|correct|pass read in the full read
+XLK095|correct|pass read in the full read
+XFU029|correct|pass read in the full read
+XLK096|correct|pass read in the full read
+XLK097|correct|pass read in the full read
+XLK099|correct|pass read in the full read
+XLK100|correct|pass read in the full read
+XLK101|correct|pass read in the full read
+XFU109|correct|pass read in the full read
+XLK102|correct|pass read in the full read
+XLK103|correct|pass read in the full read
+XLK104|correct|pass read in the full read
+XLK105|correct|pass read in the full read
+XLK106|correct|pass read in the full read
+XLK107|correct|pass read in the full read
+XFU116|correct|pass read in the full read
+XLK108|correct|pass read in the full read
+XLK109|correct|pass read in the full read
+XFU107|correct|pass read in the full read
+XLK110|correct|pass read in the full read
+XFU073|correct|pass read in the full read
+XLK111|correct|pass read in the full read
+XLK112|correct|pass read in the full read
+XLK113|correct|pass read in the full read
+XFU095|correct|pass read in the full read
+XLK114|correct|pass read in the full read
+XFU047|correct|pass read in the full read
+XLK115|correct|pass read in the full read
+XLK116|correct|pass read in the full read
+XLK118|correct|pass read in the full read
+XLK119|correct|pass read in the full read
+XLK120|correct|pass read in the full read
+XLK121|correct|pass read in the full read
+XLK122|correct|pass read in the full read
+XLK123|correct|pass read in the full read
+XFU022|correct|pass read in the full read
+XLK125|wrong number|typo low-vaue dropped the tier: all Small-basket buyers (93.0%), not C4-B3 (93.2%)
+XLK126|correct|pass read in the full read
+XLK127|correct|pass read in the full read
+XLK128|correct|pass read in the full read
+XFU045|correct|pass read in the full read
+XLK129|correct|pass read in the full read
+XFU096|correct|pass read in the full read
+XLK130|correct|pass read in the full read
+XLK131|correct|pass read in the full read
+XFU052|correct|pass read in the full read
+XLK132|correct|pass read in the full read
+XLK133|correct|pass read in the full read
+XFU093|correct|pass read in the full read
+XLK134|correct|pass read in the full read
+XLK135|correct|pass read in the full read
+XLK136|correct|pass read in the full read
+XLK137|correct|pass read in the full read
+XLK138|correct|pass read in the full read
+XFU110|correct|pass read in the full read
+XLK139|correct|pass read in the full read
+XFU124|wrong claim|right figure (£6,409) but says C1-B3 has the lowest net revenue (a one-row ranking) when it has the highest
+XLK140|correct|pass read in the full read
+XFU132|correct|pass read in the full read
+XLK142|correct|pass read in the full read
+XLK143|correct|pass read in the full read
+XFU102|correct|pass read in the full read
+XFU128|correct|pass read in the full read
+XLK145|correct|pass read in the full read
+XFU028|correct|pass read in the full read
+XLK146|correct|pass read in the full read
+XLK147|correct|pass read in the full read
+XFU055|correct|pass read in the full read
+XLK148|correct|pass read in the full read
+XLK149|correct|pass read in the full read
+XLK150|correct|pass read in the full read
+XLK151|correct|pass read in the full read
+XLK152|correct|pass read in the full read
+XLK153|correct|pass read in the full read
+XLK154|correct|pass read in the full read
+XLK155|correct|pass read in the full read
+XLK156|correct|pass read in the full read
+XLK157|correct|pass read in the full read
+XFU001|correct|pass read in the full read
+XLK158|correct|pass read in the full read
+XFU023|correct|pass read in the full read
+XLK159|correct|pass read in the full read
+XLK160|correct|pass read in the full read
+XTS002|correct|pass read in the full read
+XTS007|correct|pass read in the full read
+XTS009|correct|pass read in the full read
+XTS010|correct|pass read in the full read
+XTS011|correct|pass read in the full read
+XTS012|correct|pass read in the full read
+XTS013|correct|pass read in the full read
+XTS016|correct|pass read in the full read
+XFU113|correct|pass read in the full read
+XTS017|correct|pass read in the full read
+XTS018|correct|pass read in the full read
+XTS019|correct|pass read in the full read
+XTS022|correct|pass read in the full read
+XFU036|correct|pass read in the full read
+XTS023|correct|pass read in the full read
+XTS024|correct|pass read in the full read
+XTS026|correct|pass read in the full read
+XTS027|correct|pass read in the full read
+XTS028|correct|pass read in the full read
+XTS029|correct|pass read in the full read
+XTS030|correct|pass read in the full read
+XTS031|correct|pass read in the full read
+XTS033|correct|pass read in the full read
+XTS034|correct|pass read in the full read
+XTS035|correct|pass read in the full read
+XTS039|correct|pass read in the full read
+XTS040|correct|pass read in the full read
+XTS041|correct|pass read in the full read
+XTS044|correct|pass read in the full read
+XTS045|correct|pass read in the full read
+XTS046|correct|pass read in the full read
+XTS047|correct|pass read in the full read
+XTS048|correct|pass read in the full read
+XTS049|correct|pass read in the full read
+XTS050|correct|pass read in the full read
+XTS051|correct|pass read in the full read
+XTS052|correct|pass read in the full read
+XTS053|correct|pass read in the full read
+XTS054|correct|pass read in the full read
+XTS055|correct|pass read in the full read
+XTS056|correct|pass read in the full read
+XTS058|correct|pass read in the full read
+XTS060|correct|pass read in the full read
+XTS061|correct|pass read in the full read
+XTS062|correct|pass read in the full read
+XTS063|correct|pass read in the full read
+XTS064|correct|pass read in the full read
+XTS065|correct|pass read in the full read
+XFU011|correct|pass read in the full read
+XTS066|correct|pass read in the full read
+XTS067|correct|pass read in the full read
+XTS068|correct|pass read in the full read
+XTS069|correct|pass read in the full read
+XTS071|correct|pass read in the full read
+XFU060|correct|pass read in the full read
+XTS073|correct|pass read in the full read
+XTS074|correct|pass read in the full read
+XTS075|correct|pass read in the full read
+XTS076|correct|pass read in the full read
+XTS077|correct|pass read in the full read
+XTS078|correct|pass read in the full read
+XTS080|correct|pass read in the full read
+XTS081|correct|pass read in the full read
+XTS083|correct|pass read in the full read
+XTS084|correct|pass read in the full read
+XTS085|correct|pass read in the full read
+XFU054|correct|pass read in the full read
+XTS086|correct|pass read in the full read
+XTS087|correct|pass read in the full read
+XTS088|correct|pass read in the full read
+XTS089|correct|pass read in the full read
+XTS090|correct|pass read in the full read
+XTS093|correct|pass read in the full read
+XTS094|correct|pass read in the full read
+XTS097|correct|pass read in the full read
+XFU017|correct|pass read in the full read
+XTS098|correct|pass read in the full read
+XTS099|correct|pass read in the full read
+XTS100|correct|pass read in the full read
+XTS101|correct|pass read in the full read
+XTS102|correct|pass read in the full read
+XTS103|correct|pass read in the full read
+XTS104|correct|pass read in the full read
+XTS105|correct|pass read in the full read
+XTS106|correct|pass read in the full read
+XTS107|correct|pass read in the full read
+XTS108|correct|pass read in the full read
+XTS109|correct|pass read in the full read
+XTS110|correct|pass read in the full read
+XRK001|correct|pass read in the full read
+XRK002|correct|pass read in the full read
+XRK003|correct|pass read in the full read
+XRK004|unhelpful|most lines per order among top spenders: the three C1 rows in segment order, no pick (C1-B2, 32.1)
+XRK005|correct|pass read in the full read
+XFU121|correct|pass read in the full read
+XRK006|correct|pass read in the full read
+XFU112|correct|pass read in the full read
+XRK007|correct|pass read in the full read
+XFU010|correct|pass read in the full read
+XRK008|correct|pass read in the full read
+XFU032|correct|pass read in the full read
+XRK010|correct|pass read in the full read
+XRK011|correct|pass read in the full read
+XRK012|correct|pass read in the full read
+XFU133|correct|pass read in the full read
+XRK013|correct|pass read in the full read
+XRK014|correct|pass read in the full read
+XFU126|correct|pass read in the full read
+XRK015|correct|pass read in the full read
+XFU111|correct|pass read in the full read
+XRK016|unhelpful|pays most per unit among holiday segments: the four B2 rows, no pick (C1-B2, £1.85)
+XRK017|correct|pass read in the full read
+XRK018|correct|pass read in the full read
+XRK019|correct|pass read in the full read
+XRK020|correct|pass read in the full read
+XRK021|correct|pass read in the full read
+XRK022|unhelpful|fewest units per order among occasional segments: the three C3 rows, no pick (C3-B3, 90)
+XRK023|correct|pass read in the full read
+XRK025|correct|pass read in the full read
+XFU120|correct|pass read in the full read
+XRK026|correct|pass read in the full read
+XRK027|correct|pass read in the full read
+XRK028|correct|pass read in the full read
+XRK029|unhelpful|most orders per year among holiday segments: the four B2 rows, no pick (C1-B2, 10)
+XRK030|correct|pass read in the full read
+XRK031|correct|pass read in the full read
+XRK032|correct|pass read in the full read
+XRK033|correct|pass read in the full read
+XRK034|correct|pass read in the full read
+XRK035|correct|pass read in the full read
+XFU009|correct|pass read in the full read
+XRK036|correct|pass read in the full read
+XRK037|correct|pass read in the full read
+XRK038|correct|pass read in the full read
+XRK039|correct|pass read in the full read
+XRK040|correct|pass read in the full read
+XRK042|correct|pass read in the full read
+XRK043|correct|pass read in the full read
+XRK044|unhelpful|pays least per unit among core segments: the three C2 rows, no pick (C2-B1, £1.64)
+XRK045|correct|pass read in the full read
+XRK046|correct|pass read in the full read
+XFU119|correct|pass read in the full read
+XRK048|correct|pass read in the full read
+XRK049|correct|pass read in the full read
+XRK050|correct|pass read in the full read
+XRK051|correct|pass read in the full read
+XRK052|correct|pass read in the full read
+XFU034|correct|pass read in the full read
+XRK053|correct|pass read in the full read
+XFU108|correct|pass read in the full read
+XRK054|correct|pass read in the full read
+XRK055|correct|pass read in the full read
+XRK056|correct|pass read in the full read
+XRK057|correct|pass read in the full read
+XRK058|correct|pass read in the full read
+XRK059|correct|pass read in the full read
+XRK060|correct|pass read in the full read
+XRK061|correct|pass read in the full read
+XRK062|correct|pass read in the full read
+XRK063|correct|pass read in the full read
+XFU086|correct|pass read in the full read
+XRK064|correct|pass read in the full read
+XRK066|correct|pass read in the full read
+XRK067|correct|pass read in the full read
+XRK069|correct|pass read in the full read
+XRK070|correct|pass read in the full read
+XRK071|correct|pass read in the full read
+XRK072|correct|pass read in the full read
+XRK073|correct|pass read in the full read
+XRK074|correct|pass read in the full read
+XRK075|correct|pass read in the full read
+XRK076|correct|pass read in the full read
+XRK077|correct|pass read in the full read
+XFU135|unhelpful|and the highest (unit price, holiday): the four B2 rows, no pick (C1-B2, £1.85)
+XRK079|correct|pass read in the full read
+XRK080|correct|pass read in the full read
+XFU043|correct|pass read in the full read
+XFU008|correct|pass read in the full read
+XRK082|correct|pass read in the full read
+XRK083|correct|pass read in the full read
+XRK084|correct|pass read in the full read
+XRK085|correct|pass read in the full read
+XFU115|correct|pass read in the full read
+XRK086|correct|pass read in the full read
+XRK087|wrong number|typo holday dropped the style: most recent of all segments (C1-B3, 4 days), not of Holiday buyers (C1-B2, 8 days)
+XRK088|correct|pass read in the full read
+XRK089|correct|pass read in the full read
+XRK090|correct|pass read in the full read
+XRK091|correct|pass read in the full read
+XRK092|correct|pass read in the full read
+XRK094|unhelpful|fewest units per order among holiday segments: the four B2 rows, no pick (C4-B2, 160)
+XRK095|correct|pass read in the full read
+XFU063|correct|pass read in the full read
+XRK096|correct|pass read in the full read
+XRK097|correct|pass read in the full read
+XRK098|correct|pass read in the full read
+XCP001|correct|pass read in the full read
+XCP002|correct|pass read in the full read
+XCP003|correct|pass read in the full read
+XCP004|correct|pass read in the full read
+XFU030|correct|pass read in the full read
+XCP005|correct|pass read in the full read
+XCP006|correct|pass read in the full read
+XCP007|correct|pass read in the full read
+XCP008|correct|pass read in the full read
+XCP010|correct|pass read in the full read
+XFU138|correct|pass read in the full read
+XCP011|correct|pass read in the full read
+XCP012|correct|pass read in the full read
+XCP013|correct|pass read in the full read
+XCP014|correct|pass read in the full read
+XCP015|correct|pass read in the full read
+XCP017|correct|pass read in the full read
+XCP018|correct|pass read in the full read
+XCP019|correct|pass read in the full read
+XFU062|correct|pass read in the full read
+XCP021|correct|pass read in the full read
+XCP022|correct|pass read in the full read
+XCP023|correct|pass read in the full read
+XCP024|correct|pass read in the full read
+XCP026|correct|pass read in the full read
+XCP027|correct|pass read in the full read
+XFU072|correct|pass read in the full read
+XCP028|correct|pass read in the full read
+XCP029|correct|pass read in the full read
+XCP032|correct|pass read in the full read
+XCP034|correct|pass read in the full read
+XCP035|correct|pass read in the full read
+XCP036|correct|pass read in the full read
+XCP037|correct|pass read in the full read
+XCP038|correct|pass read in the full read
+XCP039|correct|pass read in the full read
+XCP040|correct|pass read in the full read
+XCP041|correct|pass read in the full read
+XFU018|correct|pass read in the full read
+XCP043|correct|pass read in the full read
+XFU083|correct|pass read in the full read
+XCP045|correct|pass read in the full read
+XFU012|correct|pass read in the full read
+XCP046|correct|pass read in the full read
+XFU134|correct|pass read in the full read
+XCP047|correct|pass read in the full read
+XFU033|correct|pass read in the full read
+XFU074|correct|pass read in the full read
+XCP049|correct|pass read in the full read
+XCP050|correct|pass read in the full read
+XFU039|correct|pass read in the full read
+XCP051|correct|pass read in the full read
+XCP052|correct|pass read in the full read
+XFU046|correct|pass read in the full read
+XCP053|correct|pass read in the full read
+XFU085|correct|pass read in the full read
+XCP054|correct|pass read in the full read
+XCP055|correct|pass read in the full read
+XCP056|correct|pass read in the full read
+XCP057|correct|pass read in the full read
+XCP058|correct|pass read in the full read
+XFU097|correct|pass read in the full read
+XCP059|correct|pass read in the full read
+XCP060|correct|pass read in the full read
+XCP061|correct|pass read in the full read
+XFU068|correct|pass read in the full read
+XCP062|correct|pass read in the full read
+XFU092|correct|pass read in the full read
+XCP063|correct|pass read in the full read
+XFU004|correct|pass read in the full read
+XCP064|correct|pass read in the full read
+XCP065|correct|pass read in the full read
+XCP066|correct|pass read in the full read
+XCP067|correct|pass read in the full read
+XFU044|correct|pass read in the full read
+XCP068|correct|pass read in the full read
+XFU104|correct|pass read in the full read
+XCP069|correct|pass read in the full read
+XCP070|correct|pass read in the full read
+XFU021|correct|pass read in the full read
+XCP071|correct|pass read in the full read
+XCP072|correct|pass read in the full read
+XFU013|correct|pass read in the full read
+XCP074|correct|pass read in the full read
+XFU061|correct|pass read in the full read
+XCP077|correct|pass read in the full read
+XCP078|correct|pass read in the full read
+XFU105|correct|pass read in the full read
+XCP079|correct|pass read in the full read
+XBD001|correct|pass read in the full read
+XBD002|correct|pass read in the full read
+XBD004|correct|pass read in the full read
+XBD009|correct|pass read in the full read
+XBD012|correct|pass read in the full read
+XBD013|correct|pass read in the full read
+XBD014|correct|pass read in the full read
+XBD015|correct|pass read in the full read
+XBD017|correct|pass read in the full read
+XBD018|correct|pass read in the full read
+XBD019|correct|pass read in the full read
+XBD022|correct|pass read in the full read
+XBD026|correct|pass read in the full read
+XBD028|correct|pass read in the full read
+XBD029|correct|pass read in the full read
+XBD030|correct|pass read in the full read
+XBD032|correct|pass read in the full read
+XBD039|correct|pass read in the full read
+XFL002|correct|pass read in the full read
+XFL003|correct|pass read in the full read
+XFU089|correct|pass read in the full read
+XFL004|correct|pass read in the full read
+XFL005|correct|pass read in the full read
+XFL006|correct|pass read in the full read
+XFL007|correct|pass read in the full read
+XFU106|correct|pass read in the full read
+XFL008|correct|pass read in the full read
+XFL009|correct|pass read in the full read
+XFL011|correct|pass read in the full read
+XFL013|correct|pass read in the full read
+XFU087|correct|pass read in the full read
+XFL014|correct|pass read in the full read
+XFL015|correct|pass read in the full read
+XFL016|correct|pass read in the full read
+XFL018|correct|pass read in the full read
+XFL021|correct|pass read in the full read
+XFL022|correct|pass read in the full read
+XFU091|correct|pass read in the full read
+XFL024|correct|pass read in the full read
+XFL025|correct|pass read in the full read
+XFL026|correct|pass read in the full read
+XFL027|correct|pass read in the full read
+XFL028|correct|pass read in the full read
+XME001|correct|pass read in the full read
+XME002|correct|pass read in the full read
+XME003|correct|pass read in the full read
+XME004|correct|pass read in the full read
+XFU051|correct|pass read in the full read
+XME006|correct|pass read in the full read
+XME008|correct|pass read in the full read
+XME009|correct|pass read in the full read
+XME010|correct|pass read in the full read
+XFU101|correct|pass read in the full read
+XME012|correct|pass read in the full read
+XME013|correct|pass read in the full read
+XME014|correct|pass read in the full read
+XME015|correct|pass read in the full read
+XFU019|correct|pass read in the full read
+XME016|correct|pass read in the full read
+XFU099|correct|pass read in the full read
+XME018|correct|pass read in the full read
+XME019|correct|pass read in the full read
+XME020|correct|pass read in the full read
+XME021|correct|pass read in the full read
+XME022|correct|pass read in the full read
+XFU094|correct|pass read in the full read
+XME023|correct|pass read in the full read
+XME027|correct|pass read in the full read
+XME028|correct|pass read in the full read
+XFU024|correct|pass read in the full read
+XME029|unhelpful|best scheme by buying-style eta squared: every scheme's q2 and q3 values, no pick and no means (hybrid 0.3415 vs grid 0.3393 is close)
+XME030|correct|pass read in the full read
+XME031|wrong number|answered the 3-4 segment outcome tiers (0.484), not the 9-12 segment ones (0.6085)--first pass matched the 0-1 in the label
+XFU064|wrong number|same wrong scheme in q3 (0.569, not 0.6743)
+XFU071|correct|pass read in the full read
+XME033|correct|pass read in the full read
+XME034|correct|pass read in the full read
+XME036|correct|pass read in the full read
+XME037|correct|pass read in the full read
+XME039|correct|pass read in the full read
+XME040|correct|pass read in the full read
+XFU122|correct|pass read in the full read

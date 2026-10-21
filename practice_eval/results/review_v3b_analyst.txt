@@ -1,0 +1,352 @@
+# Power run extension, Cortex Analyst (segmentation_r8.yaml) on questions_v3b.json. Read per POWER_RUN_PLAN.md; unread passes filled at the end.
+YLK003|correct|
+YLK021|correct|
+YLK024|correct|
+YLK030|correct|
+YLK036|declined-but-answerable|says orders per year isn't held; median orders in the last 12 months is (5)
+YLK040|correct|
+YLK044|correct|
+YLK049|correct|customers 49 with other size measures
+YLK054|correct|
+YLK058|correct|
+YTS030|unhelpful|per-customer revenue for each Core segment, never the tier's £361
+YTS038|unhelpful|"c1 headcount": segment rows, no total (383)
+YTS040|unhelpful|segment rows, never the combined 3,287
+YRK007|correct|
+YRK014|correct|
+YRK019|correct|
+YRK020|correct|
+YRK029|wrong number|read "last seasonal" as most seasonal (C2-B2); least seasonal is C2-B1
+YRK035|correct|
+YRK038|correct|
+YCP004|correct|table, no "no"; C1-B2 higher
+YCP005|correct|table, no "yes"; C4-B3 393 vs 412 days
+YCP008|correct|table, no "no"; C1-B3 more recent
+YCP010|correct|table, no "no"; C4-B3 bigger
+YCP011|correct|table, no "yes"; 4 vs 1
+YCP012|correct|table, no "no"; C2-B3 7 vs 3
+YCP015|correct|table, no "no"; C1-B2 higher
+YCP016|correct|table, no "no"; C3-B1 higher
+YCP018|unhelpful|segment rows for both tiers, no tier totals (£387,619 vs £64,323)
+YCP020|correct|table, no "yes"; C3-B2 higher
+YCP023|correct|table, no "yes"; C2-B1 bigger
+YCP025|correct|
+YCP027|correct|table, no "yes"; C2-B1 bigger
+YCP028|correct|table, no "no"; C3-B1 newer
+YCP031|correct|table, no "no"; C3-B1 higher
+YCP032|correct|table, no "no"; C3-B2 higher
+YBD006|correct|
+YBD010|correct|by tier; the bulk segment in each
+YFL002|unhelpful|segment rows, never the total £1,738,164
+YFL005|correct|count asked: 1
+YFL006|correct|
+YFL007|unhelpful|segment rows, never the total 3,679
+YFL009|correct|
+YFL010|correct|
+YFL011|correct|
+YFL012|correct|count asked: 8
+YME001|correct|
+YME010|correct|
+YAM001|correct|unit price per segment
+YAM002|correct|
+YAM003|correct|Top spenders tier (383), a listed reading, labelled
+YAM004|correct|
+YAM005|correct|per-segment engagement measures
+YAM006|correct|
+YAM007|correct|
+YAM008|unhelpful|"regular customers" read as the Core tier (1,073), not a listed reading
+YFU006|correct|
+YFU019|correct|
+YFU030|wrong number|"share of the total" gave each C1 segment's share of the tier; answer 9.0%
+YFU035|wrong number|"and the highest?" read as the top value tier; the most lapsed Low value segment is C4-B1
+YFU045|wrong number|"what about net revenue?" gave C3-B2's share of expected revenue, not £669
+YFU046|correct|
+YFU049|correct|
+YFU052|correct|
+YAM009|correct|Top spenders tier (383), labelled
+YAM010|correct|lowest expected revenue, labelled
+YAM011|wrong claim|"price-sensitive" read as small-basket buyers, who pay the highest unit prices
+YAM012|correct|full row with expected revenue
+YAM013|correct|
+YAM014|correct|
+YAM015|wrong claim|"active customers" answered with all 4,261
+YAM016|correct|lowest expected revenue, labelled
+YAM017|correct|by customers, labelled
+YAM018|unhelpful|"repeat customers" answered with expected orderers, not a listed reading
+YAM019|correct|
+YAM020|correct|full row with net revenue
+YAM021|unhelpful|"lapsed" read as segments whose traits say lapsed (829), not a listed reading
+YAM022|correct|
+YAM023|correct|Top spenders tier (383), a listed reading
+YAM024|correct|
+YAM025|correct|
+YAM026|correct|
+YAM027|correct|
+YAM028|correct|
+YAM029|correct|
+YAM030|unhelpful|several guesses at "dormant", no listed reading
+YAM031|wrong claim|"engaged customers" answered with all 4,261
+YAM032|correct|
+YAM033|correct|
+YAM034|correct|
+YAM035|correct|
+YAM036|correct|
+YAM037|correct|
+YAM038|unhelpful|"size of core tier": segment rows, no total (1,073)
+YUN001|correct|
+YUN002|correct|
+YUN003|answered-instead-of-declining|notes there's no campaign data, then labels P(buys again) as the campaign response rate
+YUN004|correct|
+YUN005|correct|
+YUN006|correct|
+YUN007|correct|
+YUN008|correct|
+YUN009|answered-instead-of-declining|NPS: the segment profile, no word that survey data isn't held
+YUN010|correct|
+YUN011|correct|says there's no country data; gives the segment total with that note
+YUN012|correct|
+YUN013|correct|
+YUN014|correct|
+YUN015|correct|
+YUN016|correct|
+YUN017|correct|
+YUN018|correct|
+YUN019|correct|
+YUN020|correct|no age data; tenure offered as the nearest, labelled
+YUN021|correct|
+YUN022|correct|
+YUN023|correct|
+YUN024|correct|
+YUN025|correct|
+YUN026|correct|
+YUN027|correct|says monthly revenue isn't held
+YUN028|correct|says company size isn't held
+YUN029|correct|says Ireland isn't held; non-UK count as a labelled proxy
+YUN030|correct|
+YUN031|correct|
+YUN032|correct|
+YLK001|correct|pass read in the full read
+YLK002|correct|pass read in the full read
+YFU039|correct|pass read in the full read
+YLK004|correct|pass read in the full read
+YFU023|correct|pass read in the full read
+YLK005|correct|pass read in the full read
+YLK006|correct|pass read in the full read
+YLK007|correct|pass read in the full read
+YLK008|correct|pass read in the full read
+YLK009|correct|pass read in the full read
+YLK010|correct|pass read in the full read
+YLK011|correct|pass read in the full read
+YLK012|correct|pass read in the full read
+YLK013|correct|pass read in the full read
+YLK014|correct|pass read in the full read
+YLK015|correct|pass read in the full read
+YLK016|correct|pass read in the full read
+YFU002|correct|pass read in the full read
+YLK017|correct|pass read in the full read
+YFU011|correct|pass read in the full read
+YLK018|correct|pass read in the full read
+YLK019|correct|pass read in the full read
+YLK020|correct|pass read in the full read
+YLK022|correct|pass read in the full read
+YLK023|correct|pass read in the full read
+YLK025|correct|pass read in the full read
+YLK026|correct|pass read in the full read
+YFU016|correct|pass read in the full read
+YLK027|correct|pass read in the full read
+YLK028|correct|pass read in the full read
+YLK029|correct|pass read in the full read
+YLK031|correct|pass read in the full read
+YLK032|correct|pass read in the full read
+YLK033|correct|pass read in the full read
+YFU040|correct|pass read in the full read
+YLK034|correct|pass read in the full read
+YLK035|correct|pass read in the full read
+YLK037|correct|pass read in the full read
+YLK038|correct|pass read in the full read
+YLK039|correct|pass read in the full read
+YLK041|correct|pass read in the full read
+YFU055|correct|pass read in the full read
+YLK042|correct|pass read in the full read
+YLK043|correct|pass read in the full read
+YFU008|correct|pass read in the full read
+YLK045|correct|pass read in the full read
+YFU017|correct|pass read in the full read
+YLK046|correct|pass read in the full read
+YLK047|correct|pass read in the full read
+YFU001|correct|pass read in the full read
+YLK048|correct|pass read in the full read
+YFU010|correct|pass read in the full read
+YLK050|correct|pass read in the full read
+YFU053|correct|pass read in the full read
+YLK051|correct|pass read in the full read
+YLK052|correct|pass read in the full read
+YLK053|correct|pass read in the full read
+YFU047|correct|pass read in the full read
+YLK055|correct|pass read in the full read
+YLK056|correct|pass read in the full read
+YLK057|correct|pass read in the full read
+YLK059|correct|pass read in the full read
+YLK060|correct|pass read in the full read
+YLK061|correct|pass read in the full read
+YLK062|correct|pass read in the full read
+YFU038|correct|pass read in the full read
+YLK063|correct|pass read in the full read
+YLK064|correct|pass read in the full read
+YTS001|correct|pass read in the full read
+YTS002|correct|pass read in the full read
+YTS003|correct|pass read in the full read
+YTS004|correct|pass read in the full read
+YTS005|correct|pass read in the full read
+YTS006|correct|pass read in the full read
+YTS007|correct|pass read in the full read
+YTS008|correct|pass read in the full read
+YTS009|correct|pass read in the full read
+YTS010|correct|pass read in the full read
+YTS011|correct|pass read in the full read
+YTS012|correct|pass read in the full read
+YTS013|correct|pass read in the full read
+YTS014|correct|pass read in the full read
+YTS015|correct|pass read in the full read
+YTS016|correct|pass read in the full read
+YTS017|correct|pass read in the full read
+YTS018|correct|pass read in the full read
+YTS019|correct|pass read in the full read
+YTS020|correct|pass read in the full read
+YTS021|correct|pass read in the full read
+YFU005|correct|pass read in the full read
+YTS022|correct|pass read in the full read
+YTS023|correct|pass read in the full read
+YTS024|correct|pass read in the full read
+YTS025|correct|pass read in the full read
+YTS026|correct|pass read in the full read
+YFU032|correct|pass read in the full read
+YTS027|correct|pass read in the full read
+YFU015|correct|pass read in the full read
+YTS028|correct|pass read in the full read
+YTS029|correct|pass read in the full read
+YTS031|correct|pass read in the full read
+YTS032|correct|pass read in the full read
+YTS033|correct|pass read in the full read
+YFU009|correct|pass read in the full read
+YTS034|correct|pass read in the full read
+YTS035|correct|pass read in the full read
+YTS036|correct|pass read in the full read
+YFU043|correct|pass read in the full read
+YTS037|correct|pass read in the full read
+YTS039|correct|pass read in the full read
+YTS041|correct|pass read in the full read
+YTS042|correct|pass read in the full read
+YTS043|correct|pass read in the full read
+YTS044|correct|pass read in the full read
+YRK001|correct|pass read in the full read
+YRK002|correct|pass read in the full read
+YFU003|correct|pass read in the full read
+YRK003|correct|pass read in the full read
+YFU029|correct|pass read in the full read
+YRK004|correct|pass read in the full read
+YFU027|correct|pass read in the full read
+YRK005|correct|pass read in the full read
+YFU013|correct|pass read in the full read
+YRK006|correct|pass read in the full read
+YRK008|correct|pass read in the full read
+YFU024|correct|pass read in the full read
+YRK009|correct|pass read in the full read
+YRK010|correct|pass read in the full read
+YFU033|correct|pass read in the full read
+YRK011|correct|pass read in the full read
+YRK012|correct|pass read in the full read
+YRK013|correct|pass read in the full read
+YFU051|correct|pass read in the full read
+YRK015|correct|pass read in the full read
+YRK016|correct|pass read in the full read
+YFU056|correct|pass read in the full read
+YRK017|correct|pass read in the full read
+YRK018|correct|pass read in the full read
+YRK021|correct|pass read in the full read
+YRK022|correct|pass read in the full read
+YRK023|correct|pass read in the full read
+YRK024|correct|pass read in the full read
+YRK025|correct|pass read in the full read
+YFU028|correct|pass read in the full read
+YRK026|correct|pass read in the full read
+YRK027|correct|pass read in the full read
+YRK028|correct|pass read in the full read
+YRK030|unhelpful|most recent low value segment: all three C4 rows and columns, no pick (C4-B2, 34 days)
+YRK031|correct|pass read in the full read
+YFU031|correct|pass read in the full read
+YRK032|correct|pass read in the full read
+YRK033|correct|pass read in the full read
+YRK034|correct|pass read in the full read
+YRK036|correct|pass read in the full read
+YFU004|correct|pass read in the full read
+YRK037|correct|pass read in the full read
+YFU020|correct|pass read in the full read
+YRK039|correct|pass read in the full read
+YRK040|correct|pass read in the full read
+YCP001|correct|pass read in the full read
+YFU021|correct|pass read in the full read
+YCP002|correct|pass read in the full read
+YCP003|correct|pass read in the full read
+YFU048|correct|pass read in the full read
+YFU037|correct|pass read in the full read
+YCP006|correct|pass read in the full read
+YCP007|correct|pass read in the full read
+YCP009|correct|pass read in the full read
+YFU014|correct|pass read in the full read
+YFU034|correct|pass read in the full read
+YFU042|correct|pass read in the full read
+YCP013|correct|pass read in the full read
+YCP014|correct|pass read in the full read
+YFU007|correct|pass read in the full read
+YCP017|correct|pass read in the full read
+YCP019|correct|pass read in the full read
+YFU018|correct|pass read in the full read
+YCP021|correct|pass read in the full read
+YCP022|correct|pass read in the full read
+YFU054|correct|pass read in the full read
+YCP024|correct|pass read in the full read
+YFU026|correct|pass read in the full read
+YCP026|correct|pass read in the full read
+YCP029|correct|pass read in the full read
+YCP030|correct|pass read in the full read
+YFU012|correct|pass read in the full read
+YFU036|correct|pass read in the full read
+YBD001|correct|pass read in the full read
+YBD002|correct|pass read in the full read
+YBD003|correct|pass read in the full read
+YBD004|correct|pass read in the full read
+YBD005|correct|pass read in the full read
+YBD007|correct|pass read in the full read
+YBD008|correct|pass read in the full read
+YBD009|correct|pass read in the full read
+YBD011|correct|pass read in the full read
+YBD012|correct|pass read in the full read
+YBD013|unhelpful|bulk units per order by tier: all 12 segments, the bulk filter dropped (C1-B1 336.9 ... C4-B1 183)
+YBD014|correct|pass read in the full read
+YBD015|correct|pass read in the full read
+YBD016|correct|pass read in the full read
+YFL001|correct|pass read in the full read
+YFL003|correct|pass read in the full read
+YFL004|correct|pass read in the full read
+YFL008|correct|pass read in the full read
+YFU050|correct|pass read in the full read
+YME002|correct|pass read in the full read
+YME003|correct|pass read in the full read
+YME004|correct|pass read in the full read
+YME005|correct|pass read in the full read
+YFU041|correct|pass read in the full read
+YME006|correct|pass read in the full read
+YME007|correct|pass read in the full read
+YME008|correct|pass read in the full read
+YME009|correct|pass read in the full read
+YME011|correct|pass read in the full read
+YFU022|correct|pass read in the full read
+YME012|correct|pass read in the full read
+YME013|correct|pass read in the full read
+YME014|correct|pass read in the full read
+YFU025|correct|pass read in the full read
+YME015|correct|pass read in the full read
+YFU044|correct|pass read in the full read
+YME016|correct|pass read in the full read
+YBD013|correct|all 12 segments (bulk filter dropped), but the four B1 rows are labelled with their values--revised from unhelpful so a labelled superset is graded the same for both systems

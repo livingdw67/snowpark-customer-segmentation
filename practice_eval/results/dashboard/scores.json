@@ -1,0 +1,34 @@
+[
+ {
+  "system": "assistant",
+  "label": "Segment Assistant",
+  "n": 250,
+  "correct": 207,
+  "accuracy": 0.828,
+  "wilson_lo": 0.77635,
+  "wilson_hi": 0.86973,
+  "boot_lo": 0.7821,
+  "boot_hi": 0.87073,
+  "shared_n": 238,
+  "shared_correct": 203,
+  "shared_accuracy": 0.85294,
+  "shared_lo": 0.80235,
+  "shared_hi": 0.89232
+ },
+ {
+  "system": "analyst",
+  "label": "Cortex Analyst",
+  "n": 250,
+  "correct": 224,
+  "accuracy": 0.896,
+  "wilson_lo": 0.85198,
+  "wilson_hi": 0.92803,
+  "boot_lo": 0.85882,
+  "boot_hi": 0.93145,
+  "shared_n": 238,
+  "shared_correct": 215,
+  "shared_accuracy": 0.90336,
+  "shared_lo": 0.85917,
+  "shared_hi": 0.93474
+ }
+]

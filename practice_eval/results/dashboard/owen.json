@@ -1,0 +1,25 @@
+[
+ {
+  "gap": 0.068,
+  "gap_lo": 0.01203,
+  "gap_hi": 0.12288,
+  "reference_c": 0.862,
+  "mix": 0.03376,
+  "mix_lo": 0.00011,
+  "mix_hi": 0.07381,
+  "accuracy": 0.03424,
+  "accuracy_lo": -0.03513,
+  "accuracy_hi": 0.09822,
+  "players": 22,
+  "unions": 11,
+  "shapley_owen_max_diff": 3e-05,
+  "shapley_permutations": 20000,
+  "renorm_union_max_diff": 0.00036,
+  "renorm_player_max_diff": 0.00037,
+  "sens_draws": 4000,
+  "sens_gap_p5": 0.04111,
+  "sens_gap_p95": 0.09574,
+  "sens_share_ahead": 1.0,
+  "bootstrap_reps": 4000
+ }
+]

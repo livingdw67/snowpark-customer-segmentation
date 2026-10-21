@@ -1,0 +1,297 @@
+# Blind review of the held-out answers: ID|letter|verdict|note (letters hide which code version wrote each)
+HLK01|A|correct|
+HLK02|A|correct|
+HLK03|A|correct|
+HLK04|A|correct|
+HLK04|B|wrong number|dropped the tier: all Holiday buyers 35.0%, not C3-B2 30.4%
+HLK05|A|correct|
+HLK06|A|correct|
+HLK07|A|wrong number|asked UK share; gave C3-B1's share of the Occasional tier (39.2%)
+HLK08|A|correct|
+HLK09|A|correct|
+HLK10|A|correct|
+HLK11|A|correct|
+HLK12|A|wrong number|asked orders in 12 months; gave net revenue £635
+HLK12|B|correct|
+HLK13|A|correct|
+HLK14|A|correct|
+HLK15|A|correct|32.1 rounds 32.13
+HLK16|A|correct|
+HLK17|A|correct|
+HLK18|A|correct|
+HLK19|A|correct|
+HLK20|A|correct|
+HLK21|A|correct|
+HLK22|A|correct|
+HLK23|A|correct|
+HLK24|A|correct|
+HLK25|A|wrong number|asked UK share; gave C4-B3's share of the tier's predicted revenue
+HLK26|A|correct|
+HLK27|A|correct|
+HLK28|A|correct|
+HLK29|A|correct|
+HLK30|A|correct|
+HLK31|A|correct|
+HLK32|A|correct|
+HTS01|A|correct|
+HTS02|A|correct|
+HTS03|A|correct|
+HTS04|A|correct|
+HTS05|A|correct|
+HTS06|A|correct|
+HTS07|A|correct|
+HTS08|A|correct|£361 rounds £361.25
+HTS09|A|correct|312 is right; framed as a needless comparison with all customers
+HTS10|A|correct|
+HTS11|A|correct|
+HTS12|A|correct|
+HTS13|A|error|plan JSON failed to parse
+HTS14|A|correct|
+HTS15|A|unhelpful|asked the combined total; compared the two tiers instead and never added them
+HTS16|A|correct|
+HTS17|A|wrong number|asked the average per Core segment (£129,206); gave the tier total
+HTS18|A|wrong number|asked small-basket buyers outside top spenders (1,491); gave top spenders' units per order
+HTS19|A|correct|
+HTS20|A|correct|
+HTS21|A|correct|
+HTS22|A|correct|
+HRK01|A|correct|
+HRK02|A|correct|
+HRK03|A|correct|
+HRK04|A|correct|
+HRK05|A|correct|
+HRK05|B|wrong number|ranked orders per year, not order value
+HRK06|A|correct|
+HRK07|A|correct|
+HRK08|A|correct|
+HRK09|A|correct|
+HRK10|A|correct|
+HRK11|A|correct|
+HRK12|A|correct|
+HRK13|A|correct|lists all 12, top one right
+HRK14|A|correct|
+HRK15|A|correct|
+HRK16|A|correct|tie reported
+HRK17|A|correct|
+HRK18|A|correct|
+HRK19|A|correct|
+HRK20|A|correct|lists all 12, bottom one right
+HCP01|A|correct|
+HCP02|A|correct|
+HCP03|A|correct|
+HCP03|B|wrong claim|says No; Core / Small-basket buyers do order more often (7 vs 5)
+HCP04|A|correct|
+HCP05|A|correct|no "yes", but says C4-B3 is higher with both counts
+HCP06|A|correct|
+HCP07|A|correct|
+HCP08|A|correct|
+HCP09|A|wrong claim|says No; Core / Holiday buyers' Q4 share is higher (67.0% vs 58.7%)
+HCP09|B|correct|
+HCP10|A|correct|
+HCP11|A|correct|
+HCP12|A|correct|
+HCP13|A|correct|
+HCP14|A|correct|
+HCP15|A|correct|
+HCP16|A|correct|
+HBD01|A|correct|
+HBD02|A|correct|
+HBD03|A|correct|
+HBD04|A|correct|grid by tier and style, all 12 right
+HBD05|A|correct|
+HBD06|A|correct|
+HBD07|A|correct|
+HBD08|A|correct|whole grid shown; the Low value row is right
+HFL01|A|correct|
+HFL02|A|correct|
+HFL03|A|correct|
+HFL04|A|correct|
+HFL05|A|correct|
+HFL06|A|wrong number|applied "at least 5" to customers, not orders a year: all 12 segments
+HME01|A|correct|
+HME02|A|correct|
+HME03|A|correct|
+HME04|A|correct|
+HME05|A|correct|
+HME06|A|correct|
+HME07|A|correct|
+HME08|A|correct|-30.0%
+HFU01|A|correct|
+HFU02|A|correct|
+HFU03|A|correct|
+HFU04|A|wrong number|only two of the three segments, and no total
+HFU04|B|correct|
+HFU05|A|correct|
+HFU06|A|correct|
+HFU07|A|correct|
+HFU08|A|unhelpful|ranked segments by revenue again; no customer count
+HFU08|B|unhelpful|repeated the earlier answer; no customer count
+HFU09|A|correct|
+HFU10|A|correct|
+HFU11|A|correct|
+HFU12|A|correct|
+HFU13|A|correct|
+HFU14|A|correct|
+HFU15|A|unhelpful|each tier's share, never the combined 65.8%
+HFU15|B|unhelpful|every tier's share, never the combined 65.8%
+HFU16|A|wrong number|summed all four tiers instead of ranking them by expected revenue
+HFU16|B|wrong number|only the Low value tier, no ranking
+HFU17|A|correct|
+HFU18|A|correct|
+HFU19|A|correct|
+HFU19|B|wrong number|all customers' revenue, not the three segments'
+HFU20|A|correct|
+HFU21|A|misrouted|refused as off-topic
+HFU22|A|correct|
+HFU23|A|correct|
+HFU24|A|correct|
+HFU25|A|correct|
+HFU26|A|correct|
+HFU27|A|correct|
+HFU28|A|correct|
+HAM01|A|correct|one labelled reading (predicted revenue)
+HAM02|A|correct|by customers, labelled
+HAM03|A|correct|asks what "good" means
+HAM03|B|wrong claim|counts every customer as good
+HAM04|A|unhelpful|lists unit prices; no count and no question back
+HAM04|B|correct|asks what "cheap" means
+HAM05|A|correct|lowest predicted revenue, labelled
+HAM06|A|correct|asks what "loyal" means
+HAM06|B|wrong claim|gives all customers' chance of ordering as the loyal count
+HAM07|A|correct|chance of ordering, labelled
+HAM08|A|correct|
+HAM09|A|wrong number|expected orderers for two Holiday segments; nothing about capture rate
+HAM10|A|correct|
+HAM11|A|correct|
+HAM12|A|correct|several labelled spend measures
+HAM13|A|correct|
+HAM14|A|correct|one labelled reading (AUC)
+HAM15|A|correct|
+HAM16|A|correct|
+HAM17|A|correct|expected orderers, a listed reading
+HAM17|B|correct|asks what "active" means
+HAM18|A|correct|
+HAM19|A|wrong claim|compared segmentation schemes, not segments
+HUN01|A|correct|
+HUN02|A|correct|
+HUN03|A|correct|
+HUN04|A|correct|
+HUN04|B|answered-instead-of-declining|gave the segment's count instead of saying names aren't held
+HUN05|A|correct|
+HUN06|A|correct|
+HUN07|A|correct|
+HUN08|A|answered-instead-of-declining|showed Q4 revenue shares for a churn-in-October question
+HUN09|A|answered-instead-of-declining|past-12-month revenue, no forecast caveat
+HUN10|A|correct|
+HUN11|A|correct|declines; the reason given (no revenue by past period) is beside the point
+HUN12|A|correct|
+HUN13|A|correct|
+HUN13|B|correct|
+HUN14|A|answered-instead-of-declining|tier overview, nothing about satisfaction not being held
+HUN14|B|correct|
+HUN15|A|correct|
+HUN15|B|answered-instead-of-declining|tier counts, as if they showed upgrades
+HUN16|A|correct|
+HDC01|A|correct|
+HDC01|B|correct|
+HDC02|A|correct|
+HDC03|A|correct|accurate, but a 6,500-character comparison of every measure
+HDC03|B|correct|
+HDC04|A|unhelpful|restates "behaviour axis"; no method
+HDC04|B|unhelpful|restates "behaviour axis"; no method
+HDC05|A|correct|names the 0.01 tolerance; reason slightly muddled
+HDC05|B|correct|names the 0.01 tolerance and the stability rules
+HDC06|A|correct|
+HDC07|A|correct|transactions to 9 Dec 2011
+HDC08|A|correct|
+HDC09|A|correct|
+HDC10|A|correct|
+HDC11|A|correct|
+HDC11|B|correct|
+HDC12|A|correct|4,261
+HDC13|A|correct|
+HDC14|A|wrong claim|opens "No", then says the buying styles do come from clustering
+HDC15|A|declined-but-answerable|README gives the licence (CC BY 4.0)
+HDC16|A|correct|
+HDC16|B|correct|
+HDC17|A|correct|
+HDC18|A|correct|
+HDC19|A|correct|
+HDC20|A|correct|
+HDC20|B|correct|"lapsed more recently" is muddled; lower = more recent is right
+HDC21|A|unhelpful|"equally important" with nothing from the data behind it
+HDC22|A|correct|
+HDC22|B|correct|
+HDC23|A|correct|
+HDC24|A|unhelpful|compares C1-B1 with C4-B3 but never recommends a segment
+HDC25|A|wrong claim|lists the smallest segments; nothing on movement between them
+HDC26|A|correct|
+HDC27|A|correct|
+HDC27|B|correct|
+HDC28|A|wrong claim|says the docs don't cover it; they report a 44% under-forecast in the holiday fold
+HDC28|B|wrong claim|says the docs don't cover it; they report a 44% under-forecast in the holiday fold
+HDC29|A|correct|
+HDC30|A|correct|from the reproduction table
+HDC31|A|unhelpful|declines without pointing to ML.CUSTOMER_SEGMENTS_CURRENT
+HDC32|A|correct|
+HDC33|A|correct|vague: doesn't name recency
+HDC34|A|correct|doesn't say trailing spend dominates
+HDC34|B|correct|doesn't say trailing spend dominates
+HDC35|A|misrouted|refused as off-topic
+HWR01|A|correct|
+HWR01|B|correct|
+HWR02|A|correct|
+HWR02|B|correct|
+HWR03|A|correct|
+HWR03|B|unhelpful|asked for 2 subject lines; wrote a whole campaign
+HWR04|A|correct|
+HWR04|B|correct|
+HWR05|A|unhelpful|asks which segment instead of summarising the whole segmentation
+HWR05|B|correct|
+HWR06|A|correct|a profile rather than talking points; figures right
+HWR07|A|correct|154 characters
+HWR07|B|correct|
+HWR08|A|correct|
+HWR08|B|correct|
+HWR09|A|correct|
+HWR09|B|correct|
+HWR10|A|correct|
+HWR10|B|correct|
+HWR11|A|unhelpful|asks which segment instead of introducing the whole segmentation
+HWR11|B|wrong claim|"nine distinct groups"; there are 12 segments
+HWR12|A|wrong claim|email fine, but the note says the data doesn't support calling C4-B1 bulk buyers; B1 is the Bulk buyers style
+HWR13|A|correct|a profile rather than a persona card; figures right
+HWR14|A|misrouted|compared C1-B2 with itself instead of writing a plan
+HWR15|A|correct|two ideas
+HWR16|A|correct|body repeated after the sign-off
+HWR16|B|correct|
+HWR17|A|unhelpful|asks which segment instead of summarising the segmentation
+HWR17|B|wrong claim|"nine distinct groups" (there are 12), and 170 words for a 100-word summary
+HWR18|A|misrouted|opens "I can't answer that"; a title only as the fallback
+HWR19|A|correct|
+HWR19|B|correct|
+HWR20|A|unhelpful|a segment profile, no contact schedule
+HWR20|B|correct|every 57 days, from the segment's recency
+HWR21|A|unhelpful|states 18 orders a year; no contact advice
+HWR21|B|correct|every 2-3 weeks fits 18 orders a year, though no figure is cited
+HWR22|A|correct|
+HWR23|A|unhelpful|asks which segment instead of prioritising
+HWR23|B|unhelpful|segment names missing (" / Bulk buyers"), no figures
+HWR24|A|unhelpful|order value given, tenure missing
+HWR25|A|wrong claim|calls C4-B1 "our largest group" contributing significantly to revenue; it is neither
+HOT01|A|correct|says what it can help with
+HOT02|A|unhelpful|answers thanks with the off-topic refusal
+HOT02|B|correct|
+HOT03|A|correct|
+HOT04|A|correct|
+HOT05|A|correct|says what it can help with
+HOT06|A|correct|
+HOT07|A|correct|
+HOT08|A|correct|
+HOT09|A|correct|
+HOT10|A|correct|the standard refusal, not "I can't send email"
+HOT11|A|correct|
+HOT12|A|correct|
+HOT13|A|correct|
+HOT14|A|correct|
+HOT15|A|correct|

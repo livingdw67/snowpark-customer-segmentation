@@ -1,0 +1,876 @@
+# Power run, Cortex Analyst (segmentation_r8.yaml) on questions_v3.json. Read per POWER_RUN_PLAN.md; unread passes filled at the end.
+XLK007|correct|
+XLK026|correct|
+XLK027|correct|
+XLK042|correct|
+XLK049|correct|
+XLK052|correct|
+XLK059|wrong number|share of customers = 1 (100%); answer 6.8%
+XLK088|correct|
+XLK089|correct|
+XLK104|correct|
+XLK109|correct|
+XLK127|correct|
+XLK128|declined-but-answerable|says orders per year isn't available; median orders in the last 12 months is (7)
+XLK133|correct|
+XLK135|correct|
+XLK138|correct|
+XLK141|correct|
+XLK148|correct|
+XTS001|unhelpful|every Core and Occasional segment row, never the combined 2,307
+XTS004|correct|
+XTS006|unhelpful|each style's total, never the combined £607,037
+XTS007|correct|
+XTS012|correct|
+XTS015|correct|
+XTS025|unhelpful|segment rows, never the combined 2,514
+XTS033|unhelpful|expected orderers per C1 segment, no tier total (~312)
+XTS034|unhelpful|segment rows, never the total excluding B1 (£607,037)
+XTS036|unhelpful|segment rows, never the combined 3,287
+XTS037|unhelpful|segment rows, never the combined £1,545,707
+XTS039|unhelpful|per-customer revenue for each B3 segment, never the style's £178.16
+XTS042|unhelpful|segment rows, never the combined £523,563
+XTS050|correct|
+XTS051|unhelpful|each style's total, never the combined £1,604,000
+XTS054|unhelpful|"core tier expected revenue": segment rows, no tier total (£387,619)
+XTS056|correct|
+XTS057|correct|
+XTS063|correct|
+XTS064|unhelpful|expected orderers per Core segment, no tier total (~599)
+XTS065|unhelpful|segment rows, no tier total (£1,290,485)
+XTS066|unhelpful|non-UK counts per B3 segment, no total (~108)
+XTS071|unhelpful|segment rows, no style total (£332,665)
+XTS072|unhelpful|"b2 headcount": segment rows, no total (974)
+XTS081|correct|
+XTS082|unhelpful|segment rows, never the combined 2,805
+XTS088|correct|
+XRK008|correct|
+XRK009|correct|
+XRK021|correct|
+XFU017|correct|
+XFU020|wrong number|read "p buys again" as "periodic buyers": Holiday buyers' revenue, not C1-B1's 82.0%
+XFU025|correct|
+XFU029|correct|
+XFU031|correct|
+XFU042|correct|full row; customers 45
+XFU048|wrong number|"what about order value?" gave C2-B3's share of expected revenue, not £260
+XFU049|correct|
+XFU054|correct|
+XFU060|unhelpful|segment rows, no Bulk buyers total (1,747)
+XFU065|declined-but-answerable|says orders per year isn't held; median orders in the last 12 months is (4)
+XFU066|correct|
+XFU078|wrong number|misread "p buys again"; order values instead of C3-B2's 30.4%
+XFU095|correct|
+XFU129|correct|
+XLK023|correct|
+XLK034|correct|
+XLK041|correct|
+XLK043|correct|
+XLK050|correct|
+XLK054|correct|
+XLK069|correct|
+XLK103|correct|
+XLK113|correct|
+XLK115|correct|
+XLK130|correct|
+XLK146|correct|
+XLK153|correct|
+XLK155|correct|
+XTS009|correct|
+XTS024|correct|
+XTS038|correct|
+XTS043|correct|
+XTS062|correct|
+XTS068|correct|
+XRK015|correct|
+XRK018|correct|
+XRK026|correct|
+XRK030|correct|
+XRK031|correct|
+XRK035|correct|
+XRK042|correct|
+XRK055|correct|
+XRK065|correct|
+XRK073|correct|
+XRK095|correct|
+XRK097|correct|
+XRK100|correct|read "top three by recency" as the most recent, the RFM convention; the question allows either
+XCP003|correct|table, no "no"; C2-B1 higher
+XCP008|correct|table, no "yes"; C2-B3 more recent
+XCP010|correct|
+XCP015|correct|table, no "no"; C1-B1 higher
+XCP017|correct|table, no "yes"; C4-B1 higher
+XCP018|correct|table, no "no"; C2-B1 higher
+XLK016|correct|
+XLK036|correct|
+XLK062|correct|
+XLK096|correct|
+XLK097|correct|
+XLK106|correct|
+XLK108|correct|
+XLK122|correct|
+XLK139|correct|
+XTS008|correct|
+XTS026|correct|
+XTS029|correct|
+XTS085|correct|
+XTS091|correct|
+XTS095|correct|
+XTS100|correct|
+XTS106|correct|
+XTS108|correct|
+XRK002|correct|
+XRK003|correct|
+XRK007|correct|
+XRK014|correct|
+XRK027|correct|
+XRK045|correct|
+XRK067|correct|
+XRK069|correct|
+XRK078|correct|
+XRK093|correct|
+XCP021|correct|
+XCP032|correct|
+XCP045|correct|
+XCP049|correct|
+XCP050|correct|
+XCP019|correct|table with both values, no yes/no word
+XCP020|correct|table with both values, no yes/no word
+XCP022|correct|table with both values, no yes/no word
+XCP031|correct|table with both values, no yes/no word
+XCP039|correct|table with both values, no yes/no word
+XCP040|correct|table with both values, no yes/no word
+XCP041|correct|table with both values, no yes/no word
+XCP042|correct|table with both values, no yes/no word
+XCP044|correct|table with both values, no yes/no word
+XCP048|correct|table with both values, no yes/no word
+XCP051|correct|table with both values, no yes/no word
+XCP052|correct|table with both values, no yes/no word
+XCP055|correct|table with both values, no yes/no word
+XCP057|correct|table with both values, no yes/no word
+XCP059|correct|table with both values, no yes/no word
+XCP065|correct|table with both values, no yes/no word
+XLK061|correct|
+XLK095|correct|
+XLK105|correct|
+XLK107|correct|
+XLK121|correct|
+XLK145|correct|
+XLK147|correct|
+XLK154|correct|
+XTS003|correct|
+XTS028|correct|
+XTS084|correct|
+XTS090|correct|
+XTS094|correct|
+XTS099|correct|
+XTS105|correct|
+XTS107|correct|
+XTS110|correct|
+XRK001|correct|
+XRK006|correct|
+XRK013|correct|
+XRK044|correct|
+XRK066|correct|
+XRK068|correct|
+XRK077|correct|
+XRK092|correct|
+XBD011|correct|
+XBD012|correct|
+XBD019|correct|
+XBD024|correct|
+XBD028|correct|
+XBD029|correct|
+XBD031|correct|
+XBD035|correct|
+XBD040|correct|
+XFL001|correct|
+XFL007|correct|
+XFL008|correct|
+XFL010|correct|
+XFL011|correct|
+XFL013|correct|
+XFL014|correct|
+XFL015|correct|
+XFL016|correct|
+XFL018|correct|
+XFL019|correct|
+XFL020|correct|
+XFL021|correct|
+XFL022|correct|
+XCP067|correct|table with both values, no yes/no word
+XCP071|correct|table with both values, no yes/no word
+XCP072|correct|table with both values, no yes/no word
+XCP073|correct|table with both values, no yes/no word
+XCP075|correct|table with both values, no yes/no word
+XCP076|correct|table with both values, no yes/no word
+XCP077|correct|table with both values, no yes/no word
+XCP080|correct|table with both values, no yes/no word
+XFL002|unhelpful|segment rows, never the total 2,569
+XFL004|unhelpful|segment rows, never the total £1,604,000
+XFL006|unhelpful|segment rows, never the total 684
+XFL009|unhelpful|segment rows, never the total £150,432
+XFL024|correct|
+XFL026|correct|
+XFL027|correct|
+XFL029|correct|
+XFL030|correct|
+XME007|correct|
+XME021|correct|
+XME025|correct|
+XME028|correct|
+XME037|correct|
+XAM001|correct|
+XAM002|correct|
+XAM003|correct|
+XAM004|correct|
+XAM005|correct|
+XAM006|correct|
+XAM008|correct|
+XAM009|correct|
+XAM010|correct|
+XAM011|correct|
+XAM012|correct|
+XAM013|correct|
+XAM015|correct|
+XAM016|correct|
+XAM017|correct|
+XAM018|correct|
+XAM019|correct|
+XAM020|correct|
+XAM021|correct|
+XAM022|correct|
+XAM023|correct|
+XAM024|correct|
+XAM025|correct|
+XAM028|correct|
+XAM029|correct|
+XAM032|correct|
+XAM033|correct|
+XAM034|correct|
+XAM035|correct|
+XAM036|correct|
+XAM037|correct|
+XAM038|correct|
+XAM039|correct|
+XAM040|correct|
+XAM041|correct|
+XAM042|correct|
+XAM043|correct|
+XAM044|correct|
+XAM045|correct|
+XAM046|correct|
+XAM047|correct|
+XAM048|correct|
+XAM049|correct|
+XAM050|correct|
+XAM051|correct|
+XAM052|correct|
+XAM053|correct|
+XAM054|correct|
+XAM055|correct|
+XAM056|correct|
+XAM057|correct|
+XAM058|correct|
+XME017|declined-but-answerable|says missing customer IDs aren't tracked; the cleaning table shows 232,834 such rows
+XME035|unhelpful|both folds but not their mean (0.7535)
+XAM007|unhelpful|"size of the core tier": segment rows, no total (1,073)
+XAM014|correct|Low value tier as a proxy (1,571), the same customers as the P(buys again) under 25% reading
+XAM026|unhelpful|"hit rate" read as predicted vs actual active rate, not a listed reading
+XAM027|wrong number|"the grid" answered with the hybrid's scores; the two-axis grid's AUC is 0.7535
+XAM030|wrong claim|"bargain" read as small-basket buyers, called the lowest-price style; they pay the most per unit
+XAM031|unhelpful|"at-risk" read as the Occasional and Low value tiers, not a listed reading
+XAM060|correct|
+XAM061|correct|
+XAM062|correct|
+XAM063|correct|
+XAM064|correct|
+XAM065|correct|
+XAM066|correct|
+XAM067|correct|
+XAM068|correct|
+XAM071|correct|
+XAM072|correct|
+XAM073|correct|
+XAM074|correct|
+XAM075|correct|
+XAM076|correct|
+XAM077|correct|
+XAM078|correct|
+XAM079|correct|
+XAM080|correct|
+XAM081|correct|
+XAM082|correct|
+XAM083|correct|
+XAM084|correct|
+XAM085|correct|
+XAM086|correct|
+XAM088|correct|
+XAM089|correct|
+XAM090|correct|
+XAM091|correct|
+XAM092|correct|
+XAM093|correct|
+XAM094|correct|
+XAM095|correct|
+XUN001|correct|
+XUN002|correct|
+XUN003|correct|
+XUN004|correct|
+XUN005|correct|
+XUN006|correct|
+XUN007|correct|
+XUN008|correct|
+XUN009|correct|
+XUN010|correct|
+XUN011|correct|
+XUN012|correct|
+XUN013|correct|
+XUN014|correct|
+XUN015|correct|
+XUN016|correct|
+XUN017|correct|
+XUN018|correct|
+XUN020|correct|
+XUN022|correct|
+XUN023|correct|
+XUN024|correct|
+XUN025|correct|
+XUN026|correct|
+XUN027|correct|
+XUN028|correct|
+XUN029|correct|
+XUN030|correct|
+XUN031|correct|
+XUN032|correct|
+XUN034|correct|
+XUN035|correct|
+XUN036|correct|
+XUN038|correct|
+XUN039|correct|
+XUN040|correct|
+XUN041|correct|
+XUN042|correct|
+XAM059|wrong claim|"frequent" read as Bulk buyers (1,747); bulk isn't frequency
+XAM069|wrong claim|"new customers" answered with all 4,261
+XAM070|unhelpful|"good customers" read as the Core tier (1,073), not a listed reading
+XAM087|unhelpful|recency for every segment and the total; no count of recent customers, no question back
+XUN019|answered-instead-of-declining|marketing channel: the segment profile, no word that channels aren't held
+XUN021|answered-instead-of-declining|company size read as the segment's customer count
+XUN033|answered-instead-of-declining|satisfaction score: the segment profile instead
+XUN037|answered-instead-of-declining|average age read as tenure, without saying age isn't held
+XUN043|answered-instead-of-declining|campaign response rate given as P(buys again)
+XUN044|correct|
+XUN045|correct|
+XUN046|correct|
+XUN047|correct|
+XUN048|correct|
+XUN049|correct|
+XUN050|correct|
+XUN051|correct|
+XUN052|correct|
+XUN053|correct|
+XUN054|correct|
+XUN055|correct|
+XUN056|correct|
+XUN058|correct|
+XUN059|correct|
+XUN060|correct|
+XUN061|correct|
+XUN062|correct|
+XUN063|correct|
+XUN064|correct|
+XUN065|correct|
+XUN066|correct|
+XUN067|correct|
+XUN068|correct|
+XUN069|correct|
+XUN070|correct|
+XUN071|correct|
+XUN072|correct|
+XUN073|correct|
+XUN074|correct|
+XUN075|correct|
+XUN076|correct|
+XUN077|correct|
+XUN078|correct|
+XUN079|correct|
+XUN080|correct|
+XFU004|correct|
+XFU008|correct|
+XFU055|correct|
+XFU083|correct|
+XFU085|correct|
+XFU106|correct|
+XFU123|correct|
+XFU126|correct|
+XFU128|correct|
+XUN057|answered-instead-of-declining|income level: a spend profile, no word that income isn't held
+XFU006|unhelpful|"and by value tier?" gave the style x tier table, not the tier totals
+XFU084|unhelpful|every Holiday segment's count; never picks the most recent (C1-B2, 45)
+XFU089|unhelpful|each segment's revenue, never the combined £259,761
+XFU104|declined-but-answerable|says orders per year isn't held; median orders in the last 12 months is (7 vs 3)
+XLK001|correct|pass read in the full read
+XFU005|correct|pass read in the full read
+XLK002|correct|pass read in the full read
+XFU038|correct|pass read in the full read
+XLK003|correct|pass read in the full read
+XLK004|correct|pass read in the full read
+XLK005|correct|pass read in the full read
+XLK006|correct|pass read in the full read
+XLK008|correct|pass read in the full read
+XLK009|correct|pass read in the full read
+XLK010|correct|pass read in the full read
+XLK011|correct|pass read in the full read
+XLK012|correct|pass read in the full read
+XLK013|correct|pass read in the full read
+XFU077|correct|pass read in the full read
+XLK014|correct|pass read in the full read
+XLK015|correct|pass read in the full read
+XLK017|correct|pass read in the full read
+XFU040|correct|pass read in the full read
+XLK018|correct|pass read in the full read
+XFU016|correct|pass read in the full read
+XLK019|correct|pass read in the full read
+XLK020|correct|pass read in the full read
+XFU130|correct|pass read in the full read
+XLK021|correct|pass read in the full read
+XLK022|correct|pass read in the full read
+XFU015|correct|pass read in the full read
+XFU057|correct|pass read in the full read
+XLK024|correct|pass read in the full read
+XLK025|correct|pass read in the full read
+XFU098|correct|pass read in the full read
+XLK028|correct|pass read in the full read
+XLK029|correct|pass read in the full read
+XLK030|correct|pass read in the full read
+XLK031|correct|pass read in the full read
+XLK032|correct|pass read in the full read
+XLK033|correct|pass read in the full read
+XFU079|correct|pass read in the full read
+XFU136|correct|pass read in the full read
+XLK035|correct|pass read in the full read
+XLK037|correct|pass read in the full read
+XLK038|correct|pass read in the full read
+XLK039|correct|pass read in the full read
+XLK040|correct|pass read in the full read
+XFU067|correct|pass read in the full read
+XLK044|correct|pass read in the full read
+XLK045|correct|pass read in the full read
+XFU127|correct|pass read in the full read
+XLK046|correct|pass read in the full read
+XLK048|correct|pass read in the full read
+XFU114|correct|pass read in the full read
+XFU058|correct|pass read in the full read
+XLK051|correct|pass read in the full read
+XFU014|correct|pass read in the full read
+XFU088|correct|pass read in the full read
+XLK053|correct|pass read in the full read
+XFU125|correct|pass read in the full read
+XLK055|correct|pass read in the full read
+XLK056|correct|pass read in the full read
+XLK057|correct|pass read in the full read
+XLK058|correct|pass read in the full read
+XFU100|correct|pass read in the full read
+XLK060|correct|pass read in the full read
+XFU080|correct|pass read in the full read
+XFU137|correct|pass read in the full read
+XLK063|correct|pass read in the full read
+XLK064|correct|pass read in the full read
+XFU056|correct|pass read in the full read
+XLK065|correct|pass read in the full read
+XLK066|correct|pass read in the full read
+XLK067|correct|pass read in the full read
+XFU059|correct|pass read in the full read
+XLK068|correct|pass read in the full read
+XLK070|correct|pass read in the full read
+XFU041|correct|pass read in the full read
+XLK071|correct|pass read in the full read
+XLK072|correct|pass read in the full read
+XFU070|correct|pass read in the full read
+XLK073|correct|pass read in the full read
+XLK074|correct|pass read in the full read
+XFU050|correct|pass read in the full read
+XLK075|correct|pass read in the full read
+XFU075|correct|pass read in the full read
+XLK076|correct|pass read in the full read
+XLK077|correct|pass read in the full read
+XLK078|correct|pass read in the full read
+XLK079|correct|pass read in the full read
+XLK080|correct|pass read in the full read
+XLK081|correct|pass read in the full read
+XLK082|correct|pass read in the full read
+XFU069|correct|pass read in the full read
+XLK083|correct|pass read in the full read
+XLK084|correct|pass read in the full read
+XLK085|correct|pass read in the full read
+XLK086|correct|pass read in the full read
+XFU035|correct|pass read in the full read
+XLK087|correct|pass read in the full read
+XFU103|correct|pass read in the full read
+XLK090|correct|pass read in the full read
+XLK091|correct|pass read in the full read
+XFU131|correct|pass read in the full read
+XLK092|correct|pass read in the full read
+XLK093|correct|pass read in the full read
+XLK094|correct|pass read in the full read
+XFU053|correct|pass read in the full read
+XLK098|correct|pass read in the full read
+XLK099|correct|pass read in the full read
+XLK100|correct|pass read in the full read
+XLK101|correct|pass read in the full read
+XFU109|correct|pass read in the full read
+XLK102|correct|pass read in the full read
+XFU116|correct|pass read in the full read
+XFU107|correct|pass read in the full read
+XLK110|correct|pass read in the full read
+XFU073|correct|pass read in the full read
+XLK111|correct|pass read in the full read
+XLK112|correct|pass read in the full read
+XLK114|correct|pass read in the full read
+XFU047|correct|pass read in the full read
+XLK116|correct|pass read in the full read
+XLK117|correct|pass read in the full read
+XLK118|correct|pass read in the full read
+XLK119|correct|pass read in the full read
+XLK120|correct|pass read in the full read
+XLK123|correct|pass read in the full read
+XLK124|correct|pass read in the full read
+XFU022|correct|pass read in the full read
+XLK125|correct|pass read in the full read
+XLK126|correct|pass read in the full read
+XFU045|correct|pass read in the full read
+XLK129|correct|pass read in the full read
+XFU096|correct|pass read in the full read
+XLK131|correct|pass read in the full read
+XFU052|correct|pass read in the full read
+XLK132|correct|pass read in the full read
+XFU093|correct|pass read in the full read
+XLK134|correct|pass read in the full read
+XLK136|correct|pass read in the full read
+XLK137|correct|pass read in the full read
+XFU110|correct|pass read in the full read
+XFU124|correct|pass read in the full read
+XLK140|correct|pass read in the full read
+XFU132|correct|pass read in the full read
+XLK142|correct|pass read in the full read
+XLK143|correct|pass read in the full read
+XFU102|correct|pass read in the full read
+XLK144|correct|pass read in the full read
+XFU028|correct|pass read in the full read
+XLK149|correct|pass read in the full read
+XLK150|correct|pass read in the full read
+XLK151|correct|pass read in the full read
+XLK152|correct|pass read in the full read
+XLK156|correct|pass read in the full read
+XLK157|correct|pass read in the full read
+XFU001|correct|pass read in the full read
+XLK158|correct|pass read in the full read
+XFU023|correct|pass read in the full read
+XLK159|correct|pass read in the full read
+XLK160|correct|pass read in the full read
+XTS002|correct|pass read in the full read
+XTS005|correct|pass read in the full read
+XTS010|correct|pass read in the full read
+XTS011|correct|pass read in the full read
+XTS013|correct|pass read in the full read
+XTS014|correct|pass read in the full read
+XTS016|correct|pass read in the full read
+XFU113|correct|pass read in the full read
+XTS017|correct|pass read in the full read
+XTS018|correct|pass read in the full read
+XTS019|correct|pass read in the full read
+XTS020|correct|pass read in the full read
+XTS021|correct|pass read in the full read
+XTS022|correct|pass read in the full read
+XFU036|correct|pass read in the full read
+XTS023|correct|pass read in the full read
+XTS027|correct|pass read in the full read
+XTS030|correct|pass read in the full read
+XTS031|correct|pass read in the full read
+XTS032|correct|pass read in the full read
+XTS035|correct|pass read in the full read
+XTS040|correct|pass read in the full read
+XTS041|correct|pass read in the full read
+XTS044|correct|pass read in the full read
+XTS045|correct|pass read in the full read
+XTS046|correct|pass read in the full read
+XTS047|correct|pass read in the full read
+XTS048|correct|pass read in the full read
+XTS049|correct|pass read in the full read
+XTS052|correct|pass read in the full read
+XTS053|correct|pass read in the full read
+XTS055|correct|pass read in the full read
+XTS058|correct|pass read in the full read
+XTS059|correct|pass read in the full read
+XTS060|correct|pass read in the full read
+XTS061|correct|pass read in the full read
+XFU011|unhelpful|per-customer revenue for each C1 segment, never the tier's £3,369 (C1-B1's £3,371 matched it within tolerance)
+XTS067|correct|pass read in the full read
+XTS069|correct|pass read in the full read
+XTS070|correct|pass read in the full read
+XTS073|correct|pass read in the full read
+XTS074|correct|pass read in the full read
+XTS075|correct|pass read in the full read
+XTS076|correct|pass read in the full read
+XTS077|correct|pass read in the full read
+XTS078|correct|pass read in the full read
+XTS079|correct|pass read in the full read
+XTS080|correct|pass read in the full read
+XTS083|correct|pass read in the full read
+XTS086|correct|pass read in the full read
+XTS087|correct|pass read in the full read
+XTS089|correct|pass read in the full read
+XFU082|correct|pass read in the full read
+XTS092|correct|pass read in the full read
+XTS093|correct|pass read in the full read
+XTS096|correct|pass read in the full read
+XTS097|correct|pass read in the full read
+XTS098|correct|pass read in the full read
+XTS101|correct|pass read in the full read
+XTS102|correct|pass read in the full read
+XTS103|correct|pass read in the full read
+XTS104|correct|pass read in the full read
+XTS109|correct|pass read in the full read
+XRK004|correct|pass read in the full read
+XRK005|correct|pass read in the full read
+XFU121|correct|pass read in the full read
+XFU112|correct|pass read in the full read
+XFU010|correct|pass read in the full read
+XFU032|correct|pass read in the full read
+XRK010|correct|pass read in the full read
+XRK011|correct|pass read in the full read
+XRK012|correct|pass read in the full read
+XFU133|correct|pass read in the full read
+XFU111|correct|pass read in the full read
+XRK016|correct|pass read in the full read
+XRK017|correct|pass read in the full read
+XRK019|correct|pass read in the full read
+XRK020|correct|pass read in the full read
+XRK022|correct|pass read in the full read
+XRK023|correct|pass read in the full read
+XRK024|correct|pass read in the full read
+XFU090|correct|pass read in the full read
+XRK025|correct|pass read in the full read
+XFU120|correct|pass read in the full read
+XRK028|correct|pass read in the full read
+XFU076|correct|pass read in the full read
+XRK029|correct|pass read in the full read
+XRK032|correct|pass read in the full read
+XRK033|correct|pass read in the full read
+XRK034|correct|pass read in the full read
+XFU009|correct|pass read in the full read
+XRK036|correct|pass read in the full read
+XRK037|correct|pass read in the full read
+XRK038|correct|pass read in the full read
+XRK039|correct|pass read in the full read
+XRK040|correct|pass read in the full read
+XRK041|correct|pass read in the full read
+XRK043|correct|pass read in the full read
+XRK046|correct|pass read in the full read
+XFU119|correct|pass read in the full read
+XRK047|correct|pass read in the full read
+XRK048|correct|pass read in the full read
+XRK049|correct|pass read in the full read
+XRK050|correct|pass read in the full read
+XRK051|correct|pass read in the full read
+XRK052|correct|pass read in the full read
+XFU034|correct|pass read in the full read
+XRK053|correct|pass read in the full read
+XFU108|correct|pass read in the full read
+XRK054|correct|pass read in the full read
+XRK056|correct|pass read in the full read
+XRK057|correct|pass read in the full read
+XRK058|correct|pass read in the full read
+XRK059|correct|pass read in the full read
+XRK060|correct|pass read in the full read
+XRK061|correct|pass read in the full read
+XRK062|correct|pass read in the full read
+XRK063|correct|pass read in the full read
+XFU086|correct|pass read in the full read
+XRK064|correct|pass read in the full read
+XFU002|correct|pass read in the full read
+XRK070|correct|pass read in the full read
+XRK071|correct|pass read in the full read
+XRK072|correct|pass read in the full read
+XRK074|correct|pass read in the full read
+XRK075|correct|pass read in the full read
+XRK076|correct|pass read in the full read
+XFU135|correct|pass read in the full read
+XRK079|correct|pass read in the full read
+XRK080|correct|pass read in the full read
+XFU043|correct|pass read in the full read
+XRK081|correct|pass read in the full read
+XRK082|correct|pass read in the full read
+XFU027|correct|pass read in the full read
+XRK083|correct|pass read in the full read
+XRK084|correct|pass read in the full read
+XRK085|correct|pass read in the full read
+XFU115|correct|pass read in the full read
+XRK086|correct|pass read in the full read
+XRK087|unhelpful|every Holiday segment's full row, never picks the most recent (C1-B2, 8 days)
+XRK088|correct|pass read in the full read
+XFU117|correct|pass read in the full read
+XRK089|correct|pass read in the full read
+XRK090|correct|pass read in the full read
+XRK091|correct|pass read in the full read
+XRK094|correct|pass read in the full read
+XFU063|correct|pass read in the full read
+XRK096|correct|pass read in the full read
+XRK098|correct|pass read in the full read
+XRK099|correct|pass read in the full read
+XFU007|correct|pass read in the full read
+XCP001|correct|pass read in the full read
+XCP002|correct|pass read in the full read
+XCP004|correct|pass read in the full read
+XFU030|correct|pass read in the full read
+XCP005|correct|pass read in the full read
+XCP006|correct|pass read in the full read
+XCP007|correct|pass read in the full read
+XCP009|correct|pass read in the full read
+XFU138|correct|pass read in the full read
+XCP011|correct|pass read in the full read
+XCP012|correct|pass read in the full read
+XCP013|correct|pass read in the full read
+XCP014|correct|pass read in the full read
+XCP016|correct|pass read in the full read
+XFU081|correct|pass read in the full read
+XFU062|correct|pass read in the full read
+XFU140|correct|pass read in the full read
+XCP023|correct|pass read in the full read
+XCP024|correct|pass read in the full read
+XCP025|correct|pass read in the full read
+XCP026|correct|pass read in the full read
+XCP027|correct|pass read in the full read
+XFU072|correct|pass read in the full read
+XCP028|correct|pass read in the full read
+XCP029|correct|pass read in the full read
+XCP030|correct|pass read in the full read
+XCP033|correct|pass read in the full read
+XCP034|correct|pass read in the full read
+XCP035|correct|pass read in the full read
+XCP036|correct|pass read in the full read
+XCP037|correct|pass read in the full read
+XCP038|correct|pass read in the full read
+XFU018|correct|pass read in the full read
+XCP043|correct|pass read in the full read
+XFU012|correct|pass read in the full read
+XCP046|correct|pass read in the full read
+XFU134|correct|pass read in the full read
+XCP047|correct|pass read in the full read
+XFU033|correct|pass read in the full read
+XFU074|correct|pass read in the full read
+XFU039|correct|pass read in the full read
+XFU046|correct|pass read in the full read
+XCP053|correct|pass read in the full read
+XCP054|correct|pass read in the full read
+XCP056|correct|pass read in the full read
+XCP058|correct|pass read in the full read
+XFU097|correct|pass read in the full read
+XCP060|correct|pass read in the full read
+XCP061|correct|pass read in the full read
+XFU068|correct|pass read in the full read
+XCP062|correct|pass read in the full read
+XFU092|correct|pass read in the full read
+XCP063|correct|pass read in the full read
+XCP064|correct|pass read in the full read
+XFU037|correct|pass read in the full read
+XCP066|correct|pass read in the full read
+XFU044|correct|pass read in the full read
+XCP068|correct|pass read in the full read
+XCP069|correct|pass read in the full read
+XCP070|correct|pass read in the full read
+XFU021|correct|pass read in the full read
+XFU003|correct|pass read in the full read
+XFU013|correct|pass read in the full read
+XCP074|correct|pass read in the full read
+XFU061|correct|pass read in the full read
+XCP078|correct|pass read in the full read
+XFU105|correct|pass read in the full read
+XCP079|correct|pass read in the full read
+XFU139|correct|pass read in the full read
+XBD001|correct|pass read in the full read
+XBD002|correct|pass read in the full read
+XBD003|correct|pass read in the full read
+XBD004|correct|pass read in the full read
+XBD005|correct|pass read in the full read
+XBD006|correct|pass read in the full read
+XBD007|correct|pass read in the full read
+XBD008|correct|pass read in the full read
+XBD009|correct|pass read in the full read
+XBD010|correct|pass read in the full read
+XBD013|correct|pass read in the full read
+XBD014|correct|pass read in the full read
+XBD015|correct|pass read in the full read
+XBD016|correct|pass read in the full read
+XBD017|correct|pass read in the full read
+XBD018|correct|pass read in the full read
+XBD020|correct|pass read in the full read
+XBD021|correct|pass read in the full read
+XBD022|correct|pass read in the full read
+XBD023|correct|pass read in the full read
+XBD025|correct|pass read in the full read
+XBD026|correct|pass read in the full read
+XBD027|correct|pass read in the full read
+XBD030|correct|pass read in the full read
+XBD032|correct|pass read in the full read
+XBD033|correct|pass read in the full read
+XBD034|correct|pass read in the full read
+XBD036|correct|pass read in the full read
+XBD037|correct|pass read in the full read
+XBD038|correct|pass read in the full read
+XBD039|correct|pass read in the full read
+XFL003|correct|pass read in the full read
+XFL005|correct|pass read in the full read
+XFL012|correct|pass read in the full read
+XFU087|correct|pass read in the full read
+XFL017|correct|pass read in the full read
+XFL023|correct|pass read in the full read
+XFU091|correct|pass read in the full read
+XFL025|correct|pass read in the full read
+XFL028|correct|pass read in the full read
+XME001|correct|pass read in the full read
+XME002|correct|pass read in the full read
+XME003|correct|pass read in the full read
+XME004|correct|pass read in the full read
+XFU051|correct|pass read in the full read
+XME005|correct|pass read in the full read
+XME006|correct|pass read in the full read
+XME008|correct|pass read in the full read
+XFU118|correct|pass read in the full read
+XME009|correct|pass read in the full read
+XME010|correct|pass read in the full read
+XFU101|correct|pass read in the full read
+XME011|correct|pass read in the full read
+XME012|correct|pass read in the full read
+XME013|correct|pass read in the full read
+XME014|correct|pass read in the full read
+XME015|correct|pass read in the full read
+XFU019|correct|pass read in the full read
+XME016|correct|pass read in the full read
+XFU099|correct|pass read in the full read
+XME018|correct|pass read in the full read
+XME019|correct|pass read in the full read
+XME020|correct|pass read in the full read
+XME022|correct|pass read in the full read
+XFU094|correct|pass read in the full read
+XME023|correct|pass read in the full read
+XME024|correct|pass read in the full read
+XME026|correct|pass read in the full read
+XME027|correct|pass read in the full read
+XFU024|correct|pass read in the full read
+XME029|correct|pass read in the full read
+XME030|correct|pass read in the full read
+XME031|correct|pass read in the full read
+XFU064|correct|pass read in the full read
+XME032|correct|pass read in the full read
+XFU071|correct|pass read in the full read
+XME033|correct|pass read in the full read
+XME034|correct|pass read in the full read
+XME036|correct|pass read in the full read
+XME038|correct|pass read in the full read
+XME039|correct|pass read in the full read
+XFU026|correct|pass read in the full read
+XME040|correct|pass read in the full read
+XFU122|correct|pass read in the full read
+XLK047|correct|pass read in the full read

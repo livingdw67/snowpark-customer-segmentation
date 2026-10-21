@@ -1,0 +1,1 @@
+{"id": "XLK047", "type": "lookup", "q": "how big are orders from c1-b3, in pounds?", "parent": null, "semantic_model": "segmentation_r8.yaml", "error": "ConnectionError(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))", "secs": 22.0}

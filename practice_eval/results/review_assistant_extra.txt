@@ -1,0 +1,64 @@
+# id|verdict|note   (the Assistant on the data questions only Analyst's set had; read with the same rules)
+LK33|correct|
+LK34|correct|
+LK35|correct|
+LK36|correct|
+LK37|correct|
+LK38|correct|
+LK39|wrong number|typo "vaule" dropped the tier: led with all holiday buyers 91.2%, not C4-B2 93.7% (same failure as LK32)
+LK40|correct|
+LK41|correct|
+LK42|correct|
+LK43|correct|
+TS23|correct|
+TS24|correct|
+TS25|correct|
+TS26|correct|
+TS27|correct|
+TS28|correct|
+TS29|unhelpful|"core or occasional": both tiers' counts, no total (2,307)
+TS30|correct|
+RK21|correct|
+RK22|correct|
+RK23|correct|
+RK24|correct|
+RK25|correct|
+RK26|correct|
+RK27|wrong number|code swapped lines per order for units per order ("widest" -> 342.4); width is lines per order (32.13); same segment by coincidence
+CP17|wrong claim|opens "No." but C4-B2 (100%) is more seasonal than C2-B2 (67%); figures right, the no contradicts them
+CP18|correct|
+CP19|correct|
+CP20|correct|
+CP21|correct|
+CP22|correct|
+BD09|correct|full crosstab; Core row £411, £424, £260 present
+BD10|wrong number|"customers per segment" read as a per-segment average (355); asked for each segment's count
+BD11|correct|
+FL07|correct|
+FL08|correct|
+ME09|correct|
+ME10|correct|
+ME11|correct|
+FU29|correct|
+FU30|correct|
+FU31|correct|
+FU32|correct|three-way tie named
+FU33|correct|
+FU34|correct|bulk 1,747 given (as a comparison with holiday)
+FU35|correct|full crosstab; Occasional row £346, £354, £221 present
+FU36|correct|k=4 silhouette 0.153 in the table; text restates k=3
+FU37|correct|
+FU38|correct|
+AM20|wrong number|"how many customers are we going to lose" compared all customers with C2-B2; readings are expected non-orderers (2,649) or a question back
+AM21|correct|C3 expected revenue £135,944, labelled
+AM22|correct|ranked by orders, C1-B3 (18) first
+AM23|wrong number|"average customer worth": code swapped the plan's revenue per customer for total revenue (£1.88M); answer £441
+AM24|correct|docs answer on capture and AUC vs RFM and the grid; accurate to the README
+AM25|wrong number|typo "vaule" dropped the tier: every segment's net revenue, no Low value size (1,571)
+AM26|correct|C1-B1 by expected revenue, labelled
+UN17|correct|
+UN18|answered-instead-of-declining|"platinum tier" answered with all customers (4,261)
+UN19|correct|
+UN20|answered-instead-of-declining|"United States" answered with all customers (4,261); no country data
+UN21|answered-instead-of-declining|marketing channel answered with Occasional customer count (1,234)
+UN22|correct|

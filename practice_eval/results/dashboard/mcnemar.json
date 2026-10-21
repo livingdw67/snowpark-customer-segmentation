@@ -1,0 +1,28 @@
+[
+ {
+  "n": 238,
+  "n_core": 175,
+  "n_extra": 63,
+  "both_right": 188,
+  "assistant_only": 15,
+  "analyst_only": 27,
+  "both_wrong": 8,
+  "discordant": 42,
+  "exact_p": 0.08843,
+  "mid_p": 0.06599,
+  "chi2_cc": 2.88095,
+  "chi2_cc_p": 0.08963,
+  "assistant_shared_accuracy": 0.85294,
+  "analyst_shared_accuracy": 0.90336,
+  "diff": 0.05042,
+  "diff_lo": -0.00369,
+  "diff_hi": 0.10537,
+  "phi": 0.16533,
+  "wins_needed": 28,
+  "losses_allowed": 14,
+  "analyst_share_of_discordant": 0.64286,
+  "plan_discordant": 94,
+  "plan_questions": 533,
+  "discordance_rate": 0.17647
+ }
+]

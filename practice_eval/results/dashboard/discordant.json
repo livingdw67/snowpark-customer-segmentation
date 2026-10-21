@@ -1,0 +1,338 @@
+[
+ {
+  "id": "LK27",
+  "type": "Lookup",
+  "question": "What proportion of Core / Small-basket buyers are based in the UK?",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "gave 19.3% of Core customers (C2-B3's UK customers / Core) instead of C2-B3's UK share 93.0%"
+ },
+ {
+  "id": "LK32",
+  "type": "Lookup",
+  "question": "whats the p(buy again) for occassional small basket",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "typo \"occassional\" dropped the tier: gave all small-basket buyers 31.2%, not C3-B3 35.1%"
+ },
+ {
+  "id": "TS13",
+  "type": "Totals and shares",
+  "question": "occasional tier headcount",
+  "right": "Assistant",
+  "other_verdict": "unhelpful",
+  "note": "\"tier headcount\": three segment rows, no total (1,234)"
+ },
+ {
+  "id": "TS14",
+  "type": "Totals and shares",
+  "question": "expected revenue per customer, top spenders",
+  "right": "Assistant",
+  "other_verdict": "unhelpful",
+  "note": "per-segment revenue per customer only; the tier figure (£3,369) is missing"
+ },
+ {
+  "id": "TS20",
+  "type": "Totals and shares",
+  "question": "holiday buyers expected revenue",
+  "right": "Assistant",
+  "other_verdict": "unhelpful",
+  "note": "interpretation says \"total ... broken down by segment\"; four rows, no total (£332,665)"
+ },
+ {
+  "id": "RK02",
+  "type": "Ranking",
+  "question": "highest expected revenue segment",
+  "right": "Assistant",
+  "other_verdict": "error",
+  "note": "(no rows): WHERE expected_revenue = (SELECT MAX(...)) matches nothing on full-precision FLOAT"
+ },
+ {
+  "id": "RK03",
+  "type": "Ranking",
+  "question": "most recent segment",
+  "right": "Assistant",
+  "other_verdict": "unhelpful",
+  "note": "read \"most recent segment\" as \"segments at the latest snapshot\": every segment, no recency"
+ },
+ {
+  "id": "RK04",
+  "type": "Ranking",
+  "question": "Which segment has the lowest probability of buying again next quarter?",
+  "right": "Assistant",
+  "other_verdict": "error",
+  "note": "(no rows): same FLOAT equality-to-MIN bug on p_buys_again"
+ },
+ {
+  "id": "RK10",
+  "type": "Ranking",
+  "question": "lowest expected revenue segment",
+  "right": "Assistant",
+  "other_verdict": "error",
+  "note": "(no rows): FLOAT equality-to-MIN bug on expected_revenue"
+ },
+ {
+  "id": "CP01",
+  "type": "Comparison",
+  "question": "Are Core / Holiday buyers more likely to buy again than Core / Bulk buyers?",
+  "right": "Analyst",
+  "other_verdict": "wrong claim",
+  "note": "opens \"Yes.\" but C2-B2 (54.0%) is less likely than C2-B1 (55.0%); figures right, the yes contradicts them"
+ },
+ {
+  "id": "CP14",
+  "type": "Comparison",
+  "question": "do top spender holiday buyers place biger orders than top spender bulk",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "\"orders\" in the question swapped the metric to order count (10 vs 12); asked about order size (AOV £720 vs £566)"
+ },
+ {
+  "id": "CP15",
+  "type": "Comparison",
+  "question": "core vs occasional customers",
+  "right": "Assistant",
+  "other_verdict": "unhelpful",
+  "note": "\"core vs occasional customers\": per-segment rows only, no tier totals (1,073 vs 1,234)"
+ },
+ {
+  "id": "FL05",
+  "type": "Threshold filter",
+  "question": "which segments do more than half their buying in Q4?",
+  "right": "Analyst",
+  "other_verdict": "unhelpful",
+  "note": "listed all 12 Q4 shares (\"only available per segment\") instead of picking the 4 above 50%"
+ },
+ {
+  "id": "ME02",
+  "type": "Backtests, k, cleaning",
+  "question": "Which segmentation scheme has the highest average buys-again AUC, leaving out the unsegmented model?",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "named the unsegmented model (0.781) though the question excluded it; answer is RFM 0.754"
+ },
+ {
+  "id": "ME03",
+  "type": "Backtests, k, cleaning",
+  "question": "how many duplicate rows were removed",
+  "right": "Assistant",
+  "other_verdict": "wrong number",
+  "note": "\"duplicate rows removed\" summed every removal step (273,206); duplicates are 11,812"
+ },
+ {
+  "id": "ME04",
+  "type": "Backtests, k, cleaning",
+  "question": "What k was chosen for the value axis, and what was its stability ARI?",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "answered the value axis's backtest persistence (69.7%); asked chosen k (4) and its ARI (0.932)"
+ },
+ {
+  "id": "FU03",
+  "type": "Follow-up",
+  "question": "and the fewest?",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "\"and the fewest?\" reused C4-B3 from the previous answer and gave its share; answer is C1-B2 (45)"
+ },
+ {
+  "id": "FU04",
+  "type": "Follow-up",
+  "question": "what share of totl expected revenue is that",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "share of the top 3 combined is 73.6%; gave C1-B1 alone (51.9%)"
+ },
+ {
+  "id": "FU08",
+  "type": "Follow-up",
+  "question": "how many customers are in it?",
+  "right": "Assistant",
+  "other_verdict": "error",
+  "note": "(no rows): parent RK02's float-equality bug carried into the follow-up"
+ },
+ {
+  "id": "FU15",
+  "type": "Follow-up",
+  "question": "share of total?",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "\"share of total?\" after Core's £387,619 gave three bulk segments' shares; answer 20.6%"
+ },
+ {
+  "id": "FU16",
+  "type": "Follow-up",
+  "question": "and by customers?",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "\"and by customers?\" after ranking tiers ranked segments instead of tiers"
+ },
+ {
+  "id": "FU18",
+  "type": "Follow-up",
+  "question": "and which has the most expected revenue?",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "asked which buying style has the most expected revenue; answered segment C1-B1 (£974k) not Bulk buyers (£1.27M)"
+ },
+ {
+  "id": "FU19",
+  "type": "Follow-up",
+  "question": "how many customers",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "\"how many customers\" in the 6 segments gave all customers 4,261; answer 1,456"
+ },
+ {
+  "id": "FU20",
+  "type": "Follow-up",
+  "question": "in percent?",
+  "right": "Assistant",
+  "other_verdict": "wrong number",
+  "note": "\"in percent?\" gave share = 1 (100%): filtered the total along with the part; answer 6.8%"
+ },
+ {
+  "id": "AM03",
+  "type": "Ambiguous",
+  "question": "how many top customers do we have?",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "\"top customers\" answered all customers (4,261); readings are C1 383 or C1-B1 289"
+ },
+ {
+  "id": "AM04",
+  "type": "Ambiguous",
+  "question": "how many small customers are there?",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "\"small customers\" answered all customers (4,261); readings are B3 1,540 or C4 1,571"
+ },
+ {
+  "id": "AM05",
+  "type": "Ambiguous",
+  "question": "which segment is the best?",
+  "right": "Analyst",
+  "other_verdict": "wrong claim",
+  "note": "\"best segment\" answered with backtest schemes (unsegmented model AUC), not segments"
+ },
+ {
+  "id": "AM06",
+  "type": "Ambiguous",
+  "question": "big buyers count",
+  "right": "Analyst",
+  "other_verdict": "unhelpful",
+  "note": "\"big buyers count\" gave every segment's order value, no count (B1 1,747 or C1 383)"
+ },
+ {
+  "id": "AM08",
+  "type": "Ambiguous",
+  "question": "What is the value of the Core tier?",
+  "right": "Assistant",
+  "other_verdict": "unhelpful",
+  "note": "interpretation promises tier totals; table is per segment only, so no value for the tier"
+ },
+ {
+  "id": "AM19",
+  "type": "Ambiguous",
+  "question": "Which segment has the highest value?",
+  "right": "Assistant",
+  "other_verdict": "error",
+  "note": "(no rows): the FLOAT equality-to-MAX bug again"
+ },
+ {
+  "id": "UN13",
+  "type": "Unanswerable",
+  "question": "which sales rep looks after the top spender bulk accounts?",
+  "right": "Analyst",
+  "other_verdict": "answered-instead-of-declining",
+  "note": "sales rep question answered with C1-B1 net revenue"
+ },
+ {
+  "id": "UN14",
+  "type": "Unanswerable",
+  "question": "what's the NPS for core customers?",
+  "right": "Analyst",
+  "other_verdict": "answered-instead-of-declining",
+  "note": "NPS question answered with Core customer count"
+ },
+ {
+  "id": "LK39",
+  "type": "Lookup",
+  "question": "uk share low vaule holiday",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "typo \"vaule\" dropped the tier: led with all holiday buyers 91.2%, not C4-B2 93.7% (same failure as LK32)"
+ },
+ {
+  "id": "TS29",
+  "type": "Totals and shares",
+  "question": "how many customers are core or occasional?",
+  "right": "Analyst",
+  "other_verdict": "unhelpful",
+  "note": "\"core or occasional\": both tiers' counts, no total (2,307)"
+ },
+ {
+  "id": "CP17",
+  "type": "Comparison",
+  "question": "Are Low value / Holiday buyers more seasonal than Core / Holiday buyers?",
+  "right": "Analyst",
+  "other_verdict": "wrong claim",
+  "note": "opens \"No.\" but C4-B2 (100%) is more seasonal than C2-B2 (67%); figures right, the no contradicts them"
+ },
+ {
+  "id": "BD10",
+  "type": "Breakdown",
+  "question": "customers per segment",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "\"customers per segment\" read as a per-segment average (355); asked for each segment's count"
+ },
+ {
+  "id": "AM20",
+  "type": "Ambiguous",
+  "question": "how many customers are we going to lose next quarter?",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "\"how many customers are we going to lose\" compared all customers with C2-B2; readings are expected non-orderers (2,649) or a question back"
+ },
+ {
+  "id": "AM21",
+  "type": "Ambiguous",
+  "question": "C3 revenue",
+  "right": "Assistant",
+  "other_verdict": "unhelpful",
+  "note": "\"C3 revenue\": per-segment expected revenue, no tier total (£135,944)"
+ },
+ {
+  "id": "AM22",
+  "type": "Ambiguous",
+  "question": "which buyers order the most?",
+  "right": "Assistant",
+  "other_verdict": "unhelpful",
+  "note": "all 12 segments' order counts grouped by style; doesn't say which orders most (C1-B3, 18)"
+ },
+ {
+  "id": "AM23",
+  "type": "Ambiguous",
+  "question": "what's the average customer worth?",
+  "right": "Analyst",
+  "other_verdict": "wrong number",
+  "note": "\"average customer worth\": code swapped the plan's revenue per customer for total revenue (£1.88M); answer £441"
+ },
+ {
+  "id": "UN20",
+  "type": "Unanswerable",
+  "question": "How many customers are based in the United States?",
+  "right": "Analyst",
+  "other_verdict": "answered-instead-of-declining",
+  "note": "\"United States\" answered with all customers (4,261); no country data"
+ },
+ {
+  "id": "UN21",
+  "type": "Unanswerable",
+  "question": "which marketing channel brought in the occasional customers?",
+  "right": "Analyst",
+  "other_verdict": "answered-instead-of-declining",
+  "note": "marketing channel answered with Occasional customer count (1,234)"
+ }
+]
