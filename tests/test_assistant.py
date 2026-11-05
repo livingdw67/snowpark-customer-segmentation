@@ -4,6 +4,7 @@ methodology answers, generative guard rails, memory and the Streamlit app.
 They run offline on the committed results/*.csv and need neither Ollama nor Snowflake.
 """
 import json
+import re
 
 import pytest
 import streamlit as st
@@ -242,11 +243,21 @@ def test_advice_and_copy_requests_are_rerouted(data):
 
 # ---- methodology --------------------------------------------------------------------
 
-def test_methodology_answers_from_the_readme(data):
+def test_methodology_answers_from_the_docs(data):
     llm = FakeListChatModel(responses=["methodology", "Forecasts use a HistGradientBoostingRegressor with Poisson loss."])
     out = ask(build_graph(llm, data), "How are the forecasts made?")
     answer = out["messages"][-1].content
-    assert "Option C: outcome-guided" in answer and "Source: README" in answer and out["check"]["ok"]
+    # Option C's section moved from the README to docs/methodology.md; the citation names the file it's in.
+    assert "docs/methodology.md, 'Option C: outcome-guided'" in answer and out["check"]["ok"]
+
+
+def test_docs_keep_every_section_the_readme_had():
+    from assistant import docs
+    titles = {re.sub(r"\s*\(\[.*?\]\(.*?\)\)", "", s.title) for s in docs.sections()}
+    for moved in ("Findings worth knowing before using this", "Why the model doesn't write SQL", "Data and cleaning",
+                  "Features", "Option B: two-axis", "Option C: outcome-guided", "Evaluation", "Monthly re-scoring",
+                  "scikit-learn: what's used and why", "What the segments say", "How it works", "Reproduce"):
+        assert moved in titles, moved
 
 
 def test_methodology_figures_must_come_from_the_readme(data):

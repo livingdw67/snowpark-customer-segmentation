@@ -1,8 +1,9 @@
 """Answers to "how" and "why" questions come from the project's own documentation.
 
-README.md is split into its sections, and long sections into paragraph-sized chunks, plus a
-glossary generated from the metric catalogue. The chunks that best match the question (BM25
-over words, with a few domain synonyms) are handed to the methodology agent as its only source.
+README.md and the method write-ups in docs/ are split into their sections, and long sections into
+paragraph-sized chunks, plus a glossary generated from the metric catalogue. The chunks that best
+match the question (BM25 over words, with a few domain synonyms) are handed to the methodology
+agent as its only source, and each chunk remembers which file it came from for the citation.
 """
 from __future__ import annotations
 
@@ -13,7 +14,10 @@ from pathlib import Path
 
 from .semantics import SCHEME_METRICS, SCHEME_NAMES, SEGMENT_METRICS, metrics_named_in
 
-README = Path(__file__).resolve().parent.parent / "README.md"
+ROOT = Path(__file__).resolve().parent.parent
+README = ROOT / "README.md"
+# The README keeps the results; these hold the detail moved out of it (same section titles and text).
+DOCS = [ROOT / "docs" / "methodology.md", ROOT / "docs" / "segment-assistant.md"]
 
 STOP = set("""a an the and or of to in on for is are was were be been how why what which who does do did
 it its this that these those with by from as at we our you your about into can could would should
@@ -71,6 +75,7 @@ DEFINITION = re.compile(r"\b(mean|means|meaning|definition|define|stand for|what
 class Section:
     title: str
     text: str
+    source: str = "README"  # the file cited for it; glossary entries come from the metric catalogue
 
 
 def _glossary() -> list[Section]:
@@ -169,8 +174,17 @@ def _glossary() -> list[Section]:
     return out
 
 
-def sections(readme: Path = README) -> list[Section]:
-    text = readme.read_text(encoding="utf-8")
+def sections(readme: Path = README, extra: list[Path] | None = None) -> list[Section]:
+    files = [readme] + [p for p in (DOCS if extra is None else extra) if p.exists()]
+    parts = []
+    for path in files:
+        source = "README" if path == readme else path.relative_to(ROOT).as_posix()
+        parts += _file_sections(path, source)
+    return parts + _glossary()
+
+
+def _file_sections(path: Path, source: str) -> list[Section]:
+    text = path.read_text(encoding="utf-8")
     text = re.sub(r"```mermaid.*?```", "", text, flags=re.DOTALL)
     text = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", text)  # images
     text = re.sub(r"<picture>.*?</picture>", "", text, flags=re.DOTALL)  # light/dark images
@@ -179,27 +193,27 @@ def sections(readme: Path = README) -> list[Section]:
         m = re.match(r"^#{1,4}\s+(.*)", line)
         if m:
             if "".join(buf).strip():
-                parts += _chunks(title, "\n".join(buf).strip())
+                parts += _chunks(title, "\n".join(buf).strip(), source)
             title, buf = m.group(1).strip(), []
         else:
             buf.append(line)
     if "".join(buf).strip():
-        parts += _chunks(title, "\n".join(buf).strip())
-    return parts + _glossary()
+        parts += _chunks(title, "\n".join(buf).strip(), source)
+    return parts
 
 
-def _chunks(title: str, text: str) -> list[Section]:
+def _chunks(title: str, text: str, source: str = "README") -> list[Section]:
     """A long section as paragraph-sized pieces, each keeping the section's title, so a paragraph
     deep in a long section ("Why not the Snowflake Model Registry?") can be found on its own."""
     out, buf = [], ""
     for para in (p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()):
         if buf and len(buf) + len(para) > MAX_CHUNK:
-            out.append(Section(title, buf))
+            out.append(Section(title, buf, source))
             buf = para
         else:
             buf = f"{buf}\n\n{para}" if buf else para
     if buf:
-        out.append(Section(title, buf))
+        out.append(Section(title, buf, source))
     return out
 
 

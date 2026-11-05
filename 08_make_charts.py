@@ -13,6 +13,11 @@ Snowflake and its coordinates are never exported.
 Each chart is written as <name>.png (light) and <name>-dark.png. The README shows the dark one
 under GitHub's dark theme with <picture><source media="(prefers-color-scheme: dark)" ...>.
 Colors are the brand chart palettes (validated for contrast and color-vision deficiency).
+
+The migration and segment-map PNGs in docs/img were last drawn on 2026-11-05 without Snowflake, whose
+trial had ended: migration from the percentages and row sizes printed on the October chart (heat() and
+the layout below), the map by recolouring the October chart's points into these palettes and redrawing
+its text. The next Snowflake run of this script redraws both from the tables.
 """
 import argparse
 import os
