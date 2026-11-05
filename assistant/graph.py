@@ -1,7 +1,7 @@
 """LangGraph workflow: an intent router in front of four agents.
 
     START -> router -> analytical   -> END   numbers: the model picks a calculation, code computes it
-                    -> methodology  -> END   how/why: answered from README sections, with sources
+                    -> methodology  -> END   how/why: answered from README and docs/ sections, with sources
                     -> generative   -> END   persona cards and campaigns from segment profiles
                     -> out_of_scope -> END   a fixed, polite refusal
 
@@ -2013,8 +2013,8 @@ def build_graph(llm, data, checkpointer=None):
                 query = f"{earlier[-1]} {question}"
         found = docs.retrieve(query, k=3, corpus=corpus)
         if not found:
-            answer = ("The project documentation doesn't cover that. The README explains how the data was "
-                      "cleaned, how the segments and forecasts are built, and how they were backtested.")
+            answer = ("The project documentation doesn't cover that. The README and docs/methodology.md explain how "
+                      "the data was cleaned, how the segments and forecasts are built, and how they were backtested.")
             return {"trace": trace + [step("No matching documentation")], "check": None,
                     "messages": [AIMessage(answer)]}
         titles = [re.sub(r"\s*\(\[.*?\]\(.*?\)\)", "", s.title) for s in found]
@@ -2031,7 +2031,10 @@ def build_graph(llm, data, checkpointer=None):
                 "Rewrite using only figures from the excerpts.")]))
             check = verify.check(answer, [], allowed_text=excerpts + "\n" + question)
         trace.append(step("Checked figures", check.summary(), kind="check", data=check.ok))
-        answer += "\n\n*Source: README, " + " and ".join(f"'{t}'" for t in dict.fromkeys(titles)) + ".*"
+        cited: dict[str, list[str]] = {}  # file -> its section titles, in retrieval order
+        for t, src in dict.fromkeys((t, s.source) for t, s in zip(titles, found)):
+            cited.setdefault(src, []).append(f"'{t}'")
+        answer += "\n\n*Source: " + "; ".join(f"{src}, " + " and ".join(ts) for src, ts in cited.items()) + ".*"
         return {"trace": trace, "check": _check_state(check), "messages": [AIMessage(answer)]}
 
     def generative(state: AssistantState) -> dict:
