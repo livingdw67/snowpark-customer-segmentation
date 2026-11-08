@@ -1,0 +1,46 @@
+resources:
+  jobs:
+    segmentation_pipeline:
+      name: segmentation-pipeline
+      # No schedule: the data is static, so this only runs when triggered.
+      timeout_seconds: 7200
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: schema
+          default: ${var.schema}
+        - name: code_root
+          default: ${workspace.file_path}
+      tasks:
+        - task_key: ingest
+          timeout_seconds: 900
+          notebook_task:
+            notebook_path: ../src/01_ingest.py
+        - task_key: staging
+          depends_on: [{ task_key: ingest }]
+          timeout_seconds: 900
+          notebook_task:
+            notebook_path: ../src/02_staging.py
+        - task_key: features
+          depends_on: [{ task_key: staging }]
+          timeout_seconds: 900
+          notebook_task:
+            notebook_path: ../src/03_features.py
+        - task_key: backtest
+          depends_on: [{ task_key: features }]
+          timeout_seconds: 2700
+          # A failed task shouldn't quietly run twice against the daily quota.
+          disable_auto_optimization: true
+          notebook_task:
+            notebook_path: ../src/04_backtest.py
+        - task_key: production
+          depends_on: [{ task_key: backtest }]
+          timeout_seconds: 1800
+          disable_auto_optimization: true
+          notebook_task:
+            notebook_path: ../src/05_production.py
+        - task_key: check_reproduction
+          depends_on: [{ task_key: production }]
+          timeout_seconds: 600
+          notebook_task:
+            notebook_path: ../src/06_check_reproduction.py

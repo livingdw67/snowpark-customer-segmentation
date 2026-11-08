@@ -1,0 +1,32 @@
+# Databricks Asset Bundle for the customer segmentation pipeline (Free Edition, serverless).
+# Once:    python databricks/upload_raw.py          (creates the schema and volumes, uploads the data; no compute)
+# Deploy:  databricks bundle deploy --profile free
+# Run:     databricks bundle run segmentation_pipeline --profile free
+#
+# Free Edition has one daily compute quota for every project, so prefer --only <tasks> to whole runs.
+bundle:
+  name: customer-segmentation
+
+variables:
+  catalog:
+    description: Unity Catalog catalog that holds the schema
+    default: workspace
+  schema:
+    description: Schema for every table, the raw-file volume and the model volume
+    default: segmentation
+
+# The notebooks import the segmentation package at the repo root and compare against results/.
+sync:
+  paths:
+    - .
+    - ../segmentation
+    - ../results
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    # No workspace host here: it comes from the CLI profile (--profile) or DATABRICKS_HOST.

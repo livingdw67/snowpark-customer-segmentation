@@ -8,21 +8,27 @@ import pandas as pd
 from sklearn.manifold import ClassicalMDS
 
 from .evaluation import forecast_bias, metrics, persistence, rfm_baseline, score_scheme
-from .features import DATABASE, load_snapshots
+from .features import DATABASE, FEATURE_TABLE, load_snapshots
 from .outcome_guided import OutcomeGuidedSegmenter
 from .profiles import describe
+from .tables import ML
 from .two_axis import TwoAxisSegmenter
 
-ML = f"{DATABASE}.ML"
 ASSIGNMENT_COLS = ["RUN_ID", "METHOD", "FIT_SNAPSHOT", "SNAPSHOT_DATE", "CUSTOMER_ID", "SEGMENT",
                    "VALUE_SEGMENT", "BEHAVIOR_SEGMENT", "P_ACTIVE", "EXPECTED_REVENUE"]
+
+
+def _table_exists(session, table: str) -> bool:
+    if hasattr(session, "table_exists"):  # DatabricksSession
+        return session.table_exists(table)
+    return bool(session.sql(f"SHOW TABLES LIKE '{table}' IN SCHEMA {ML}").collect())
 
 
 def _replace(session, df: pd.DataFrame, table: str, run_id: str, method: str | None = None):
     """Overwrite this run's (and method's) rows, leaving other runs in place."""
     df = df.copy()
     df.columns = [c.upper() for c in df.columns]
-    if session.sql(f"SHOW TABLES LIKE '{table}' IN SCHEMA {ML}").collect():
+    if _table_exists(session, table):
         where = f"RUN_ID = '{run_id}'" + (f" AND METHOD = '{method}'" if method else "")
         session.sql(f"DELETE FROM {ML}.{table} WHERE {where}").collect()
     session.write_pandas(df, table, database=DATABASE, schema="ML",
@@ -58,7 +64,7 @@ def _assignments(df, scored, run_id, method, fit_date) -> pd.DataFrame:
 
 def _labeled_snapshots(session, up_to: str) -> list[str]:
     rows = session.sql(f"""
-        SELECT DISTINCT snapshot_date::STRING AS d FROM {DATABASE}.MARTS.CUSTOMER_FEATURES
+        SELECT DISTINCT snapshot_date::STRING AS d FROM {FEATURE_TABLE}
         WHERE next_active IS NOT NULL AND snapshot_date <= '{up_to}' ORDER BY 1
     """).collect()
     return [r["D"] for r in rows]

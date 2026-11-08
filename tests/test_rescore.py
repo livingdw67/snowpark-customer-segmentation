@@ -28,9 +28,9 @@ def test_hybrid_crosses_value_tier_with_behavior(customers, pooled_customers):
 def test_snapshot_sql_rebuilds_one_snapshot():
     delete, insert = replace_snapshot_sql("2011-12-10", "2011-12-09")
     assert delete.endswith("WHERE snapshot_date = '2011-12-10'")
-    assert "FROM VALUES ('2011-12-10')" in insert and insert.startswith("INSERT INTO")
+    assert "FROM (VALUES ('2011-12-10'))" in insert and insert.startswith("INSERT INTO")
     full = create_features_sql(["2011-09-10", "2011-12-10"], "2011-12-09")
-    assert "FROM VALUES ('2011-09-10'), ('2011-12-10')" in full
+    assert "FROM (VALUES ('2011-09-10'), ('2011-12-10'))" in full
 
 
 def test_names():

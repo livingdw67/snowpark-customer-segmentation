@@ -2,8 +2,7 @@
 import numpy as np
 import pandas as pd
 
-DATABASE = "CUSTOMER_SEGMENTATION"
-FEATURE_TABLE = f"{DATABASE}.MARTS.CUSTOMER_FEATURES"
+from .tables import DATABASE, FEATURE_TABLE  # noqa: F401 (DATABASE is re-exported)
 
 # How much a customer is worth and how engaged they are right now.
 VALUE = ["recency_days", "orders", "net_revenue"]
@@ -32,7 +31,7 @@ SKEWED = {"recency_days", "orders", "net_revenue", "avg_units_per_order", "avg_u
 def load_snapshots(session, dates) -> pd.DataFrame:
     date_list = ", ".join(f"'{d}'" for d in dates)
     df = session.sql(
-        f"SELECT * FROM {FEATURE_TABLE} WHERE snapshot_date IN ({date_list})"
+        f"SELECT * FROM {FEATURE_TABLE} WHERE snapshot_date IN ({date_list}) ORDER BY snapshot_date, customer_id"
     ).to_pandas()
     df.columns = df.columns.str.lower()
     df["snapshot_date"] = df["snapshot_date"].astype(str)
