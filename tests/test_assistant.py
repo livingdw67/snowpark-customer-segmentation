@@ -251,6 +251,44 @@ def test_methodology_answers_from_the_docs(data):
     assert "docs/methodology.md, 'Option C: outcome-guided'" in answer and out["check"]["ok"]
 
 
+def test_databricks_data_matches_the_local_tables():
+    """The same four tables, read through the statement API as text, give the frames the offline mode uses."""
+    from pathlib import Path
+    from types import SimpleNamespace as NS
+
+    import pandas as pd
+
+    from assistant.data import DatabricksData
+
+    results = Path(__file__).resolve().parent.parent / "results"
+    sources = {"HYBRID_PROFILES": "hybrid_profiles", "METHOD_COMPARISON": "method_comparison",
+               "K_SELECTION": "k_selection", "cleaning_audit": "cleaning_audit"}
+    statements = []
+
+    def kind(dtype):
+        return "BOOLEAN" if dtype == bool else "DOUBLE" if dtype == float else "LONG" if dtype == int else "STRING"
+
+    def text(value):
+        return None if pd.isna(value) else str(value).lower() if isinstance(value, bool) else str(value)
+
+    def execute_statement(statement, warehouse_id, wait_timeout):
+        statements.append(statement)
+        name = next(n for n in sources if f"s.{n} " in f"{statement} ")
+        df = pd.read_csv(results / f"{sources[name]}.csv")
+        columns = [NS(name=c, type_name=kind(df[c].dtype)) for c in df.columns]
+        rows = [[text(v) for v in row] for row in df.astype(object).itertuples(index=False)]
+        return NS(status=NS(state="SUCCEEDED"), manifest=NS(schema=NS(columns=columns)), result=NS(data_array=rows))
+
+    data = DatabricksData(NS(statement_execution=NS(execute_statement=execute_statement)), "wh", "workspace.s")
+    local = LocalData()
+    assert len(statements) == 4 and data.mode == "live"
+    for table in ("SEGMENTS", "BACKTEST", "K_CHOICES", "CLEANING"):
+        pd.testing.assert_frame_equal(data.query(f"SELECT * FROM {table}"), local.query(f"SELECT * FROM {table}"),
+                                      check_dtype=False)
+    with pytest.raises(UnsafeQuery):
+        data.query("DROP TABLE SEGMENTS")
+
+
 def test_docs_keep_every_section_the_readme_had():
     from assistant import docs
     titles = {re.sub(r"\s*\(\[.*?\]\(.*?\)\)", "", s.title) for s in docs.sections()}

@@ -6,7 +6,7 @@ import pytest
 from sklearn.tree import DecisionTreeRegressor
 
 from segmentation.features import RULE
-from segmentation.outcome_guided import OutcomeGuidedSegmenter, leaf_rules
+from segmentation.outcome_guided import MAX_ROUNDS, OutcomeGuidedSegmenter, leaf_rules
 
 
 def rule_holds(rule: str, row: pd.Series) -> bool:
@@ -32,6 +32,22 @@ def rule_holds(rule: str, row: pd.Series) -> bool:
 @pytest.fixture(scope="module")
 def fitted(pooled_customers):
     return OutcomeGuidedSegmenter(n_segments=4).fit(pooled_customers)
+
+
+def test_row_order_does_not_change_the_model(pooled_customers, fitted):
+    """Early stopping's by-row validation split once moved about 550 real customers across a tier line."""
+    shuffled = pooled_customers.sample(frac=1, random_state=1).reset_index(drop=True)
+    other = OutcomeGuidedSegmenter(n_segments=4).fit(shuffled)
+    assert (fitted.active_rounds_, fitted.revenue_rounds_) == (other.active_rounds_, other.revenue_rounds_)
+    a, b = fitted.predict(pooled_customers), other.predict(pooled_customers)
+    assert (a.segment == b.segment).all()
+    assert np.allclose(a.expected_revenue, b.expected_revenue, rtol=1e-6)
+    assert np.allclose(a.p_active, b.p_active, rtol=1e-6)
+
+
+def test_boosting_rounds_are_chosen_from_the_search_range(fitted):
+    for rounds in (fitted.active_rounds_, fitted.revenue_rounds_):
+        assert 1 <= rounds <= MAX_ROUNDS
 
 
 def test_leaf_rules_describe_every_customer_correctly(customers):

@@ -115,7 +115,8 @@ def train_outcome_guided(session, run_id: str, method: str, fit_date: str,
     _replace(session, rules, "SEGMENT_RULES", run_id, method)
     _save_model(session, model, run_id, method)
     return json.dumps({"n_segments": len(model.rules_), "trained_on": sorted(history.snapshot_date.unique()),
-                       "tree_fidelity_r2": round(model.tree_fidelity_r2_, 3)})
+                       "tree_fidelity_r2": round(model.tree_fidelity_r2_, 3),
+                       "active_rounds": model.active_rounds_, "revenue_rounds": model.revenue_rounds_})
 
 
 def build_hybrid(session, run_id: str, snapshot_dates: str) -> str:
