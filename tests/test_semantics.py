@@ -5,14 +5,14 @@ Each case is a question the assistant used to get wrong when the model wrote its
 import pandas as pd
 import pytest
 
-from assistant.data import LocalData
+from assistant.data import FROZEN_RESULTS, LocalData
 from assistant.semantics import (SCHEME_METRICS as S, SEGMENT_METRICS as M, Semantics, asked_direction,
                                metrics_named_in, resolve, resolve_one)
 
 
 @pytest.fixture(scope="module")
 def frames():
-    return LocalData().frames
+    return LocalData(FROZEN_RESULTS).frames  # the figures these tests expect
 
 
 @pytest.fixture(scope="module")

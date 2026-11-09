@@ -10,13 +10,13 @@ import pytest
 import streamlit as st
 from langchain_core.language_models.fake_chat_models import FakeListChatModel
 
-from assistant.data import LocalData, UnsafeQuery, validate_sql
+from assistant.data import FROZEN_RESULTS, LocalData, UnsafeQuery, validate_sql
 from assistant.graph import OUT_OF_SCOPE_REPLY, SQL, build_graph, turn_input
 
 
 @pytest.fixture(scope="module")
 def data():
-    return LocalData()
+    return LocalData(FROZEN_RESULTS)  # the figures these tests expect
 
 
 def ask(graph, question, thread="t"):

@@ -1,8 +1,8 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # 06 Check: does this build reproduce the Snowflake results?
+# MAGIC # 06 Check: does this run reproduce the committed baseline?
 # MAGIC
-# MAGIC Compares every table with the results committed from the Snowflake build. What depends only on the
+# MAGIC Compares every table with the results committed in `results/`. What depends only on the
 # MAGIC data and SQL must match exactly; fitted-model outputs get the tolerances in `segmentation/reproduce.py`,
 # MAGIC which were fixed before the first Databricks run. The task fails if any check fails.
 
@@ -50,7 +50,7 @@ failed = result[~result.PASSED]
 print(failed.to_string(index=False) if len(failed) else "Every check passed.")
 summary = {area: f"{int(g.PASSED.sum())}/{len(g)}" for area, g in result.groupby("AREA")}
 assert failed.empty, (f"{len(failed)} of {len(result)} reproduction checks failed ({summary}); first failures: "
-                      + "; ".join(f"{r.ITEM}: {r.SNOWFLAKE} vs {r.DATABRICKS}" for r in failed.head(30).itertuples()))
+                      + "; ".join(f"{r.ITEM}: {r.BASELINE} vs {r.THIS_RUN}" for r in failed.head(30).itertuples()))
 
 # COMMAND ----------
 

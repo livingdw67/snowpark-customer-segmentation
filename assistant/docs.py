@@ -133,12 +133,12 @@ def _glossary() -> list[Section]:
             "segments directly is fine: each describes that segment's typical customer, so one segment's median "
             "can be set against another's. They just can't be added up or averaged into a tier or style figure.",
         "small segments and trusting their forecasts": "Some grid cells are small: Top spenders / Holiday buyers "
-            "(C1-B2) has 45 customers and Top spenders / Small-basket buyers (C1-B3) 49. The 5% minimum segment "
+            "(C1-B2) has 44 customers and Top spenders / Small-basket buyers (C1-B3) 49. The 5% minimum segment "
             "size is enforced per axis, not per cell, so a small cell's medians and predicted revenue rest on few "
             "customers. Treat a small top-tier cell as a key-account list, and for broad campaigns merge small cells "
             "into their value tier. Separately, and for every segment large or small, predicted revenue is for "
             "ranking and sizing, not a budget (the backtest fold that ended in a holiday quarter under-forecast "
-            "revenue for the whole customer base by 44%, because the model had never seen a holiday quarter).",
+            "revenue for the whole customer base by 43%, because the model had never seen a holiday quarter).",
         "using segments for individual customers, emails and targeting": "Yes, segments can be used to target "
             "individual customers, from Snowflake: the ML.CUSTOMER_SEGMENTS_CURRENT view has one row per customer "
             "with that customer's current segment (refreshed by the monthly re-scoring Task), so pull the email "

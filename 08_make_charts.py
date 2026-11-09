@@ -3,21 +3,17 @@
 Only summary tables (comparison metrics, segment totals, migration counts, map coordinates) are
 read; customer-level modeling stays in the stored procedures.
 
-    python 08_make_charts.py                  # read ML.* in Snowflake (all four charts)
-    python 08_make_charts.py --from-results   # read results/*.csv (no Snowflake needed)
+    python 08_make_charts.py --from-databricks   # results/*.csv plus the segment map from Databricks (all four charts)
+    python 08_make_charts.py --from-results      # results/*.csv only, so no segment map
+    python 08_make_charts.py                     # read ML.* in Snowflake (all four charts)
 
-The Snowflake run also writes results/segment_migration.csv, so later --from-results runs can draw
-the migration chart too. The segment map plots sampled customers, so it is only drawn from
-Snowflake and its coordinates are never exported.
+databricks/export_results.py and the Snowflake run write results/segment_migration.csv, so --from-results can
+draw the migration chart too. The segment map plots sampled customers, so it is only drawn from the platform and
+its coordinates are never exported.
 
 Each chart is written as <name>.png (light) and <name>-dark.png. The README shows the dark one
 under GitHub's dark theme with <picture><source media="(prefers-color-scheme: dark)" ...>.
 Colors are the brand chart palettes (validated for contrast and color-vision deficiency).
-
-The migration and segment-map PNGs in docs/img were last drawn on 2026-11-05 without Snowflake, whose
-trial had ended: migration from the percentages and row sizes printed on the October chart (heat() and
-the layout below), the map by recolouring the October chart's points into these palettes and redrawing
-its text. The next Snowflake run of this script redraws both from the tables.
 """
 import argparse
 import os
@@ -251,15 +247,27 @@ def from_snowflake():
         session.close()
 
 
+def from_databricks(profile: str = "free"):
+    from databricks.sdk import WorkspaceClient
+
+    from assistant.data import read_statement
+
+    client = WorkspaceClient(profile=profile)
+    warehouse_id = next(iter(client.warehouses.list())).id
+    return {**from_results(), "segment_map": read_statement(client, warehouse_id, """
+        SELECT X, Y, BEHAVIOR_SEGMENT FROM workspace.segmentation.SEGMENT_MAP WHERE RUN_ID = 'production'""")}
+
+
 CHARTS = {"method_tradeoff": tradeoff, "hybrid_grid": hybrid_grid, "migration": migration,
           "segment_map": segment_map}
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--from-results", action="store_true", help="read results/*.csv instead of Snowflake")
+    parser.add_argument("--from-databricks", action="store_true", help="results/*.csv, with the segment map from Databricks")
     args = parser.parse_args()
     os.makedirs(OUT, exist_ok=True)
-    data = from_results() if args.from_results else from_snowflake()
+    data = from_databricks() if args.from_databricks else from_results() if args.from_results else from_snowflake()
     for name, draw in CHARTS.items():
         if data.get(name) is None:
             print(f"skipped {name}: needs a Snowflake run")

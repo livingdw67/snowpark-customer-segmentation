@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import os
 import re
+import time
 from pathlib import Path
 
 import pandas as pd
@@ -21,6 +22,8 @@ from segmentation.naming import BEHAVIOR_NAMES, TIER_NAMES, case_sql, segment_na
 
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
+# The Snowflake build's published tables. Every eval's truths were computed from these, so evals keep reading them.
+FROZEN_RESULTS = ROOT / "practice_eval" / "frozen_results"
 MAX_ROWS = 200
 MAX_HINT_VALUES = 15
 NO_HINT_COLUMNS = {"TRAITS", "RULE"}  # free text: listing values wouldn't help and bloats the prompt
@@ -153,10 +156,23 @@ DATABRICKS_SOURCES = {
 _DATABRICKS_NUMERIC = {"BYTE", "SHORT", "INT", "LONG", "FLOAT", "DOUBLE", "DECIMAL"}
 
 
-def _statement_frame(result) -> pd.DataFrame:
-    """A finished statement's rows, typed from its manifest: the API returns every value as text."""
-    schema = result.manifest.schema.columns
-    frame = pd.DataFrame(result.result.data_array or [], columns=[c.name.upper() for c in schema])
+def read_statement(client, warehouse_id: str, sql: str) -> pd.DataFrame:
+    """Run one SQL statement on a warehouse and return its rows, typed from the manifest (the API sends text)."""
+    r = client.statement_execution.execute_statement(statement=sql, warehouse_id=warehouse_id, wait_timeout="50s")
+    while getattr(r.status.state, "value", str(r.status.state)) in ("PENDING", "RUNNING"):  # a cold warehouse
+        time.sleep(1)
+        r = client.statement_execution.get_statement(r.statement_id)
+    state = getattr(r.status.state, "value", str(r.status.state))
+    if state != "SUCCEEDED":
+        raise RuntimeError(f"{sql}: {r.status.error.message if r.status.error else state}")
+    rows = list(r.result.data_array or [])
+    chunk = getattr(r.result, "next_chunk_index", None)
+    while chunk is not None:
+        part = client.statement_execution.get_statement_result_chunk_n(r.statement_id, chunk)
+        rows += part.data_array or []
+        chunk = part.next_chunk_index
+    schema = r.manifest.schema.columns
+    frame = pd.DataFrame(rows, columns=[c.name.upper() for c in schema])
     for column, info in zip(frame.columns, schema):
         kind = getattr(info.type_name, "value", str(info.type_name)).upper()
         if kind in _DATABRICKS_NUMERIC:
@@ -177,15 +193,8 @@ class DatabricksData(LocalData):
     dialect = "Databricks tables, queried with DuckDB"
 
     def __init__(self, client, warehouse_id: str, schema: str):
-        def read(sql: str) -> pd.DataFrame:
-            r = client.statement_execution.execute_statement(statement=sql.format(schema=schema),
-                                                             warehouse_id=warehouse_id, wait_timeout="50s")
-            state = getattr(r.status.state, "value", str(r.status.state))
-            if state != "SUCCEEDED":
-                raise RuntimeError(f"{sql}: {r.status.error.message if r.status.error else state}")
-            return _statement_frame(r)
-
-        frames = {name: read(sql) for name, sql in DATABRICKS_SOURCES.items()}
+        frames = {name: read_statement(client, warehouse_id, sql.format(schema=schema))
+                  for name, sql in DATABRICKS_SOURCES.items()}
         frames["SEGMENTS"] = add_names(frames["SEGMENTS"])
         super().__init__(frames=frames)
 
@@ -277,7 +286,7 @@ def open_data(mode: str | None = None):
         load_dotenv(os.getenv("SNOWFLAKE_ENV_FILE", ROOT / ".env"))
         mode = "live" if os.getenv("SNOWFLAKE_ACCOUNT") else "local"
     if mode == "local":
-        return LocalData()
+        return LocalData(Path(os.getenv("ASSISTANT_RESULTS_DIR", RESULTS)))
     if mode == "databricks":
         from databricks.sdk import WorkspaceClient
 

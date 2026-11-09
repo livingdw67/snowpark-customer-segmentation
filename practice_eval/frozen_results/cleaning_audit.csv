@@ -1,0 +1,6 @@
+STEP,STAGE,ROWS_REMAINING,CHANGE
+1,raw rows,1067371,
+2,after removing sheet overlap,1044848,-22523.0
+3,after removing exact duplicates,1033036,-11812.0
+4,after removing write-offs (staging),1026999,-6037.0
+5,product lines with a customer id,794165,-232834.0

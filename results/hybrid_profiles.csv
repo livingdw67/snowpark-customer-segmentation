@@ -1,13 +1,13 @@
 SEGMENT,CUSTOMERS,SHARE,TRAITS,MEDIAN_RECENCY_DAYS,MEDIAN_ORDERS,MEDIAN_NET_REVENUE,MEDIAN_AVG_UNITS_PER_ORDER,MEDIAN_AVG_UNIT_PRICE,MEDIAN_AVG_LINES_PER_ORDER,MEDIAN_RETURN_RATE,MEDIAN_Q4_REVENUE_SHARE,MEDIAN_AVG_ORDER_VALUE,MEDIAN_TENURE_DAYS,UK_SHARE,AXIS,RUN_ID,METHOD,RULE,MEAN_P_ACTIVE,EXPECTED_REVENUE
-C1-B1,289,0.068,"frequent, high spend, large orders",12.0,12.0,5927.86,336.92,1.729,22.0,0.008,0.281,566.49,694.0,0.827,hybrid,production,hybrid,,0.82,974087.284
-C1-B2,45,0.011,"high spend, frequent, large orders",8.0,10.0,5728.81,342.38,1.855,32.13,0.008,0.587,720.11,620.0,0.756,hybrid,production,hybrid,,0.766,182233.458
-C1-B3,49,0.011,"frequent, high spend, recent",4.0,18.0,6409.27,140.25,2.75,6.26,0.01,0.355,401.11,729.0,0.959,hybrid,production,hybrid,,0.83,134164.339
-C2-B1,629,0.148,"high spend, bulk baskets, large orders",38.0,5.0,1887.2,268.0,1.635,22.5,0.003,0.214,410.66,610.0,0.876,hybrid,production,hybrid,,0.55,226282.849
-C2-B2,245,0.057,"holiday-heavy, recent, high spend",15.0,4.0,1766.81,246.8,1.709,29.5,0.0,0.67,423.79,418.0,0.902,hybrid,production,hybrid,,0.54,96738.304
-C2-B3,199,0.047,"frequent, narrow baskets, high spend",22.0,7.0,1674.46,112.17,2.422,9.27,0.005,0.301,260.0,618.0,0.93,hybrid,production,hybrid,,0.607,64597.646
-C3-B1,484,0.114,"year-round, bulk baskets, lapsed",94.0,2.0,690.08,232.0,1.543,22.75,0.0,0.0,346.405,447.5,0.87,hybrid,production,hybrid,,0.293,55468.664
-C3-B2,351,0.082,"holiday-heavy, wide baskets, new",27.0,2.0,669.38,218.0,1.645,28.0,0.0,1.0,354.11,391.0,0.915,hybrid,production,hybrid,,0.304,38343.877
-C3-B3,399,0.094,"premium price point, small baskets, narrow baskets",57.0,3.0,635.41,90.0,2.45,10.5,0.0,0.247,221.27,473.0,0.922,hybrid,production,hybrid,,0.351,42131.833
-C4-B1,345,0.081,"lapsed, year-round, infrequent",184.0,1.0,294.4,183.0,1.36,20.0,0.0,0.0,246.04,412.0,0.928,hybrid,production,hybrid,,0.193,15496.196
-C4-B2,333,0.078,"holiday-heavy, infrequent, low spend",34.0,1.0,256.11,160.0,1.442,24.0,0.0,1.0,213.96,373.0,0.937,hybrid,production,hybrid,,0.203,15349.429
-C4-B3,893,0.21,"small baskets, low spend, small orders",139.0,1.0,176.6,64.0,2.295,7.5,0.0,0.0,135.93,393.0,0.932,hybrid,production,hybrid,,0.2,33477.872
+C1-B1,287,0.067,"frequent, high spend, large orders",12.0,12.0,5936.34,336.92,1.729,21.86,0.008,0.28,566.49,695.0,0.829,hybrid,production,hybrid,,0.833,975178.843
+C1-B2,44,0.01,"high spend, frequent, large orders",8.0,10.0,5747.83,361.88,1.864,32.12,0.008,0.589,724.12,621.0,0.75,hybrid,production,hybrid,,0.756,243731.565
+C1-B3,49,0.011,"frequent, high spend, recent",4.0,18.0,6409.27,140.25,2.75,6.26,0.01,0.355,401.11,729.0,0.959,hybrid,production,hybrid,,0.84,133270.483
+C2-B1,614,0.144,"high spend, bulk baskets, large orders",37.0,5.0,1937.92,269.38,1.636,22.67,0.003,0.214,412.89,608.0,0.87,hybrid,production,hybrid,,0.57,213874.886
+C2-B2,241,0.057,"holiday-heavy, recent, high spend",13.0,4.0,1791.84,249.5,1.7,30.0,0.0,0.666,430.18,418.0,0.905,hybrid,production,hybrid,,0.559,88682.377
+C2-B3,194,0.046,"frequent, narrow baskets, high spend",22.0,7.0,1695.31,113.22,2.423,9.64,0.005,0.303,261.26,618.0,0.928,hybrid,production,hybrid,,0.629,64488.502
+C3-B1,694,0.163,"year-round, lapsed, bulk baskets",111.0,2.0,599.38,222.0,1.521,22.0,0.0,0.0,331.52,437.5,0.883,hybrid,production,hybrid,,0.252,67276.703
+C3-B2,505,0.119,"holiday-heavy, wide baskets, new",29.0,2.0,570.96,203.5,1.63,26.5,0.0,1.0,329.36,389.0,0.923,hybrid,production,hybrid,,0.266,45756.138
+C3-B3,625,0.147,"premium price point, small baskets, narrow baskets",64.0,3.0,507.84,86.75,2.464,10.0,0.0,0.211,210.63,450.0,0.925,hybrid,production,hybrid,,0.285,52264.64
+C4-B1,153,0.036,"low spend, lapsed, year-round",186.0,1.0,203.87,148.0,1.172,17.0,0.0,0.0,201.16,402.0,0.954,hybrid,production,hybrid,,0.18,6020.947
+C4-B2,183,0.043,"holiday-heavy, low spend, new",34.0,1.0,182.25,145.0,1.284,25.0,0.0,1.0,179.1,363.0,0.934,hybrid,production,hybrid,,0.189,7175.628
+C4-B3,672,0.158,"low spend, small baskets, small orders",158.0,1.0,145.02,56.0,2.238,7.0,0.0,0.0,120.61,384.0,0.933,hybrid,production,hybrid,,0.186,23988.382

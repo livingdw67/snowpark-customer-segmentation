@@ -36,7 +36,7 @@ from assistant.data import add_names  # noqa: E402
 CATALOG, SCHEMA = "workspace", "segmentation_eval"
 SPACE_TITLE = "Segment Analyst rematch (frozen eval data)"
 MODEL = os.path.join(HERE, "semantic_model", "segmentation_r8.yaml")
-RESULTS = os.path.join(REPO, "results")
+RESULTS = os.path.join(HERE, "frozen_results")  # the published Snowflake tables the truths came from
 
 
 def frozen_frames() -> dict[str, pd.DataFrame]:

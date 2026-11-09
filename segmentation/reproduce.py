@@ -1,4 +1,4 @@
-"""Does the Databricks build reproduce the Snowflake results committed in results/?
+"""Does this build reproduce the baseline committed in results/?
 
 Anything that depends only on the data and the SQL must match exactly. Anything a fitted model
 produces gets a tolerance, because row order and CPU architecture can move it slightly. These
@@ -12,14 +12,14 @@ SCHEME_TOLERANCE = {"NEXT_ACTIVE_AUC": 0.01, "REVENUE_SPEARMAN": 0.01, "TOP20_RE
                     "VALUE_ETA2": 0.02, "BEHAVIOR_ETA2": 0.02, "PERSISTENCE": 0.02}
 # Data only: the share of customers who actually ordered can't depend on the model.
 ACTUAL_RATE_TOLERANCE = 0.0005
-SEGMENT_SIZE_TOLERANCE = 0.03  # relative to the Snowflake size, with at least 5 customers of slack
+SEGMENT_SIZE_TOLERANCE = 0.03  # relative to the baseline size, with at least 5 customers of slack
 SEGMENT_REVENUE_TOLERANCE = 0.05  # relative, per segment
 TOTAL_REVENUE_TOLERANCE = 0.02  # relative, all segments
 P_ACTIVE_TOLERANCE = 0.02
 
 
 def _check(area: str, item: str, expected, actual, passed: bool) -> dict:
-    return {"AREA": area, "ITEM": item, "SNOWFLAKE": str(expected), "DATABRICKS": str(actual), "PASSED": bool(passed)}
+    return {"AREA": area, "ITEM": item, "BASELINE": str(expected), "THIS_RUN": str(actual), "PASSED": bool(passed)}
 
 
 def _within(expected: float, actual: float, tolerance: float) -> bool:

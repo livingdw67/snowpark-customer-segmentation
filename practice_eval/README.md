@@ -17,6 +17,10 @@ A second round, also on 2026-10-16, fixed the Assistant's weaknesses and reteste
 
 A third round (2026-10-16 to 10-20) sized the comparison to 90% power: 1,400 paired data questions, fixed Assistant vs Analyst r8. **Analyst came out ahead, 93.8% to 87.9%.** See **Power run**.
 
+**The data behind these evals is frozen.** Every truth was computed from the Snowflake build's published tables. When the pipeline moved to Databricks and the published numbers changed, those tables were kept in `frozen_results/`, and `run_assistant.py` and the Genie setup read them, so reruns stay comparable with the grades here.
+
+**Genie, in progress (from 2026-11-09).** `setup_genie.py` ports the Analyst semantic model (`segmentation_r8.yaml`) to a Databricks Genie space over a frozen copy of those tables, and `run_genie.py` asks it the 175 held-out data questions the Assistant and Analyst answered. Answers go to `results/v2_genie_answers.jsonl` and are graded with `grade.py auto v2_genie`, a full read into `results/review_v2_genie.txt`, and `grade.py merge v2_genie`.
+
 ## Composition
 
 **Two sets of 250, built around a shared core.**
