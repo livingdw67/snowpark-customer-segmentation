@@ -152,4 +152,6 @@ results/              exported comparison, cleaning audit, k selection, hybrid p
 docs/                 methodology.md, segment-assistant.md, charts in img/
 ```
 
-Data: [Online Retail II](https://archive.ics.uci.edu/dataset/502/online+retail+ii), UCI Machine Learning Repository, CC BY 4.0.
+## License and data
+
+Code: MIT ([LICENSE](LICENSE)). Data: [Online Retail II](https://archive.ics.uci.edu/dataset/502/online+retail+ii), UCI Machine Learning Repository, CC BY 4.0.
