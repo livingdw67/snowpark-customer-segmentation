@@ -54,6 +54,7 @@ SYNONYMS = {
     "criterion": ["r2", "r²", "value", "axis", "chooses"], "r2": ["r²", "criterion", "value", "axis"],
     "medians": ["median", "combined", "pooled"], "averaged": ["median", "combined", "pooled"],
     "snowflake": ["never", "leaves", "procedures", "stored"],
+    "databricks": ["platform", "job", "tasks", "unity", "catalog", "serverless"],
     "tie": ["tied", "proportionally", "cut-off", "capture"], "ties": ["tied", "proportionally", "cut-off", "capture"],
     "tied": ["proportionally", "cut-off", "capture"], "budget": ["rank", "size", "budget", "under-forecast"],
     "merge": ["small", "cells", "merge", "tier"],
@@ -121,8 +122,9 @@ def _glossary() -> list[Section]:
         "backtest split train eval": "Each backtest fits on one snapshot and scores the next one: the q2 fold fits "
             "on 2011-03-10 and scores 2011-06-10; the q3 fold fits on 2011-06-10 and scores 2011-09-10. Scores are "
             "compared with what customers actually did in the 91 days after the scoring snapshot.",
-        "re-scoring how often": "Customers are re-scored monthly: a Snowflake Task calls RESCORE_CUSTOMERS at "
-            "06:00 UTC on the 1st of each month, using the frozen production models.",
+        "re-scoring how often": "Customers are re-scored monthly with the champion production model: on "
+            "Databricks the segmentation-rescore job is scheduled for 06:00 UTC on the 1st of each month (paused while "
+            "the dataset is static), as the Snowflake Task RESCORE_SEGMENTS_MONTHLY was.",
         "next-revenue R2 criterion": "The value axis chooses its number of segments k by out-of-fold R² of "
             "next-quarter log revenue explained by segment membership; the behavior axis uses silhouette. Both "
             "require bootstrap stability ARI ≥ 0.85 and every segment holding ≥ 5% of customers, and prefer fewer "
@@ -140,7 +142,7 @@ def _glossary() -> list[Section]:
             "ranking and sizing, not a budget (the backtest fold that ended in a holiday quarter under-forecast "
             "revenue for the whole customer base by 43%, because the model had never seen a holiday quarter).",
         "using segments for individual customers, emails and targeting": "Yes, segments can be used to target "
-            "individual customers, from Snowflake: the ML.CUSTOMER_SEGMENTS_CURRENT view has one row per customer "
+            "individual customers, from the data platform: the CUSTOMER_SEGMENTS_CURRENT view has one row per customer "
             "with that customer's current segment (refreshed by the monthly re-scoring Task), so pull the email "
             "list for a segment from that view. The assistant itself only sees segment-level summaries (sizes, "
             "medians, averages), so it can't list or email customers itself.",
@@ -163,9 +165,10 @@ def _glossary() -> list[Section]:
             "'frequent' / 'infrequent' more / fewer orders; 'recent' / 'lapsed' a short / long time since the last "
             "order; 'holiday-heavy' / 'year-round' a high / low share of revenue in October-December; 'high spend' "
             "/ 'low spend' net revenue; 'new' / 'long tenure' time since the first order.",
-        "why Snowflake": "Customer data never leaves Snowflake: steps 01-04 are SQL, and all fitting, scoring and "
-            "evaluation run in Python stored procedures inside Snowflake. The local machine only issues CALL "
-            "statements, and the charts read aggregated tables only.",
+        "why Snowflake, and now Databricks": "Customer data stays in the data platform: cleaning and features are "
+            "SQL, and all fitting, scoring and evaluation run inside it, as Python stored procedures on Snowflake and "
+            "as serverless job tasks on Databricks, where the pipeline has run since Snowflake's trial ended. Only "
+            "aggregated tables leave it.",
     }
     for title, text in faq.items():
         out.append(Section(f"Glossary: {title}", text))

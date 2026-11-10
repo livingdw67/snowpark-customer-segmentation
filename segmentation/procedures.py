@@ -226,7 +226,7 @@ def hybrid_assignments(two_axis, outcome, df: pd.DataFrame) -> pd.DataFrame:
                         index=df.index)
 
 
-def rescore_customers(session, model_run_id: str = "production") -> str:
+def rescore_customers(session, model_run_id: str = "production", models=None) -> str:
     """Monthly re-score (called by the RESCORE_SEGMENTS_MONTHLY Task).
 
     Rebuilds the features for the snapshot after the latest transaction, scores it with the
@@ -245,7 +245,9 @@ def rescore_customers(session, model_run_id: str = "production") -> str:
         session.sql(sql).collect()
 
     df = load_snapshots(session, [snapshot]).reset_index(drop=True)
-    two_axis, outcome = _load_model(session, model_run_id, "two_axis"), _load_model(session, model_run_id, "outcome_guided")
+    # On Databricks the champion model from Unity Catalog is passed in; otherwise the run's files on the stage.
+    two_axis, outcome = models or (_load_model(session, model_run_id, "two_axis"),
+                                   _load_model(session, model_run_id, "outcome_guided"))
     fit_date = session.sql(f"""
         SELECT MAX(fit_snapshot) AS f FROM {ML}.SEGMENT_ASSIGNMENTS
         WHERE run_id = '{model_run_id}' AND method = 'outcome_guided'

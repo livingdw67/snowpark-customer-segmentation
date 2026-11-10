@@ -57,20 +57,20 @@ Every scheme is fit on one snapshot. Its segments' outcome rates are learned fro
 - segment persistence quarter to quarter
 - a forecast-bias check that rank metrics miss
 
-### Monthly re-scoring ([sql/rescore_task.sql](../sql/rescore_task.sql))
+### Monthly re-scoring ([databricks/src/08_rescore.py](../databricks/src/08_rescore.py))
 
-The `RESCORE_SEGMENTS_MONTHLY` Task calls `ML.RESCORE_CUSTOMERS` on the 1st of each month. It:
-1. rebuilds `MARTS.CUSTOMER_FEATURES` for the snapshot after the latest transaction (the same SQL as step 04, from [segmentation/feature_sql.py](../segmentation/feature_sql.py))
-2. scores it with the frozen production models from `@ML.MODELS`
+On Databricks the `segmentation-rescore` job is scheduled for 06:00 UTC on the 1st of each month (paused, since the data is static). It:
+1. rebuilds the customer features for the snapshot after the latest transaction (the same SQL as the pipeline, from [segmentation/feature_sql.py](../segmentation/feature_sql.py))
+2. scores it with the `champion` version of the `hybrid_segmenter` model in Unity Catalog
 3. writes hybrid rows under `run_id = 'rescore'`, which `CUSTOMER_SEGMENTS_CURRENT` prefers over the production run for the same snapshot
 
-The dataset is static, so every run re-derives 2011-12-10. The procedure reports how many customers got the same segment as the production run; all of them should. If you deployed before re-scoring existed, run `python 05_deploy_procedures.py` and `python 07_run_production.py --view-only`; the second recreates the view without retraining.
+The dataset is static, so every run re-derives 2011-12-10 and reports how many customers got the same segment as the production run; all of them should. On Snowflake the same procedure runs as the `RESCORE_SEGMENTS_MONTHLY` Task ([sql/rescore_task.sql](../sql/rescore_task.sql)), with the models from `@ML.MODELS`. If you deployed the Snowflake build before re-scoring existed, run `python 05_deploy_procedures.py` and `python 07_run_production.py --view-only`; the second recreates the view without retraining.
 
-**Why not the Snowflake Model Registry?** A custom registry model needs `snowflake-ml-python` in its runtime, and every build of it in Snowflake's Anaconda channel (up to 1.51.0) requires `scikit-learn<1.9`. The models need 1.9.1. Until the channel catches up, the models stay as versioned joblib files on a stage, one folder per run.
+**The model registry, and why Snowflake didn't have one.** Each Databricks production run logs its two fitted models as one MLflow model, `hybrid_segmenter`, in Unity Catalog, with the alias `challenger`. The reproduction check is the gate: only a run that reproduces the committed baseline moves `champion`, and the monthly re-score loads `champion`, so a model that fails the check never scores customers. On Snowflake, a custom registry model needs `snowflake-ml-python` in its runtime, and every build of it in Snowflake's Anaconda channel (up to 1.51.0) requires `scikit-learn<1.9`. The models need 1.9.1, so there they stay as versioned joblib files on a stage, one folder per run.
 
 ## scikit-learn: what's used and why
 
-The code is pinned to **1.9.1, the latest stable release**, which is also in Snowflake's Anaconda channel, so local and in-warehouse code run identical versions.
+The code is pinned to **1.9.1, the latest stable release**. The Databricks job tasks install it with `%pip`, and it is also in Snowflake's Anaconda channel, so local and platform code run identical versions.
 
 | Feature | Since | Used for |
 |---|---|---|
@@ -83,7 +83,7 @@ The code is pinned to **1.9.1, the latest stable release**, which is also in Sno
 
 The experimental callbacks API (new in 1.9) isn't used: none of the clustering or gradient-boosting estimators support it yet.
 
-**On Windows, Smart App Control may block scikit-learn 1.9.1.** On some machines it refuses to load one of the wheel's DLLs (`_libsvm_sparse`). The pipeline itself isn't affected because it runs in Snowflake. To run the tests there, use GitHub Actions or `python tests/run_in_snowflake.py`. The assistant doesn't use scikit-learn.
+**On Windows, Smart App Control may block scikit-learn 1.9.1.** On some machines it refuses to load one of the wheel's DLLs (`_libsvm_sparse`). The pipeline itself isn't affected because it runs on the platform. Run the tests on GitHub Actions instead (or with `python tests/run_in_snowflake.py` on Snowflake). The assistant doesn't use scikit-learn.
 
 ## Tests
 

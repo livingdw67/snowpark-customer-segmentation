@@ -39,8 +39,13 @@ resources:
           disable_auto_optimization: true
           notebook_task:
             notebook_path: ../src/05_production.py
-        - task_key: check_reproduction
+        - task_key: register_model
           depends_on: [{ task_key: production }]
+          timeout_seconds: 900
+          notebook_task:
+            notebook_path: ../src/07_register_model.py
+        - task_key: check_reproduction
+          depends_on: [{ task_key: register_model }]
           timeout_seconds: 600
           notebook_task:
             notebook_path: ../src/06_check_reproduction.py

@@ -5,6 +5,9 @@
 # MAGIC Compares every table with the results committed in `results/`. What depends only on the
 # MAGIC data and SQL must match exactly; fitted-model outputs get the tolerances in `segmentation/reproduce.py`,
 # MAGIC which were fixed before the first Databricks run. The task fails if any check fails.
+# MAGIC
+# MAGIC It is also the gate before `champion`: only when every check passes does the `champion` alias of
+# MAGIC `<schema>.hybrid_segmenter` move to the version task 07 registered as `challenger`.
 
 # COMMAND ----------
 
@@ -49,6 +52,27 @@ print(result.groupby("AREA").PASSED.agg(["sum", "count"]).to_string())
 failed = result[~result.PASSED]
 print(failed.to_string(index=False) if len(failed) else "Every check passed.")
 summary = {area: f"{int(g.PASSED.sum())}/{len(g)}" for area, g in result.groupby("AREA")}
+
+import mlflow
+from mlflow import MlflowClient
+from mlflow.exceptions import MlflowException
+
+from segmentation.tables import REGISTERED_MODEL
+
+mlflow.set_registry_uri("databricks-uc")
+client = MlflowClient()
+try:
+    challenger = client.get_model_version_by_alias(REGISTERED_MODEL, "challenger").version
+except MlflowException:  # task 07 hasn't registered one yet
+    challenger = None
+if challenger is None:
+    summary["gate"] = "no challenger registered"
+elif failed.empty:
+    client.set_registered_model_alias(REGISTERED_MODEL, "champion", challenger)
+    summary["gate"] = f"v{challenger} promoted to champion"
+else:
+    summary["gate"] = f"v{challenger} stays challenger"
+print(summary["gate"])
 assert failed.empty, (f"{len(failed)} of {len(result)} reproduction checks failed ({summary}); first failures: "
                       + "; ".join(f"{r.ITEM}: {r.BASELINE} vs {r.THIS_RUN}" for r in failed.head(30).itertuples()))
 

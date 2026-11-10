@@ -266,7 +266,9 @@ def test_databricks_data_matches_the_local_tables():
     statements = []
 
     def kind(dtype):
-        return "BOOLEAN" if dtype == bool else "DOUBLE" if dtype == float else "LONG" if dtype == int else "STRING"
+        types = pd.api.types
+        return ("BOOLEAN" if types.is_bool_dtype(dtype) else "DOUBLE" if types.is_float_dtype(dtype)
+                else "LONG" if types.is_integer_dtype(dtype) else "STRING")
 
     def text(value):
         return None if pd.isna(value) else str(value).lower() if isinstance(value, bool) else str(value)
@@ -287,6 +289,29 @@ def test_databricks_data_matches_the_local_tables():
                                       check_dtype=False)
     with pytest.raises(UnsafeQuery):
         data.query("DROP TABLE SEGMENTS")
+
+
+def test_databricks_chat_endpoint_sends_roles_and_reads_text():
+    from types import SimpleNamespace as NS
+
+    from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+
+    from assistant.databricks_chat import ChatDatabricksEndpoint
+
+    sent = {}
+
+    def query(name, temperature, stop, messages):
+        sent.update(name=name, temperature=temperature, roles=[m.role.value for m in messages],
+                    texts=[m.content for m in messages])
+        return NS(choices=[NS(message=NS(content="ready"))],
+                  usage=NS(prompt_tokens=5, completion_tokens=1, total_tokens=6))
+
+    llm = ChatDatabricksEndpoint(endpoint="databricks-test")
+    llm._client = NS(serving_endpoints=NS(query=query))
+    out = llm.invoke([SystemMessage("rules"), HumanMessage("q1"), AIMessage("a1"), HumanMessage("q2")])
+    assert out.content == "ready" and out.usage_metadata["total_tokens"] == 6
+    assert sent == {"name": "databricks-test", "temperature": 0.0, "roles": ["system", "user", "assistant", "user"],
+                    "texts": ["rules", "q1", "a1", "q2"]}
 
 
 def test_docs_keep_every_section_the_readme_had():

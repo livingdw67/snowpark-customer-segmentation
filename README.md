@@ -84,7 +84,7 @@ The first version let the model write SQL, and only 47% of 137 adversarial quest
 
 The biggest remaining gap is questions the data can't answer, such as other countries or CRM fields, where the Assistant gives the nearest figure instead of declining. The agents, guards and every round are in [docs/segment-assistant.md](docs/segment-assistant.md); the comparison with Cortex Analyst is in [practice_eval/](practice_eval/).
 
-It runs offline on DuckDB over the committed segment-level results with Ollama, or live against Snowflake with Cortex (live mode is untested):
+It runs offline on DuckDB over the committed segment-level results with Ollama. On Databricks (`ASSISTANT_MODE=databricks`) it reads the same four tables from Unity Catalog and uses a Databricks-hosted Llama 3.3 70B; that mode was checked live on nine questions, not evaluated. The Snowflake live mode with Cortex was never tested:
 
 ```bash
 pip install -r requirements-assistant.txt   # no scikit-learn needed
@@ -94,23 +94,26 @@ streamlit run app.py
 
 ## How it works
 
-The segmentation needs only Snowflake and scikit-learn. The Segment Assistant (LangGraph, Streamlit, DuckDB and an LLM) is an optional app that reads the results; nothing in the pipeline depends on it.
+The segmentation needs only the data platform and scikit-learn. The Segment Assistant (LangGraph, Streamlit, DuckDB and an LLM) is an optional app that reads the results; nothing in the pipeline depends on it.
 
 ```mermaid
 flowchart LR
-    X[UCI xlsx] -->|01 fetch| P[parquet]
-    P -->|02 PUT + COPY| RAW[RAW.TRANSACTIONS]
-    RAW -->|03 SQL| STG[STAGING.TRANSACTIONS<br/>+ CLEANING_AUDIT]
-    STG -->|04 SQL| F[MARTS.CUSTOMER_FEATURES<br/>quarterly snapshots]
-    F --> SP[Stored procedures<br/>scikit-learn 1.9.1]
-    SP --> ML[ML.* tables + models on stage]
-    ML --> V[ML.CUSTOMER_SEGMENTS_CURRENT<br/>view for BI]
-    T[Monthly Task] -->|CALL| R[RESCORE_CUSTOMERS]
-    R -->|new snapshot + frozen models| V
-    V --> C[Segment Assistant<br/>LangGraph + Streamlit]
+    X[UCI xlsx] -->|fetch + upload| RAW[raw_transactions]
+    RAW -->|SQL| STG[stg_transactions<br/>+ cleaning_audit]
+    STG -->|SQL| F[customer_features<br/>quarterly snapshots]
+    F --> J[Job tasks<br/>scikit-learn 1.9.1]
+    J --> T[Segment, backtest<br/>and profile tables]
+    J --> M[hybrid_segmenter<br/>in Unity Catalog]
+    T --> G[Reproduction check]
+    G -->|passes| CH[champion alias]
+    M --> CH
+    CH --> R[Monthly re-score]
+    R --> V[CUSTOMER_SEGMENTS_CURRENT<br/>view for BI]
+    T --> V
+    V --> A[Segment Assistant<br/>LangGraph + Streamlit]
 ```
 
-**Customer data never leaves Snowflake.** Steps 01–04 are SQL. All fitting, scoring and evaluation runs in permanent Python stored procedures, created by [05_deploy_procedures.py](05_deploy_procedures.py) from the [segmentation/](segmentation/) package zipped on a stage. The local machine only issues `CALL` statements. The exceptions are [08_make_charts.py](08_make_charts.py), which reads *aggregated* result tables to draw the charts above, and the assistant in live mode, which returns query results (at most 200 rows) to the app.
+**Customer data stays in the workspace.** Cleaning and features are SQL, and all fitting, scoring and evaluation run as serverless job tasks that import the [segmentation/](segmentation/) package, the same code the Snowflake build ran as stored procedures. Each production run registers its models in Unity Catalog as `challenger`; the reproduction check is the gate that moves `champion`, and the monthly re-score uses `champion`. What leaves the workspace is aggregated: [databricks/export_results.py](databricks/export_results.py) writes the segment-level tables in `results/`, [08_make_charts.py](08_make_charts.py) also reads 2,000 sampled map coordinates (no customer IDs) to draw the segment map, and the Assistant reads the four segment-level tables. The original Snowflake build is still here: steps `01`–`08`, which create and call stored procedures, and the monthly Task in [sql/](sql/).
 
 Cleaning, features, both segmentation options, the evaluation metrics, monthly re-scoring and the scikit-learn features used are in [docs/methodology.md](docs/methodology.md).
 
@@ -122,12 +125,13 @@ Cleaning, features, both segmentation options, the evaluation metrics, monthly r
 python 01_fetch_data.py                                      # download + convert (about 1 min)
 python databricks/upload_raw.py                              # schema, volumes and the raw file; no compute
 cd databricks && databricks bundle deploy --profile free
-databricks bundle run segmentation_pipeline --profile free   # ingest through the reproduction check
+databricks bundle run segmentation_pipeline --profile free   # ingest through the reproduction check and the champion gate
+databricks bundle run segmentation_rescore --profile free    # optional: the monthly re-score, with the champion model
 cd .. && python databricks/export_results.py                 # refresh results/*.csv
 python 08_make_charts.py --from-databricks
 ```
 
-The job's last task compares the run with `results/` and fails on any difference outside its tolerances.
+The pipeline's last task compares the run with `results/` and fails on any difference outside its tolerances; only a passing run moves the `champion` alias of the registered model.
 
 **On Snowflake** (the original build; it needs an active account). You need Python 3.11, a Snowflake account with a user that signs in with [key-pair authentication](https://docs.snowflake.com/en/user-guide/key-pair-auth), and an X-Small warehouse. The role must be able to create a database (`SYSADMIN` on a trial account works), stages, tables, views and Python procedures, and, for the optional monthly re-scoring, tasks (`EXECUTE TASK` on the account). Put the account, user, private-key path, role and warehouse in `.env` (copy it from `.env.example`).
 

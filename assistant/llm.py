@@ -2,7 +2,7 @@
 
 ASSISTANT_LLM   auto (default) | cortex | databricks | ollama   auto = the live platform's model, else ollama
 CORTEX_MODEL  Cortex model name (default llama3.1-70b, available in most regions)
-DATABRICKS_CHAT_ENDPOINT  serving endpoint name (default databricks-llama-3-3-70b)
+DATABRICKS_CHAT_ENDPOINT  serving endpoint name (default databricks-meta-llama-3-3-70b-instruct)
 OLLAMA_MODEL  Ollama model tag (default qwen2.5:7b: reliable text-to-SQL, fits in 8 GB of VRAM)
 OLLAMA_HOST   Ollama server URL (default http://localhost:11434)
 LLM_TIMEOUT   seconds to wait for one model reply before giving up (default 120)
@@ -26,9 +26,11 @@ def make_llm(session=None):
         return ChatSnowflake(session=session, model=os.getenv("CORTEX_MODEL", "llama3.1-70b"),
                              temperature=0)
     if backend == "databricks":
-        from databricks_langchain import ChatDatabricks
+        from .databricks_chat import ChatDatabricksEndpoint
 
-        return ChatDatabricks(endpoint=os.getenv("DATABRICKS_CHAT_ENDPOINT", "databricks-llama-3-3-70b"), temperature=0)
+        return ChatDatabricksEndpoint(
+            endpoint=os.getenv("DATABRICKS_CHAT_ENDPOINT", "databricks-meta-llama-3-3-70b-instruct"),
+            profile=os.getenv("DATABRICKS_CONFIG_PROFILE") or None)
     if backend == "ollama":
         from langchain_ollama import ChatOllama
 

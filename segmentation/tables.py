@@ -16,9 +16,11 @@ if IS_DATABRICKS:
     STAGING = f"{SCHEMA}.stg_transactions"
     CLEANING_AUDIT = f"{SCHEMA}.cleaning_audit"
     FEATURE_TABLE = f"{SCHEMA}.customer_features"
+    REGISTERED_MODEL = f"{SCHEMA}.hybrid_segmenter"  # Unity Catalog model, aliases challenger and champion
 else:
     ML = f"{DATABASE}.ML"
     RAW_TABLE = f"{DATABASE}.RAW.TRANSACTIONS"
     STAGING = f"{DATABASE}.STAGING.TRANSACTIONS"
     CLEANING_AUDIT = f"{DATABASE}.STAGING.CLEANING_AUDIT"
     FEATURE_TABLE = f"{DATABASE}.MARTS.CUSTOMER_FEATURES"
+    REGISTERED_MODEL = None  # Snowflake keeps versioned joblib files on a stage (no Model Registry: see the README)

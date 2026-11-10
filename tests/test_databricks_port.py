@@ -97,3 +97,35 @@ def test_segment_total_is_exact_but_sizes_have_slack():
     total = compare_segments(_segments(customers=(104, 897)), _segments())[0]
     assert total["ITEM"] == "total customers" and not total["PASSED"]
     assert not all(c["PASSED"] for c in compare_segments(_segments(customers=(200, 800)), _segments()))
+
+
+class _BehaviorStub:  # module level, so joblib can pickle it
+    def predict(self, df):
+        return pd.DataFrame({"behavior_segment": ["B1" if x > 0 else "B2" for x in df.x]}, index=df.index)
+
+
+class _OutcomeStub:
+    def predict(self, df):
+        return pd.DataFrame({"segment": ["C1" if x > 1 else "C2" for x in df.x], "p_active": 0.5,
+                             "expected_revenue": df.x * 10.0}, index=df.index)
+
+
+def test_registered_model_scores_like_the_pipeline(tmp_path, monkeypatch):
+    """The Unity Catalog pyfunc gives the same cells as hybrid_assignments, which the pipeline and re-score use."""
+    monkeypatch.setenv("MLFLOW_TRACKING_URI", (tmp_path / "mlruns").as_uri())  # not an mlflow.db in the repo
+    mlflow = pytest.importorskip("mlflow")
+    import joblib
+
+    from segmentation.procedures import hybrid_assignments
+    from segmentation.registry import HybridSegmenter
+
+    artifacts = {"two_axis": str(tmp_path / "two_axis.joblib"), "outcome_guided": str(tmp_path / "outcome.joblib")}
+    joblib.dump(_BehaviorStub(), artifacts["two_axis"])
+    joblib.dump(_OutcomeStub(), artifacts["outcome_guided"])
+    mlflow.pyfunc.save_model(str(tmp_path / "model"), python_model=HybridSegmenter(), artifacts=artifacts,
+                             pip_requirements=["pandas"])
+    loaded = mlflow.pyfunc.load_model(str(tmp_path / "model"))
+    features = pd.DataFrame({"x": [-1.0, 0.5, 2.0]})
+    expected = hybrid_assignments(_BehaviorStub(), _OutcomeStub(), features).reset_index(drop=True)
+    pd.testing.assert_frame_equal(loaded.predict(features), expected)
+    assert list(expected.segment) == ["C2-B2", "C2-B1", "C1-B1"]
