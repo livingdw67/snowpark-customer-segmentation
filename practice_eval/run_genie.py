@@ -6,7 +6,9 @@
 
 Writes results/v2_genie_answers.jsonl in the format grade.py reads (system name v2_genie). A follow-up is sent in
 its parent's conversation. Free Edition has one daily compute quota, shared with the public demos, so the run stops
-at the first sign of a limit and threads are spaced out; use --limit to spread it over days.
+at the first sign of a limit and threads are spaced out; use --limit to spread it over days. A question that got no
+answer at all (the warehouse didn't start in time, or the connection failed) isn't saved as Genie's answer: it goes
+to results/v2_genie_transport_errors.jsonl and is asked again on the next run.
 Needs databricks-sdk.
 """
 import argparse
@@ -24,11 +26,17 @@ from common_eval import RESULTS, done_ids, load_items, threads
 
 BANK = "questions_v2.json"
 OUT = "v2_genie_answers.jsonl"
+NO_ANSWER_LOG = "v2_genie_transport_errors.jsonl"
 SPACE_TITLE = "Segment Analyst rematch (frozen eval data)"
 TIMEOUT = timedelta(seconds=180)
 MAX_ROWS = 50
 LIMIT_SIGNS = re.compile(r"quota|rate.?limit|limit exceeded|too many requests|\b429\b|free daily|hit your", re.I)
 NUMERIC = {"BYTE", "SHORT", "INT", "LONG", "FLOAT", "DOUBLE", "DECIMAL"}
+
+
+def no_answer(error: Exception) -> bool:
+    """Nothing came back to grade: a timeout, a dropped connection, or a warehouse that never started."""
+    return isinstance(error, OSError) or "PENDING_WAREHOUSE" in repr(error)
 
 
 def value(raw, type_name: str):
@@ -125,13 +133,17 @@ def main() -> None:
                     failures = 0
                 except Exception as e:  # noqa: BLE001
                     rec["error"] = repr(e)[:500]
+                    rec["no_answer"] = no_answer(e)
                     failures += 1
                 rec["secs"] = round(time.time() - t0, 1)
                 print(f"{it['id']:6} {rec['secs']:6.1f}s {'SQL' if rec.get('sql') else 'no-sql':6} "
                       f"{str(rec.get('status')):12} {('ERR ' + rec['error'][:100]) if 'error' in rec else ''}", flush=True)
                 if "error" in rec and (LIMIT_SIGNS.search(rec["error"]) or failures >= 3):
                     sys.exit(f"stopping: {rec['error'][:300]}\nThat question wasn't saved, so a rerun will ask it again.")
-                if it["id"] not in done:  # a re-asked root keeps its first answer
+                if rec.get("no_answer"):  # logged, not saved, so the next run asks it again
+                    with open(os.path.join(RESULTS, NO_ANSWER_LOG), "a", encoding="utf-8") as log:
+                        log.write(json.dumps(rec, default=str, ensure_ascii=False) + "\n")
+                elif it["id"] not in done:  # a re-asked root keeps its first answer
                     f.write(json.dumps(rec, default=str, ensure_ascii=False) + "\n")
                     f.flush()
                 time.sleep(args.pause)
