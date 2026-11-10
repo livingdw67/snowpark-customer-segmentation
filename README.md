@@ -81,6 +81,7 @@ The first version let the model write SQL, and only 47% of 137 adversarial quest
 | Practice mix against Cortex Analyst | 250 | Assistant 82.8%, Analyst 89.6% |
 | Held-out retest of the fixes, graded blind | 250 | 80.0% before, 87.2% after (18 to 0, p = 8e-6) |
 | Power run against Cortex Analyst | 1,400 paired | Analyst 93.8%, Assistant 87.9%: +5.9 points (95% CI 3.8–8.0, p = 4e-8) |
+| Genie (Databricks) on the 175 held-out data questions | 175 | Genie 94.3%, Analyst 92.0%, Assistant 91.4%; no pair differs significantly (McNemar p = 0.42 to 1.0) |
 
 The biggest remaining gap is questions the data can't answer, such as other countries or CRM fields, where the Assistant gives the nearest figure instead of declining. The agents, guards and every round are in [docs/segment-assistant.md](docs/segment-assistant.md); the comparison with Cortex Analyst is in [practice_eval/](practice_eval/).
 

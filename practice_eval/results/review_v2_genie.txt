@@ -1,0 +1,176 @@
+# v2_genie: Genie space over the frozen tables (ported from segmentation_r8.yaml), read in full 2026-11-10.
+HLK01|correct|
+HLK02|correct|
+HLK03|correct|
+HLK04|correct|
+HLK05|correct|
+HLK06|correct|
+HLK07|correct|
+HLK08|correct|
+HLK09|correct|
+HLK10|correct|
+HLK11|correct|
+HLK12|correct|
+HLK13|correct|
+HLK14|correct|
+HLK16|correct|
+HLK17|correct|
+HLK18|correct|
+HLK19|correct|
+HLK20|correct|
+HLK21|correct|
+HLK22|correct|
+HLK23|correct|
+HLK24|correct|
+HLK25|correct|
+HLK26|correct|
+HLK27|correct|
+HLK28|correct|
+HLK29|correct|
+HLK30|correct|
+HLK31|correct|
+HLK32|correct|
+HTS01|correct|
+HTS02|correct|
+HTS03|correct|
+HTS04|correct|
+HTS05|correct|
+HTS06|correct|
+HTS07|correct|
+HTS08|correct|
+HTS09|correct|
+HTS10|correct|
+HTS11|correct|
+HTS12|correct|
+HTS13|correct|
+HTS14|correct|
+HTS15|correct|
+HTS16|correct|
+HTS17|correct|
+HTS18|correct|
+HTS20|correct|
+HTS21|correct|
+HTS22|correct|
+HRK02|correct|
+HRK03|correct|
+HRK04|correct|
+HRK05|correct|
+HRK07|correct|
+HRK08|correct|
+HLK15|correct|right figure; its sentence calls lines per order 'items per order'
+HTS19|wrong number|holiday buyers' share of predicted revenue given as 100% (share computed within B2 only); answer 17.7%
+HRK01|correct|right segment and figure; its interpretation line says 'lowest expected revenue'
+HRK06|correct|right segment and figure; calls last-12-month spend 'predicted'
+HRK09|correct|
+HRK10|correct|
+HRK11|correct|
+HRK12|correct|
+HRK13|correct|
+HRK15|correct|
+HRK17|correct|
+HRK18|correct|
+HRK19|correct|
+HRK20|correct|
+HCP01|correct|
+HCP02|correct|
+HCP03|correct|
+HCP04|correct|
+HCP06|correct|
+HCP07|correct|
+HCP08|correct|
+HCP09|correct|
+HCP11|correct|
+HCP12|correct|
+HCP13|correct|
+HCP14|correct|
+HCP15|correct|
+HCP16|correct|
+HBD01|correct|
+HBD02|correct|
+HBD03|correct|
+HBD04|correct|
+HBD05|correct|
+HRK14|correct|right segment and figure; adds that no other Low value segments are present (it means in its result)
+HRK16|correct|both tied segments; describes median Q4 share of trailing spend as next-quarter revenue
+HCP05|correct|'bigger' read both ways with right figures: C2-B1 by revenue, C4-B3 by customers (893 vs 629)
+HCP10|unhelpful|returns only Occasional (1,234) and says Core has no data; Core is 1,073
+HBD06|correct|
+HBD07|correct|
+HBD08|correct|
+HFL01|correct|
+HFL02|correct|
+HFL03|correct|
+HFL04|correct|
+HFL05|correct|
+HFL06|correct|
+HME01|correct|
+HME02|correct|
+HME03|correct|
+HME04|correct|
+HME05|correct|
+HME07|correct|
+HFU01|correct|
+HFU02|correct|
+HFU03|correct|
+HFU04|correct|
+HFU05|correct|
+HFU06|correct|
+HFU07|correct|
+HFU08|correct|
+HFU09|correct|
+HFU10|correct|
+HFU11|correct|
+HFU12|correct|
+HFU13|correct|
+HFU14|correct|
+HFU15|correct|
+HFU16|correct|
+HFU17|correct|
+HFU18|correct|
+HME06|declined-but-answerable|says customer IDs aren't in the data; the cleaning table has 794,165 product lines with a customer ID (Analyst made the same miss)
+HME08|unhelpful|per-fold biases (-16.6%, -43.5%) without the two-fold mean the instructions ask for when no fold is named (-30.0%)
+HFU19|correct|
+HFU20|correct|
+HFU21|correct|
+HFU22|correct|
+HFU24|correct|
+HFU25|correct|
+HFU26|correct|
+HFU27|correct|
+HFU28|correct|
+HAM01|correct|
+HAM02|correct|
+HAM03|correct|
+HAM04|correct|
+HAM05|correct|
+HAM07|correct|
+HAM08|correct|
+HAM09|correct|
+HAM10|correct|
+HAM11|correct|
+HAM12|correct|
+HAM13|correct|
+HAM14|correct|
+HAM15|correct|
+HAM16|correct|
+HAM17|correct|
+HAM18|correct|
+HAM19|correct|
+HUN02|correct|
+HUN05|correct|
+HUN07|correct|
+HUN08|correct|
+HUN11|correct|
+HUN12|correct|
+HUN13|correct|
+HUN14|correct|
+HUN15|correct|
+HUN16|correct|
+HFU23|wrong claim|right figure (1) but says the median customer orders once 'in the next quarter'; it is once in the last 12 months
+HAM06|wrong number|'loyal customers count' answered with the one highest-P segment's 49 customers; no reasonable reading gives 49
+HUN01|answered-instead-of-declining|age answered with tenure, calling it 'age', without saying age isn't held
+HUN03|answered-instead-of-declining|December 2010 revenue answered with next-quarter forecast, stated as 'as of December 2010'
+HUN04|answered-instead-of-declining|customer names answered with the segment's name (Analyst made the same miss)
+HUN06|correct|says margin isn't held and offers median net revenue, labelled
+HUN09|correct|gives next quarter and says there's no two-year forecast
+HUN10|answered-instead-of-declining|income answered with spend figures, without saying income isn't held (Analyst made the same miss)

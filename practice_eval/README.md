@@ -19,7 +19,7 @@ A third round (2026-10-16 to 10-20) sized the comparison to 90% power: 1,400 pai
 
 **The data behind these evals is frozen.** Every truth was computed from the Snowflake build's published tables. When the pipeline moved to Databricks and the published numbers changed, those tables were kept in `frozen_results/`, and `run_assistant.py` and the Genie setup read them, so reruns stay comparable with the grades here.
 
-**Genie, in progress (from 2026-11-09).** `setup_genie.py` ports the Analyst semantic model (`segmentation_r8.yaml`) to a Databricks Genie space over a frozen copy of those tables, and `run_genie.py` asks it the 175 held-out data questions the Assistant and Analyst answered. Answers go to `results/v2_genie_answers.jsonl` and are graded with `grade.py auto v2_genie`, a full read into `results/review_v2_genie.txt`, and `grade.py merge v2_genie`.
+**Genie (2026-11-09 to 11-10):** Databricks Genie answered the same 175 held-out data questions; see **Genie rematch** at the end.
 
 ## Composition
 
@@ -371,3 +371,37 @@ The 1,400 are the 175 hand-written held-out questions plus 1,225 generated from 
 - **The read wasn't blind.** It covered 2,800 answers, and the reader knew which system wrote each one. The same rules applied to both systems, and a script checked them for consistency afterwards. `POWER_RUN_PLAN.md` lists every departure from the plan.
 - **Each system answered each question once.**
 - **The generated questions come from templates.** Real users may phrase things in ways neither set covers.
+
+## Genie rematch (Databricks)
+
+Run 2026-11-09 to 11-10, after the project moved to Databricks. Genie answered the 175 held-out data questions (`questions_v2.json`, the ones both earlier systems answered), so all three systems can be compared question by question.
+
+**Setup.** `setup_genie.py` puts a frozen copy of the published tables (`frozen_results/`) in their own schema and ports Analyst's semantic model, `segmentation_r8.yaml`, to a Genie space mechanically: field expressions become columns, descriptions and synonyms become column comments, the custom instructions and named metrics become the space's instructions, and the verified queries become its example SQL. Genie wasn't tuned on these questions. `run_genie.py` asks each follow-up in its parent's conversation and logs a question that got no answer at all (a timeout while the warehouse started) separately, so it is asked again rather than graded; that happened once. Answers are graded with the same rules and the same full read as Analyst's, into `results/review_v2_genie.txt` and `results/grades_v2_genie.csv`.
+
+| System | Correct of 175 | 95% interval (Wilson) |
+|---|---|---|
+| Genie (Databricks) | 165 (94.3%) | 89.8% to 96.9% |
+| Cortex Analyst (`segmentation_r8.yaml`) | 161 (92.0%) | 87.0% to 95.2% |
+| Segment Assistant (fixed code) | 160 (91.4%) | 86.3% to 94.7% |
+
+| Pair | Only the first right | Only the second right | Exact McNemar p |
+|---|---|---|---|
+| Genie vs Analyst | 10 | 6 | 0.45 |
+| Genie vs Assistant | 15 | 10 | 0.42 |
+| Analyst vs Assistant | 14 | 13 | 1.00 |
+
+**No system is shown to be better.**
+- **Why McNemar's test:** the three systems answered the same questions, so the comparison is paired. Questions all of them got right, or all got wrong, say nothing about which is better. The test looks only at the split decisions and asks whether they lean one way more than a fair coin would.
+- **Plain meaning:** Genie won 10 of the 16 questions where it and Analyst disagreed. A fair coin gives a split at least that lopsided 45% of the time, so this is no evidence that Genie is better. The same holds for every pair.
+- **Assumptions:** questions are independent. Follow-ups lean on their parent's thread, so they aren't quite independent. The power page shows that 175 questions can't detect a gap of a few points, so this is "not shown different", not "shown equal".
+
+**Where Genie differs.**
+- **Stronger on totals and shares:** 21 of 22, against Analyst's 17 and the Assistant's 18. Genie added up the segments itself where Analyst often returned per-segment rows without the total.
+- **Weaker on questions the data can't answer:** 12 of 16, against 14 for both others. It answered age with tenure, December 2010 revenue with the forecast, customer names with the segment's name, and income with spend, without saying the data doesn't hold them. That is the Assistant's main weakness in the power run.
+- **One misread figure and one loose claim:** holiday buyers' share of predicted revenue came back as 100% (it divided within the group), and a follow-up said the median customer orders once "in the next quarter" when the figure is per 12 months.
+- No question was missed by all three systems. Genie and Analyst missed the same four (HAM06, HME06, HUN04, HUN10), and the Assistant got all four right.
+
+**Caveats.**
+- **The read wasn't blind;** the reader knew which system wrote each answer.
+- **Each system answered once,** and Analyst answered in October, Genie in November, all over the same frozen numbers.
+- **Genie inherited Analyst's tuning:** `segmentation_r8.yaml` was refined over eight rounds of Analyst testing, though not on these questions.
