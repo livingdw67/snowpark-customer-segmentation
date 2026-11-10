@@ -18,3 +18,8 @@ data/
 .cursor/
 
 *.log
+.databricks/
+
+# Local MLflow store, created by MLflow tracing or local runs
+mlflow.db
+mlruns/

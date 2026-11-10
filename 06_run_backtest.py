@@ -9,10 +9,9 @@ value tiers with B's behavior axis.
 import json
 
 from common import DATABASE, get_session
+from segmentation.production import FOLDS
 
 ML = f"{DATABASE}.ML"
-FOLDS = {"backtest_q2": ("2011-03-10", "2011-06-10"),
-         "backtest_q3": ("2011-06-10", "2011-09-10")}
 COLS = ["RUN_ID", "SCHEME", "N_SEGMENTS", "NEXT_ACTIVE_AUC", "REVENUE_SPEARMAN",
         "TOP20_REVENUE_CAPTURE", "VALUE_ETA2", "BEHAVIOR_ETA2", "RULE_FIDELITY",
         "MIN_SEGMENT_SHARE", "PERSISTENCE"]

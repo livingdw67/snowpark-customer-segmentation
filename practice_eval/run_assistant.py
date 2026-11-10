@@ -17,6 +17,7 @@ from common_eval import REPO, RESULTS, done_ids, load_items, repo_commit, thread
 sys.path.insert(0, REPO)
 os.environ.setdefault("ASSISTANT_MODE", "local")
 os.environ.setdefault("ASSISTANT_LLM", "ollama")
+os.environ.setdefault("ASSISTANT_RESULTS_DIR", os.path.join(os.path.dirname(os.path.abspath(__file__)), "frozen_results"))
 
 from langchain_core.callbacks import BaseCallbackHandler  # noqa: E402
 

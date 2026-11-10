@@ -2,7 +2,9 @@
 
 Trained on every past snapshot whose outcomes are known, pooled, with the snapshot month as a
 feature, so forecasts for a quiet quarter aren't learned only from the holiday quarter. The same
-customer appears in several snapshots, so every split is grouped by customer.
+customer appears in several snapshots, so every split is grouped by customer. That includes the
+choice of boosting rounds: scikit-learn's early stopping validates on a split by row, which mixes a
+customer's snapshots across it and made the fitted model depend on the order of the rows.
 
 1. P(buys again in 91 days): HistGradientBoostingClassifier, then temperature-scaled on a
    held-out calibration split. FrozenEstimator keeps the calibration step from refitting the
@@ -17,17 +19,36 @@ import pandas as pd
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.ensemble import HistGradientBoostingClassifier, HistGradientBoostingRegressor
 from sklearn.frozen import FrozenEstimator
-from sklearn.metrics import r2_score
+from sklearn.metrics import log_loss, mean_poisson_deviance, r2_score
 from sklearn.model_selection import GroupKFold, GroupShuffleSplit, cross_val_predict
 from sklearn.tree import DecisionTreeRegressor
 
 from .features import MODEL, RULE
 from .profiles import describe
 
+MAX_ROUNDS = 300  # the most boosting rounds the grouped cross-validation considers
+CV_FOLDS = 5
 
-def _booster(cls, **kw):
-    return cls(learning_rate=0.05, max_iter=500, early_stopping=True,
-               validation_fraction=0.15, random_state=0, **kw)
+
+def _booster(cls, rounds: int = MAX_ROUNDS, **kw):
+    return cls(learning_rate=0.05, max_iter=rounds, early_stopping=False, random_state=0, **kw)
+
+
+def _binary_log_loss(y, proba) -> float:
+    return log_loss(y, proba, labels=[0, 1])
+
+
+def _best_rounds(cls, staged: str, metric, X: pd.DataFrame, y: np.ndarray, groups: np.ndarray, **kw) -> int:
+    """Boosting rounds with the lowest customer-grouped cross-validated loss.
+
+    Each fold fits once to MAX_ROUNDS and scores every earlier round from the staged predictions.
+    """
+    per_fold = []
+    for train, test in GroupKFold(CV_FOLDS).split(X, y, groups):
+        model = _booster(cls, **kw).fit(X.iloc[train], y[train])
+        per_fold.append([metric(y[test], pred) * len(test) for pred in getattr(model, staged)(X.iloc[test])])
+    rounds = min(map(len, per_fold))  # boosting ends early in a fold where no tree finds a split
+    return int(np.argmin(np.sum([fold[:rounds] for fold in per_fold], axis=0))) + 1
 
 
 def leaf_rules(tree: DecisionTreeRegressor, feature_names) -> dict[int, str]:
@@ -72,11 +93,15 @@ class OutcomeGuidedSegmenter:
 
         fit_idx, cal_idx = next(GroupShuffleSplit(n_splits=1, test_size=0.25, random_state=0)
                                 .split(X, y_active, groups))
-        booster = _booster(HistGradientBoostingClassifier).fit(X.iloc[fit_idx], y_active[fit_idx])
+        self.active_rounds_ = _best_rounds(HistGradientBoostingClassifier, "staged_predict_proba", _binary_log_loss,
+                                           X.iloc[fit_idx], y_active[fit_idx], groups[fit_idx])
+        booster = _booster(HistGradientBoostingClassifier, self.active_rounds_).fit(X.iloc[fit_idx], y_active[fit_idx])
         self.active_model_ = CalibratedClassifierCV(
             FrozenEstimator(booster), method="temperature").fit(X.iloc[cal_idx], y_active[cal_idx])
 
-        reg = _booster(HistGradientBoostingRegressor, loss="poisson")
+        self.revenue_rounds_ = _best_rounds(HistGradientBoostingRegressor, "staged_predict", mean_poisson_deviance,
+                                            X, y_revenue, groups, loss="poisson")
+        reg = _booster(HistGradientBoostingRegressor, self.revenue_rounds_, loss="poisson")
         oof_value = cross_val_predict(reg, X, y_revenue, groups=groups, cv=GroupKFold(5))
         self.revenue_model_ = reg.fit(X, y_revenue)
 

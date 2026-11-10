@@ -1,8 +1,8 @@
 """Grade the answers: a deterministic first pass, then a full read of every answer.
 
-    python grade.py auto                       # first pass -> results/auto_<system>.jsonl
+    python grade.py auto [system]              # first pass -> results/auto_<system>.jsonl
     python grade.py sheet <system> <a> <b>     # print answers a..b-1 for reading, with truth and first-pass result
-    python grade.py merge                      # results/review_<system>.txt -> results/grades_<system>.csv
+    python grade.py merge [system]             # results/review_<system>.txt -> results/grades_<system>.csv
 
 The first pass checks figures (rounding-aware, independent of the assistant's own figure
 checker), segment codes, yes/no words and decline wording. It is only a hint: every answer is
@@ -22,11 +22,11 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 RES = os.path.join(HERE, "results")
 SYSTEMS = ("assistant", "analyst", "assistant_extra", "v2_analyst", "v2_before", "v2_after", "tuned", "tuned_extra",
-           "v2_analyst_r8", "v3_assistant", "v3_analyst", "v3b_assistant", "v3b_analyst")
+           "v2_analyst_r8", "v3_assistant", "v3_analyst", "v3b_assistant", "v3b_analyst", "v2_genie")
 ENGINE = {"assistant": "assistant", "analyst": "analyst", "assistant_extra": "assistant", "v2_analyst": "analyst",
           "v2_before": "assistant", "v2_after": "assistant", "tuned": "assistant",
           "tuned_extra": "assistant", "v2_analyst_r8": "analyst", "v3_assistant": "assistant",
-          "v3_analyst": "analyst", "v3b_assistant": "assistant", "v3b_analyst": "analyst"}  # whose truths and answer format
+          "v3_analyst": "analyst", "v3b_assistant": "assistant", "v3b_analyst": "analyst", "v2_genie": "analyst"}  # whose truths and answer format
 # Held-out runs of the old and fixed code, and the fixed code on the original questions it was tuned on
 ANSWERS = {"v2_before": "v2_assistant_before.jsonl", "v2_after": "v2_assistant_after.jsonl",
            "tuned": "tuned_assistant_answers.jsonl", "tuned_extra": "tuned_assistant_extra_answers.jsonl"}
@@ -154,8 +154,8 @@ def auto(it, ans, system):
     return {"auto": "check", "detail": ("declines" if declined else "") + (" no SQL" if no_sql else "")}
 
 
-def run_auto():
-    for system in SYSTEMS:
+def run_auto(only=None):
+    for system in ([only] if only else SYSTEMS):
         path = answers_path(system)
         if not os.path.exists(path):
             continue
@@ -203,8 +203,8 @@ def sheet(system, a, b, width=1400, todo=False, only=None):
         print()
 
 
-def merge():
-    for system in SYSTEMS:
+def merge(only=None):
+    for system in ([only] if only else SYSTEMS):
         qs = questions(system)
         path = os.path.join(RES, f"review_{system}.txt")
         if not os.path.exists(path):
@@ -235,7 +235,7 @@ def merge():
 if __name__ == "__main__":
     cmd = sys.argv[1]
     if cmd == "auto":
-        run_auto()
+        run_auto(*sys.argv[2:3])
     elif cmd == "sheet":
         sys.stdout.reconfigure(encoding="utf-8")
         sheet(sys.argv[2], int(sys.argv[3]), int(sys.argv[4]), *(int(x) for x in sys.argv[5:6]))
@@ -243,4 +243,4 @@ if __name__ == "__main__":
         sys.stdout.reconfigure(encoding="utf-8")
         sheet(sys.argv[2], 0, int(sys.argv[3]), int(sys.argv[4]) if len(sys.argv) > 4 else 1400, todo=True)
     elif cmd == "merge":
-        merge()
+        merge(*sys.argv[2:3])

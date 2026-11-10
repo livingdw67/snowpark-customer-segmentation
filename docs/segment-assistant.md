@@ -86,19 +86,19 @@ Still open from round 5: a terse "why?" follow-up that misstates the k rule, a "
 
 Every figure in every answer traced back to the data. Most of these questions were tuned against, so 100% means past fixes still hold, not that new questions will be answered correctly; the rounds above measure that. Results are in `results/assistant_eval.csv`; rerun with `python -m assistant.evaluate`.
 
-**Against Cortex Analyst, on questions weighted to real use.** The rounds above pick questions to break the Assistant. [practice_eval/](../practice_eval/) asks them in the proportions people actually ask them (lookups, rankings, follow-ups, ambiguous and unanswerable questions, documentation and writing requests), with every truth computed from the data, and puts the same data questions to Snowflake's Cortex Analyst:
+**Against Cortex Analyst, on questions weighted to real use.** The rounds above pick questions to break the Assistant. [practice_eval/](../practice_eval/) asks them in the proportions people actually ask them (lookups, rankings, follow-ups, ambiguous and unanswerable questions, documentation and writing requests), with every truth computed from the data, and puts the same data questions to Snowflake's Cortex Analyst. All of it ran on the Snowflake build's numbers, which are kept in [practice_eval/frozen_results/](../practice_eval/frozen_results/):
 
 - **Practice mix, 250 questions each:** Assistant 82.8%, Analyst 89.6%. On the 238 data questions both answered, 85.3% vs 90.3% (McNemar p = 0.09).
 - **Held-out retest of the fixes:** 250 new questions, frozen before any fix was written and graded blind. The old code scored 80.0% and the fixed code **87.2%**; they disagreed on 18 questions and the fixed code was right on all 18 (p = 8e-6). On the 175 data questions, the fixed Assistant got 91.4% to Analyst's 86.9% (p = 0.23).
 - **Power run, 1,400 paired data questions** (sized for 90% power at 3.4 points): Analyst 93.8%, Assistant 87.9%. Analyst is ahead by 5.9 points (95% CI 3.8–8.0, p = 4e-8). The biggest gap is questions the data can't answer, such as other countries or CRM fields, where the Assistant gives the nearest figure instead of declining.
 
-| | Offline (default) | Live |
-|---|---|---|
-| Data | DuckDB over `results/*.csv` (aggregated, committed) | The same tables from the `ML` schema in Snowflake |
-| LLM | Ollama, `qwen2.5:7b` | Snowflake Cortex, `llama3.1-70b` |
-| Needs | [Ollama](https://ollama.com) | `.env` with Snowflake credentials |
+| | Offline (default) | Databricks | Snowflake |
+|---|---|---|---|
+| Data | DuckDB over `results/*.csv` (aggregated, committed) | The same four tables from Unity Catalog, read once at startup into DuckDB | The same tables from the `ML` schema |
+| LLM | Ollama, `qwen2.5:7b` | Serving endpoint `databricks-meta-llama-3-3-70b-instruct` | Cortex, `llama3.1-70b` |
+| Needs | [Ollama](https://ollama.com) | A Databricks CLI profile (`DATABRICKS_CONFIG_PROFILE`) | `.env` with Snowflake credentials |
 
-Offline mode exists so anyone can try the app without a Snowflake account. It reads the segment-level result tables exported to `results/` (no customer rows), and DuckDB runs the same fixed queries over them. Live mode is untested. The calculations work on segment-level tables, so customer-level questions are declined in both modes.
+Offline mode exists so anyone can try the app without an account. It reads the segment-level result tables exported to `results/` (no customer rows), and DuckDB runs the same fixed queries over them. The Databricks mode was checked live on nine questions on 2026-11-10; the Snowflake live mode is untested. The calculations work on segment-level tables, so customer-level questions are declined in both modes.
 
 ```bash
 pip install -r requirements-assistant.txt   # no scikit-learn needed
@@ -106,4 +106,4 @@ ollama pull qwen2.5:7b
 streamlit run app.py
 ```
 
-`ASSISTANT_MODE` (`auto`/`local`/`live`), `ASSISTANT_LLM` (`auto`/`ollama`/`cortex`), `OLLAMA_MODEL`, `CORTEX_MODEL` and `LLM_TIMEOUT` override the defaults. The app only runs fixed, read-only queries, and offline DuckDB has file and network access switched off. In live mode, also run the app under a read-only role.
+`ASSISTANT_MODE` (`auto`/`local`/`live`/`databricks`), `ASSISTANT_LLM` (`auto`/`ollama`/`cortex`/`databricks`), `OLLAMA_MODEL`, `CORTEX_MODEL`, `DATABRICKS_CHAT_ENDPOINT` and `LLM_TIMEOUT` override the defaults. The app only runs fixed, read-only queries, and offline DuckDB has file and network access switched off. In live mode, also run the app under a read-only role.

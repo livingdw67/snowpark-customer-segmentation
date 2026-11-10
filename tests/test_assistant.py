@@ -10,13 +10,13 @@ import pytest
 import streamlit as st
 from langchain_core.language_models.fake_chat_models import FakeListChatModel
 
-from assistant.data import LocalData, UnsafeQuery, validate_sql
+from assistant.data import FROZEN_RESULTS, LocalData, UnsafeQuery, validate_sql
 from assistant.graph import OUT_OF_SCOPE_REPLY, SQL, build_graph, turn_input
 
 
 @pytest.fixture(scope="module")
 def data():
-    return LocalData()
+    return LocalData(FROZEN_RESULTS)  # the figures these tests expect
 
 
 def ask(graph, question, thread="t"):
@@ -249,6 +249,69 @@ def test_methodology_answers_from_the_docs(data):
     answer = out["messages"][-1].content
     # Option C's section moved from the README to docs/methodology.md; the citation names the file it's in.
     assert "docs/methodology.md, 'Option C: outcome-guided'" in answer and out["check"]["ok"]
+
+
+def test_databricks_data_matches_the_local_tables():
+    """The same four tables, read through the statement API as text, give the frames the offline mode uses."""
+    from pathlib import Path
+    from types import SimpleNamespace as NS
+
+    import pandas as pd
+
+    from assistant.data import DatabricksData
+
+    results = Path(__file__).resolve().parent.parent / "results"
+    sources = {"HYBRID_PROFILES": "hybrid_profiles", "METHOD_COMPARISON": "method_comparison",
+               "K_SELECTION": "k_selection", "cleaning_audit": "cleaning_audit"}
+    statements = []
+
+    def kind(dtype):
+        types = pd.api.types
+        return ("BOOLEAN" if types.is_bool_dtype(dtype) else "DOUBLE" if types.is_float_dtype(dtype)
+                else "LONG" if types.is_integer_dtype(dtype) else "STRING")
+
+    def text(value):
+        return None if pd.isna(value) else str(value).lower() if isinstance(value, bool) else str(value)
+
+    def execute_statement(statement, warehouse_id, wait_timeout):
+        statements.append(statement)
+        name = next(n for n in sources if f"s.{n} " in f"{statement} ")
+        df = pd.read_csv(results / f"{sources[name]}.csv")
+        columns = [NS(name=c, type_name=kind(df[c].dtype)) for c in df.columns]
+        rows = [[text(v) for v in row] for row in df.astype(object).itertuples(index=False)]
+        return NS(status=NS(state="SUCCEEDED"), manifest=NS(schema=NS(columns=columns)), result=NS(data_array=rows))
+
+    data = DatabricksData(NS(statement_execution=NS(execute_statement=execute_statement)), "wh", "workspace.s")
+    local = LocalData()
+    assert len(statements) == 4 and data.mode == "live"
+    for table in ("SEGMENTS", "BACKTEST", "K_CHOICES", "CLEANING"):
+        pd.testing.assert_frame_equal(data.query(f"SELECT * FROM {table}"), local.query(f"SELECT * FROM {table}"),
+                                      check_dtype=False)
+    with pytest.raises(UnsafeQuery):
+        data.query("DROP TABLE SEGMENTS")
+
+
+def test_databricks_chat_endpoint_sends_roles_and_reads_text():
+    from types import SimpleNamespace as NS
+
+    from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+
+    from assistant.databricks_chat import ChatDatabricksEndpoint
+
+    sent = {}
+
+    def query(name, temperature, stop, messages):
+        sent.update(name=name, temperature=temperature, roles=[m.role.value for m in messages],
+                    texts=[m.content for m in messages])
+        return NS(choices=[NS(message=NS(content="ready"))],
+                  usage=NS(prompt_tokens=5, completion_tokens=1, total_tokens=6))
+
+    llm = ChatDatabricksEndpoint(endpoint="databricks-test")
+    llm._client = NS(serving_endpoints=NS(query=query))
+    out = llm.invoke([SystemMessage("rules"), HumanMessage("q1"), AIMessage("a1"), HumanMessage("q2")])
+    assert out.content == "ready" and out.usage_metadata["total_tokens"] == 6
+    assert sent == {"name": "databricks-test", "temperature": 0.0, "roles": ["system", "user", "assistant", "user"],
+                    "texts": ["rules", "q1", "a1", "q2"]}
 
 
 def test_docs_keep_every_section_the_readme_had():

@@ -8,21 +8,27 @@ import pandas as pd
 from sklearn.manifold import ClassicalMDS
 
 from .evaluation import forecast_bias, metrics, persistence, rfm_baseline, score_scheme
-from .features import DATABASE, load_snapshots
+from .features import DATABASE, FEATURE_TABLE, load_snapshots
 from .outcome_guided import OutcomeGuidedSegmenter
 from .profiles import describe
+from .tables import ML
 from .two_axis import TwoAxisSegmenter
 
-ML = f"{DATABASE}.ML"
 ASSIGNMENT_COLS = ["RUN_ID", "METHOD", "FIT_SNAPSHOT", "SNAPSHOT_DATE", "CUSTOMER_ID", "SEGMENT",
                    "VALUE_SEGMENT", "BEHAVIOR_SEGMENT", "P_ACTIVE", "EXPECTED_REVENUE"]
+
+
+def _table_exists(session, table: str) -> bool:
+    if hasattr(session, "table_exists"):  # DatabricksSession
+        return session.table_exists(table)
+    return bool(session.sql(f"SHOW TABLES LIKE '{table}' IN SCHEMA {ML}").collect())
 
 
 def _replace(session, df: pd.DataFrame, table: str, run_id: str, method: str | None = None):
     """Overwrite this run's (and method's) rows, leaving other runs in place."""
     df = df.copy()
     df.columns = [c.upper() for c in df.columns]
-    if session.sql(f"SHOW TABLES LIKE '{table}' IN SCHEMA {ML}").collect():
+    if _table_exists(session, table):
         where = f"RUN_ID = '{run_id}'" + (f" AND METHOD = '{method}'" if method else "")
         session.sql(f"DELETE FROM {ML}.{table} WHERE {where}").collect()
     session.write_pandas(df, table, database=DATABASE, schema="ML",
@@ -58,7 +64,7 @@ def _assignments(df, scored, run_id, method, fit_date) -> pd.DataFrame:
 
 def _labeled_snapshots(session, up_to: str) -> list[str]:
     rows = session.sql(f"""
-        SELECT DISTINCT snapshot_date::STRING AS d FROM {DATABASE}.MARTS.CUSTOMER_FEATURES
+        SELECT DISTINCT snapshot_date::STRING AS d FROM {FEATURE_TABLE}
         WHERE next_active IS NOT NULL AND snapshot_date <= '{up_to}' ORDER BY 1
     """).collect()
     return [r["D"] for r in rows]
@@ -109,7 +115,8 @@ def train_outcome_guided(session, run_id: str, method: str, fit_date: str,
     _replace(session, rules, "SEGMENT_RULES", run_id, method)
     _save_model(session, model, run_id, method)
     return json.dumps({"n_segments": len(model.rules_), "trained_on": sorted(history.snapshot_date.unique()),
-                       "tree_fidelity_r2": round(model.tree_fidelity_r2_, 3)})
+                       "tree_fidelity_r2": round(model.tree_fidelity_r2_, 3),
+                       "active_rounds": model.active_rounds_, "revenue_rounds": model.revenue_rounds_})
 
 
 def build_hybrid(session, run_id: str, snapshot_dates: str) -> str:
@@ -219,7 +226,7 @@ def hybrid_assignments(two_axis, outcome, df: pd.DataFrame) -> pd.DataFrame:
                         index=df.index)
 
 
-def rescore_customers(session, model_run_id: str = "production") -> str:
+def rescore_customers(session, model_run_id: str = "production", models=None) -> str:
     """Monthly re-score (called by the RESCORE_SEGMENTS_MONTHLY Task).
 
     Rebuilds the features for the snapshot after the latest transaction, scores it with the
@@ -238,7 +245,9 @@ def rescore_customers(session, model_run_id: str = "production") -> str:
         session.sql(sql).collect()
 
     df = load_snapshots(session, [snapshot]).reset_index(drop=True)
-    two_axis, outcome = _load_model(session, model_run_id, "two_axis"), _load_model(session, model_run_id, "outcome_guided")
+    # On Databricks the champion model from Unity Catalog is passed in; otherwise the run's files on the stage.
+    two_axis, outcome = models or (_load_model(session, model_run_id, "two_axis"),
+                                   _load_model(session, model_run_id, "outcome_guided"))
     fit_date = session.sql(f"""
         SELECT MAX(fit_snapshot) AS f FROM {ML}.SEGMENT_ASSIGNMENTS
         WHERE run_id = '{model_run_id}' AND method = 'outcome_guided'

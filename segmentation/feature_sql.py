@@ -4,9 +4,8 @@ and the RESCORE_CUSTOMERS procedure (one new snapshot).
 Each snapshot looks back 365 days for behavior features and forward 91 days for outcomes.
 Only lines before the snapshot date feed the features.
 """
-from .features import DATABASE, FEATURE_TABLE
+from .tables import FEATURE_TABLE, STAGING
 
-STAGING = f"{DATABASE}.STAGING.TRANSACTIONS"
 LOOKBACK_DAYS = 365
 HORIZON_DAYS = 91
 
@@ -17,8 +16,8 @@ def features_select(snapshots, last_data_date: str) -> str:
     values = ", ".join(f"('{d}')" for d in snapshots)
     return f"""
 WITH snapshots AS (
-    SELECT column1::DATE AS snapshot_date
-    FROM VALUES {values}
+    SELECT CAST(d AS DATE) AS snapshot_date
+    FROM (VALUES {values}) AS t(d)
 ),
 lines AS (
     SELECT * FROM {STG}

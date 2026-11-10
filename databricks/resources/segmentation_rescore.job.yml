@@ -1,0 +1,23 @@
+resources:
+  jobs:
+    segmentation_rescore:
+      name: segmentation-rescore
+      # Monthly, like the Snowflake Task it replaces (1st of the month, 06:00 UTC). Paused: the data is static, so
+      # every run re-derives 2011-12-10. Scores with the champion model, so it needs one pipeline run first.
+      schedule:
+        quartz_cron_expression: "0 0 6 1 * ?"
+        timezone_id: UTC
+        pause_status: PAUSED
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: schema
+          default: ${var.schema}
+        - name: code_root
+          default: ${workspace.file_path}
+      tasks:
+        - task_key: rescore
+          timeout_seconds: 1200
+          disable_auto_optimization: true
+          notebook_task:
+            notebook_path: ../src/08_rescore.py

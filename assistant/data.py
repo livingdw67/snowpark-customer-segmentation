@@ -4,6 +4,7 @@ local - DuckDB over the committed results/*.csv. No account needed and no custom
         data: the repo only publishes aggregated results.
 live  - Snowflake. The same tables are session-scoped temporary views over the ML schema,
         plus customer-level CUSTOMERS and MIGRATION.
+databricks - The four segment-level tables from Unity Catalog, read once at startup into DuckDB.
 
 The agent writes SQL against these names only, so prompts and queries are identical across
 modes apart from the SQL dialect.
@@ -12,6 +13,7 @@ from __future__ import annotations
 
 import os
 import re
+import time
 from pathlib import Path
 
 import pandas as pd
@@ -20,6 +22,8 @@ from segmentation.naming import BEHAVIOR_NAMES, TIER_NAMES, case_sql, segment_na
 
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
+# The Snowflake build's published tables. Every eval's truths were computed from these, so evals keep reading them.
+FROZEN_RESULTS = ROOT / "practice_eval" / "frozen_results"
 MAX_ROWS = 200
 MAX_HINT_VALUES = 15
 NO_HINT_COLUMNS = {"TRAITS", "RULE"}  # free text: listing values wouldn't help and bloats the prompt
@@ -106,10 +110,10 @@ class LocalData:
     mode = "local"
     dialect = "DuckDB"
 
-    def __init__(self, results_dir: Path = RESULTS):
+    def __init__(self, results_dir: Path = RESULTS, frames: dict[str, pd.DataFrame] | None = None):
         import duckdb
 
-        self.frames = {
+        self.frames = frames or {
             "SEGMENTS": add_names(pd.read_csv(results_dir / "hybrid_profiles.csv")),
             "BACKTEST": pd.read_csv(results_dir / "method_comparison.csv"),
             "K_CHOICES": pd.read_csv(results_dir / "k_selection.csv"),
@@ -141,6 +145,58 @@ class LocalData:
     @property
     def tables(self) -> list[str]:
         return list(self.frames)
+
+
+DATABRICKS_SOURCES = {
+    "SEGMENTS": "SELECT * FROM {schema}.HYBRID_PROFILES WHERE RUN_ID = 'production'",
+    "BACKTEST": "SELECT * FROM {schema}.METHOD_COMPARISON WHERE RUN_ID LIKE 'backtest_%' ORDER BY RUN_ID, SCHEME",
+    "K_CHOICES": "SELECT * FROM {schema}.K_SELECTION WHERE RUN_ID = 'production' ORDER BY AXIS, K",
+    "CLEANING": "SELECT * FROM {schema}.cleaning_audit ORDER BY step",
+}
+_DATABRICKS_NUMERIC = {"BYTE", "SHORT", "INT", "LONG", "FLOAT", "DOUBLE", "DECIMAL"}
+
+
+def read_statement(client, warehouse_id: str, sql: str) -> pd.DataFrame:
+    """Run one SQL statement on a warehouse and return its rows, typed from the manifest (the API sends text)."""
+    r = client.statement_execution.execute_statement(statement=sql, warehouse_id=warehouse_id, wait_timeout="50s")
+    while getattr(r.status.state, "value", str(r.status.state)) in ("PENDING", "RUNNING"):  # a cold warehouse
+        time.sleep(1)
+        r = client.statement_execution.get_statement(r.statement_id)
+    state = getattr(r.status.state, "value", str(r.status.state))
+    if state != "SUCCEEDED":
+        raise RuntimeError(f"{sql}: {r.status.error.message if r.status.error else state}")
+    rows = list(r.result.data_array or [])
+    chunk = getattr(r.result, "next_chunk_index", None)
+    while chunk is not None:
+        part = client.statement_execution.get_statement_result_chunk_n(r.statement_id, chunk)
+        rows += part.data_array or []
+        chunk = part.next_chunk_index
+    schema = r.manifest.schema.columns
+    frame = pd.DataFrame(rows, columns=[c.name.upper() for c in schema])
+    for column, info in zip(frame.columns, schema):
+        kind = getattr(info.type_name, "value", str(info.type_name)).upper()
+        if kind in _DATABRICKS_NUMERIC:
+            frame[column] = pd.to_numeric(frame[column])
+        elif kind == "BOOLEAN":
+            frame[column] = frame[column].map({"true": True, "false": False})
+    return frame
+
+
+class DatabricksData(LocalData):
+    """The four segment-level tables, read once from Unity Catalog into the same DuckDB engine as LocalData.
+
+    Questions then cost no warehouse time and no customer rows reach the app, which needs SELECT on
+    these tables only.
+    """
+
+    mode = "live"
+    dialect = "Databricks tables, queried with DuckDB"
+
+    def __init__(self, client, warehouse_id: str, schema: str):
+        frames = {name: read_statement(client, warehouse_id, sql.format(schema=schema))
+                  for name, sql in DATABRICKS_SOURCES.items()}
+        frames["SEGMENTS"] = add_names(frames["SEGMENTS"])
+        super().__init__(frames=frames)
 
 
 class SnowflakeData:
@@ -222,7 +278,7 @@ def schema_text(data) -> str:
 
 
 def open_data(mode: str | None = None):
-    """ASSISTANT_MODE=local|live|auto (auto = live when Snowflake credentials are configured)."""
+    """ASSISTANT_MODE=local|live|databricks|auto (auto = live when Snowflake credentials are configured)."""
     mode = (mode or os.getenv("ASSISTANT_MODE", "auto")).lower()
     if mode == "auto":
         from dotenv import load_dotenv
@@ -230,9 +286,15 @@ def open_data(mode: str | None = None):
         load_dotenv(os.getenv("SNOWFLAKE_ENV_FILE", ROOT / ".env"))
         mode = "live" if os.getenv("SNOWFLAKE_ACCOUNT") else "local"
     if mode == "local":
-        return LocalData()
+        return LocalData(Path(os.getenv("ASSISTANT_RESULTS_DIR", RESULTS)))
+    if mode == "databricks":
+        from databricks.sdk import WorkspaceClient
+
+        client = WorkspaceClient(profile=os.getenv("DATABRICKS_CONFIG_PROFILE") or None)
+        warehouse_id = os.getenv("DATABRICKS_WAREHOUSE_ID") or next(iter(client.warehouses.list())).id
+        return DatabricksData(client, warehouse_id, os.getenv("SEGMENTATION_SCHEMA", "workspace.segmentation"))
     if mode == "live":
         from common import get_session
 
         return SnowflakeData(get_session())
-    raise ValueError(f"ASSISTANT_MODE must be local, live or auto, not {mode!r}")
+    raise ValueError(f"ASSISTANT_MODE must be local, live, databricks or auto, not {mode!r}")
