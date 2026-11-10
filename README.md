@@ -173,4 +173,6 @@ docs/                 methodology.md, segment-assistant.md, charts in img/
 databricks/           Asset Bundle: the pipeline as serverless job tasks, plus the data upload and results export
 ```
 
-Data: [Online Retail II](https://archive.ics.uci.edu/dataset/502/online+retail+ii), UCI Machine Learning Repository, CC BY 4.0.
+## License and data
+
+Code: MIT ([LICENSE](LICENSE)). Data: [Online Retail II](https://archive.ics.uci.edu/dataset/502/online+retail+ii), UCI Machine Learning Repository, CC BY 4.0.
